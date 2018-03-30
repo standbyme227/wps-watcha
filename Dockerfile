@@ -1,4 +1,4 @@
-FROM        Dockerfile.base
+FROM        standbyme227/project:base
 
 ENV         BUILD_MODE             production
 ENV         DJANGO_SETTINGS_MODULE config.settings.production
