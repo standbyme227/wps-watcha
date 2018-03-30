@@ -5,7 +5,7 @@ DEBUG = False
 secrets = json.loads(open(SECRETS_PRODUCTION, 'rt').read())
 set_config(secrets, module_name=__name__, start=True)
 
-WSGI_APPLICATION = 'config.wsgi.dev.application'
+WSGI_APPLICATION = 'config.wsgi.production.application'
 
 ALLOWED_HOSTS = [
     'localhost',
