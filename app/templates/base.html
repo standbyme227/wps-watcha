@@ -10,9 +10,29 @@
 </head>
 <body>
 
-<div class="content-block">
-    {% block content %}
-    {% endblock %}
-</div>
+    <div class="content-block">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <button id="btn-facebook" class="btn">페이스북 로그인</button>
+    <script src="static/js/jquery-3.3.1.min.js"></script>
+    <script src="static/js/fb.js"></script>
+    <script>
+            $('#btn-facebook').click(function () {
+              facebookLogin();
+            });
+            function facebookLogin() {
+              FB.getLoginStatus(function (response) {
+                if (response.status != 'connected'){
+                 FB.login(function (response) {
+                  console.log(response);
+                 });
+                } else {
+                  console.log(response);
+                }
+              });
+            }
+    </script>
 </body>
 </html>
