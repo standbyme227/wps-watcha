@@ -1,16 +1,16 @@
-
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework.compat import authenticate as rest_authenticate
-
 
 User = get_user_model()
 
 __all__ = (
     'UserSerializer',
     'EmailAuthTokenSerializer',
+    'AccessTokenSerializer',
 )
+
 
 class AccessTokenSerializer(serializers.Serializer):
     access_token = serializers.CharField()
@@ -28,8 +28,8 @@ class AccessTokenSerializer(serializers.Serializer):
         attrs['user'] = user
         return attrs
 
-class UserSerializer(serializers.ModelSerializer):
 
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
@@ -46,6 +46,7 @@ class UserSerializer(serializers.ModelSerializer):
             'date_joined',
         )
 
+
 class EmailAuthTokenSerializer(serializers.Serializer):
     # username = serializers.CharField(label=_("Username"))
     email = serializers.CharField(label=_("Email"))
@@ -61,7 +62,7 @@ class EmailAuthTokenSerializer(serializers.Serializer):
 
         if email and password:
             user = rest_authenticate(request=self.context.get('request'),
-                                email=email, password=password)
+                                     email=email, password=password)
 
             # The authenticate call simply returns None for is_active=False
             # users. (Assuming the default ModelBackend authentication
@@ -75,13 +76,3 @@ class EmailAuthTokenSerializer(serializers.Serializer):
 
         attrs['user'] = user
         return attrs
-
-
-
-User = get_user_model()
-
-
-
-
-
-
