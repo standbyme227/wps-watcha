@@ -145,6 +145,8 @@ INSTALLED_APPS = [
     'movie',
 
     'raven.contrib.django.raven_compat',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 

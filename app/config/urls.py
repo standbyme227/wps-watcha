@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from config import settings
 from . import views
@@ -23,6 +23,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
+    path('api/members/', include('members.urls.apis'))
 ]
 # '/media/'로 시작하는 요청은 settings.MEDIA_ROOT폴더(ROOT_DIR/.media)에서 파일을 찾아 리턴
 urlpatterns += static(
