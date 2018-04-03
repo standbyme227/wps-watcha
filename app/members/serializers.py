@@ -14,6 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 
+
+
 class AccessTokenSerializer(serializers.Serializer):
     access_token = serializers.CharField()
 

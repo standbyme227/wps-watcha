@@ -1,13 +1,21 @@
 from django.contrib.auth import get_user_model
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 
 from .serializers import AccessTokenSerializer, UserSerializer
 
 
 User = get_user_model()
+
+__all__ = (
+    'AuthTokenForFacebookAccessTokenView',
+    'UserList',
+    'UserDetail',
+    'Logout',
+)
 
 
 class AuthTokenForFacebookAccessTokenView(APIView):
@@ -36,3 +44,20 @@ class UserList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+class UserDetail(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request):
+        # user = self.request.user
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
+
+
+class Logout(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, format=None):
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_200_OK)
