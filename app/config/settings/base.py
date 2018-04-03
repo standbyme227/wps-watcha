@@ -51,6 +51,15 @@ AWS_STORAGE_BUCKET_NAME = secrets['AWS_STORAGE_BUCKET_NAME']
 
 #FACEBOOK 설정 지정
 
+FACEBOOK_APP_ID = secrets['FACEBOOK_APP_ID']
+FACEBOOK_SECRET_CODE = secrets['FACEBOOK_SECRET_CODE']
+# 일단 melon archive의 아이디와 secret으로 지정하자.
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'members.backends.APIFacebookBackend',
+]
+
 
 def set_config(obj, module_name=None, start=False):
     '''
@@ -145,6 +154,8 @@ INSTALLED_APPS = [
     'movie',
 
     'raven.contrib.django.raven_compat',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 
