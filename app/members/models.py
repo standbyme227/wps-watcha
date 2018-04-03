@@ -17,6 +17,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
     def create_superuser(self, email, nickname, password):
         user = self.create_user(
             email=email,
@@ -28,7 +29,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-      
+
 class User(AbstractUser):
     movies = models.ManyToManyField(Movie, verbose_name='영화 목록', blank=True)
     email = models.EmailField(
@@ -57,4 +58,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
-
