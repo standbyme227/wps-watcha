@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.utils.translation import gettext_lazy as _
 from movie.models import Movie
 
 
@@ -19,9 +20,23 @@ class UserManager(BaseUserManager):
 
 class User(AbstractUser):
     movies = models.ManyToManyField(Movie, verbose_name='영화 목록', blank=True)
-    email = models.EmailField(verbose_name='email', max_length=255, unique=True)
+    email = models.EmailField(
+        verbose_name='email',
+        max_length=255,
+        unique=True,
+        help_text=_('Required. 255 characters or fewer.'),
+        error_messages={
+            'unique': _("A user with that email already exists."),
+        },
+    )
     nickname = models.CharField(verbose_name='nickname', max_length=20, blank=False, unique=True, default='')
     img_profile = models.ImageField(upload_to='user', blank=True)
+
+    username = models.CharField(
+        _('username'),
+        max_length=150,
+        unique=False,
+    )
 
     objects = UserManager()
 
