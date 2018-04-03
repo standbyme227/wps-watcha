@@ -19,6 +19,7 @@ class APIFacebookBackend:
                 'picture.width(2500)',
                 'first_name',
                 'last_name',
+                'email',
             ])
         }
         response = requests.get('https://graph.facebook.com/v2.12/me', params)
