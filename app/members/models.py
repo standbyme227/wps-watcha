@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import AbstractUser
 from movie.models import Movie
-
 
 class UserManager(BaseUserManager):
     def create_user(self, email, nickname, password=None):
@@ -17,8 +17,11 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
+      
 class User(AbstractUser):
+    img_profile = models.ImageField('프로필 사진', upload_to='user', blank=True)
+    nickname = models.CharField('별명', max_length=100, blank=True)
+
     movies = models.ManyToManyField(Movie, verbose_name='영화 목록', blank=True)
     email = models.EmailField(
         verbose_name='email',
