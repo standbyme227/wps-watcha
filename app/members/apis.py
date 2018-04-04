@@ -77,7 +77,6 @@ class UserDetail(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
 
-
 # class UserList(APIView):
 #     def get(self, request, format=None):
 #         users = User.objects.all()
