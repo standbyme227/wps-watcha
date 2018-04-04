@@ -21,7 +21,7 @@ class AccessTokenSerializer(serializers.Serializer):
             # 이 안에 처리되는 부분을 backends.py 로 빼서 authenticate 안쪽으로 포함시켰다.
             user = authenticate(access_token=access_token)
             if not user:
-                raise serializers.ValidationError('액세스 토큰 올바르지 않습니다.')
+                raise serializers.ValidationError('액세스 토큰이 올바르지 않습니다.')
         else:
             raise serializers.ValidationError('액세스 토큰이 필요합니다.')
 

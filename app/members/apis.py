@@ -3,6 +3,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .permissions import IsOwnerOrReadOnly
 from .serializers import AccessTokenSerializer, UserSerializer, EmailAuthTokenSerializer
 
 User = get_user_model()
@@ -70,12 +71,15 @@ class UserList(generics.ListAPIView):
     serializer_class = UserSerializer
 
 
-class UserDetail(generics.RetrieveAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
-
+class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly,
+    )
+g
 
 # class UserList(APIView):
 #     def get(self, request, format=None):
