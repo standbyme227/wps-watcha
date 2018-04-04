@@ -48,7 +48,7 @@ class Logout(APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, format=None):
-        request.user.auth_token.delete()
+        request.user.token.delete()
         return Response(status=status.HTTP_200_OK)
 
 
@@ -79,6 +79,8 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly,
     )
+
+
 
 
 # class UserList(APIView):

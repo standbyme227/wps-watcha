@@ -46,8 +46,8 @@ class User(AbstractUser):
     username = models.CharField(
         _('username'),
         max_length=150,
-        unique=False,
-        default='',
+        unique=True,
+        null=True,
     )
 
     objects = UserManager()
