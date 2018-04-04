@@ -7,6 +7,7 @@ from ..apis import (
     AuthTokenForFacebookAccessTokenView,
     AuthTokenForEmailView,
     LogoutView,
+    UserImageUpdateView,
 )
 
 app_name = 'members'
@@ -18,4 +19,5 @@ urlpatterns = [
     path('facebook-auth-token/', AuthTokenForFacebookAccessTokenView.as_view(), name='facebook-login'),
     path('email-auth-token/', AuthTokenForEmailView.as_view(), name='email-login'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('img-profile/<int:pk>/', UserImageUpdateView.as_view(), name='user-img-profile'),
 ]
