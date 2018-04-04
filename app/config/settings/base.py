@@ -13,9 +13,9 @@ import importlib
 import json
 import numbers
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROOT_DIR = os.path.dirname(BASE_DIR)
@@ -33,7 +33,7 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(ROOT_DIR, '.media')
 
-#SECRET 설정 지정
+# SECRET 설정 지정
 SECRETS_DIR = os.path.join(ROOT_DIR, '.secrets')
 SECRETS_BASE = os.path.join(SECRETS_DIR, 'base.json')
 SECRETS_LOCAL = os.path.join(SECRETS_DIR, 'local.json')
@@ -43,14 +43,12 @@ SECRETS_PRODUCTION = os.path.join(SECRETS_DIR, 'production.json')
 secrets = json.loads(open(SECRETS_BASE, 'rt').read())
 
 
-#AWS 설정 지정
-
+# AWS 설정 지정
 AWS_ACCESS_KEY_ID = secrets['AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = secrets['AWS_SECRET_ACCESS_KEY']
 AWS_STORAGE_BUCKET_NAME = secrets['AWS_STORAGE_BUCKET_NAME']
 
-#FACEBOOK 설정 지정
-
+# FACEBOOK 설정 지정
 FACEBOOK_APP_ID = secrets['FACEBOOK_APP_ID']
 FACEBOOK_SECRET_CODE = secrets['FACEBOOK_SECRET_CODE']
 # 일단 melon archive의 아이디와 secret으로 지정하자.
@@ -159,12 +157,8 @@ INSTALLED_APPS = [
 ]
 
 
-
 # corsheader middleware 추가안함
 # cors whitelist 지정안함
-# raven 설치 및 추가 안함
-
-
 
 
 MIDDLEWARE = [
@@ -231,11 +225,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
-
-
-
+# sentry.io:  raven logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
