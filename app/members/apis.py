@@ -79,7 +79,7 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly,
     )
-g
+
 
 # class UserList(APIView):
 #     def get(self, request, format=None):
