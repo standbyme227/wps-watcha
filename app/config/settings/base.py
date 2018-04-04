@@ -53,6 +53,10 @@ FACEBOOK_APP_ID = secrets['FACEBOOK_APP_ID']
 FACEBOOK_SECRET_CODE = secrets['FACEBOOK_SECRET_CODE']
 # 일단 melon archive의 아이디와 secret으로 지정하자.
 
+SUPERUSER_EMAIL = secrets['SUPERUSER_EMAIL']
+SUPERUSER_NICKNAME = secrets['SUPERUSER_NICKNAME']
+SUPERUSER_PASSWORD = secrets['SUPERUSER_PASSWORD']
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
