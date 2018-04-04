@@ -1,6 +1,5 @@
 import magic
 from io import BytesIO
-from django.core.files import File
 from pip._vendor import requests
 
 def download(url):
