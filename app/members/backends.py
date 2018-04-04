@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.files import File
 from rest_framework import status
 
-from config import settings
+from ..config import settings
 from utils.file import download, get_buffer_ext
 
 User = get_user_model()
