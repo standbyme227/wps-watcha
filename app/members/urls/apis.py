@@ -1,22 +1,21 @@
 from django.urls import path
 
-# from .. import apis
 from ..apis import (
-    AuthTokenForFacebookAccessTokenView,
-    Logout,
-    AuthTokenForEmailView,
-    UserList,
-    UserDetail,
+    UserListView,
+    UserDetailView,
     SignupView,
+    AuthTokenForFacebookAccessTokenView,
+    AuthTokenForEmailView,
+    LogoutView,
 )
 
 app_name = 'members'
 
 urlpatterns = [
+    path('', UserListView.as_view(), name='user-list'),
+    path('<int:pk>/', UserDetailView.as_view(), name='user-detail'),
+    path('signup/', SignupView.as_view(), name='signup'),
     path('facebook-auth-token/', AuthTokenForFacebookAccessTokenView.as_view(), name='facebook-login'),
-    path('logout/', Logout.as_view(), name='logout'),
-    path('', UserList.as_view()),
-    path('<int:pk>/', UserDetail.as_view()),
-    path('email-auth-token/', AuthTokenForEmailView.as_view()),
-    path('signup/', SignupView.as_view()),
+    path('email-auth-token/', AuthTokenForEmailView.as_view(), name='email-login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
