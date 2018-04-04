@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -8,29 +7,21 @@ from rest_framework.test import APITestCase
 User = get_user_model()
 
 
-class EmailAccountsTest(APITestCase):
-    # def setup(self):
-    #     self.test_user = User.objects.create_user('20djshin@naver.com', '네이버계정', 'testpassword')
-
-    def test_create_user(self):
-        url = reverse('members:signup')
-        data = {
-            'email': 'iutv@test.com',
-            'nickname': 'iuiu',
-            'password': 'iu123456789'
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(User.objects.get().email, 'iutv@test.com')
+class EmailLoginTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.test_user = User.objects.create_user(
+            'twice@naver.com',
+            '트와이스',
+            'pw123456789',
+        )
 
     def test_login_user(self):
         url = reverse('members:email-login')
         data = {
-            'email': 'iutv@test.com',
-            'password': 'iu123456789'
+            'email': 'twice@naver.com',
+            'password': 'pw123456789'
         }
-        self.test_create_user()
         response = self.client.post(url, data, format='json')
         print(response.data)
         print(response.data['token'])
