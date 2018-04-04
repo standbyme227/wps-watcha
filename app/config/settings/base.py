@@ -53,6 +53,12 @@ FACEBOOK_APP_ID = secrets['FACEBOOK_APP_ID']
 FACEBOOK_SECRET_CODE = secrets['FACEBOOK_SECRET_CODE']
 # 일단 melon archive의 아이디와 secret으로 지정하자.
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'members.backends.APIFacebookBackend',
