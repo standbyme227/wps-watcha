@@ -1,6 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions
-from ..permissions import IsOwnerOrReadOnly
+from rest_framework.response import Response
+
+from ..permissions import IsAdminOrIsSelf
 from ..serializers import UserSerializer
 
 User = get_user_model()
@@ -15,6 +17,12 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
 
     permission_classes = (
-        permissions.IsAuthenticatedOrReadOnly,
-        IsOwnerOrReadOnly,
+        IsAdminOrIsSelf,
     )
+
+    def update(self, request, *args, **kwargs):
+        user_profile = self.get_object()
+        serializer = self.get_serializer(user_profile, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
