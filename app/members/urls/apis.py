@@ -4,7 +4,7 @@ from django.urls import path
 from ..apis import (
     AuthTokenForFacebookAccessTokenView,
     Logout,
-    AuthTokenView,
+    AuthTokenForEmailView,
     UserList,
     UserDetail,
     SignupView,
@@ -17,6 +17,6 @@ urlpatterns = [
     path('logout/', Logout.as_view(), name='logout'),
     path('', UserList.as_view()),
     path('<int:pk>/', UserDetail.as_view()),
-    path('auth-token/', AuthTokenView.as_view()),
+    path('auth-token/', AuthTokenForEmailView.as_view()),
     path('signup/', SignupView.as_view()),
 ]
