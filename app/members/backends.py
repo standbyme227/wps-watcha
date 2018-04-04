@@ -27,8 +27,15 @@ class APIFacebookBackend:
             # 응답상태 코드 200 이라면
             response_dict = response.json()
             facebook_id = response_dict['id']
-            user, _ = User.objects.get_or_create(username=facebook_id)
+            url_picture = response_dict['picture']['data']['url']
+            user, _ = User.objects.get_or_create(username=facebook_id, img_profile=url_picture)
+
             return user
+            # if not user.img_profile:
+            #     temp_file = download(url_picture)
+            #     ext = get_buffer_ext(temp_file)
+            #     user.img_profile.save(f'{user.pk}.{ext}', File(temp_file))
+            # return user
 
 
     def get_user(self, user_id):

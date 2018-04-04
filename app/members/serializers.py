@@ -35,6 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = (
             'pk',
             'email',
+            'username',
             'nickname',
             'img_profile',
             'first_name',
@@ -45,6 +46,7 @@ class UserSerializer(serializers.ModelSerializer):
             'last_login',
             'date_joined',
         )
+
 
 
 class EmailAuthTokenSerializer(serializers.Serializer):

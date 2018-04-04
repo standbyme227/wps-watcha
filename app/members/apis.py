@@ -13,12 +13,12 @@ __all__ = (
     'UserList',
     'UserDetail',
     'Logout',
-    'AuthTokenView',
+    'AuthTokenForEmailView',
     'SignupView',
 )
 
 
-class AuthTokenView(APIView):
+class AuthTokenForEmailView(APIView):
     def post(self, request):
         serializer = EmailAuthTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -67,7 +67,7 @@ class SignupView(APIView):
 
 
 class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
+    queryset = User.objects.filter(is_active=True, is_staff=False, is_superuser=False)
     serializer_class = UserSerializer
 
 
@@ -79,6 +79,8 @@ class UserDetail(generics.RetrieveUpdateDestroyAPIView):
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly,
     )
+
+
 
 
 # class UserList(APIView):
