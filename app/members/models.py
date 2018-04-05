@@ -5,7 +5,7 @@ from movie.models import Movie
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, nickname, password=None):
+    def create_user(self, email, nickname, password):
         if not email:
             raise ValueError('Users must have an email address')
 
@@ -40,7 +40,7 @@ class User(AbstractUser):
             'unique': _("A user with that email already exists."),
         },
     )
-    nickname = models.CharField(verbose_name='nickname', max_length=20, blank=False, unique=True, default='')
+    nickname = models.CharField(verbose_name='nickname', max_length=20, blank=False, null=False, unique=True)
     img_profile = models.ImageField(upload_to='user', blank=True)
 
     username = models.CharField(
