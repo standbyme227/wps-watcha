@@ -30,7 +30,14 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserEmailSerializer(serializers.ModelSerializer):
+
     class Meta:
+        password = serializers.CharField(
+            label="Password",
+            style={'input_type': 'password'},
+            trim_whitespace=False
+        )
+
         model = User
         fields = (
             'email',
