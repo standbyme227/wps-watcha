@@ -3,7 +3,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
 from ..permissions import IsAdminOrIsSelf
-from ..serializers import UserEmailSerializer
+from ..serializers import UserSerializer
 
 User = get_user_model()
 
@@ -14,7 +14,7 @@ __all__ = (
 
 class UserEmailUpdateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
-    serializer_class = UserEmailSerializer
+    serializer_class = UserSerializer
     permission_classes = (
         IsAdminOrIsSelf,
     )

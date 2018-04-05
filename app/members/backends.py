@@ -44,13 +44,3 @@ class APIFacebookBackend:
         except User.DoesNotExist:
             return None
 
-
-class EmailUpdateBackend:
-    def authenticate(self, request, password=None):
-        try:
-            token = request.user.auth_token
-            user, _ = User.objects.get(token=token)
-            if user.check_password(password):
-                return user
-        except user.DoesNotExist:
-            pass
