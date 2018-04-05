@@ -15,6 +15,8 @@ class SignupView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
+            if not serializer.initial_data['password']:
+                return Response('비밀번호를 입력하지 않아 ', status=status.HTTP_400_BAD_REQUEST)
             User.objects.create_user(
                 email=serializer.initial_data['email'],
                 nickname=serializer.initial_data['nickname'],
