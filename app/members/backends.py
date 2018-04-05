@@ -4,10 +4,10 @@ from django.contrib.auth import get_user_model
 from django.core.files import File
 from rest_framework import status
 
-
 from utils.file import download, get_buffer_ext
 
 User = get_user_model()
+
 
 class APIFacebookBackend:
     CLIENT_ID = settings.FACEBOOK_APP_ID
@@ -38,9 +38,9 @@ class APIFacebookBackend:
                 user.img_profile.save(f'{user.pk}.{ext}', File(temp_file))
             return user
 
-
     def get_user(self, user_id):
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:
             return None
+
