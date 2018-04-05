@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
 from ..permissions import IsAdminOrIsSelf
@@ -26,3 +26,4 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+
