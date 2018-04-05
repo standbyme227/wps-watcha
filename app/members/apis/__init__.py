@@ -1,7 +1,8 @@
 from .list import UserListView
 from .detail import UserDetailView
-from .singup import SignupView
+from .signup import SignupView
 from .login import AuthTokenForFacebookAccessTokenView, AuthTokenForEmailView
 from .logout import LogoutView
 from .img_profile import UserImageUpdateView
+from .email_update import UserEmailUpdateView
 

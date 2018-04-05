@@ -8,6 +8,7 @@ from ..apis import (
     AuthTokenForEmailView,
     LogoutView,
     UserImageUpdateView,
+    UserEmailUpdateView,
 )
 
 app_name = 'members'
@@ -20,4 +21,5 @@ urlpatterns = [
     path('email-auth-token/', AuthTokenForEmailView.as_view(), name='email-login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('<int:pk>/img-profile/', UserImageUpdateView.as_view(), name='user-img-profile'),
+    path('<int:pk>/email/', UserEmailUpdateView.as_view(), name='email-update'),
 ]
