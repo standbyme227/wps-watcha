@@ -25,12 +25,11 @@ class EmailAuthTokenSerializer(serializers.Serializer):
         if email and password:
             user = rest_authenticate(request=self.context.get('request'),
                                      email=email, password=password)
-
-            # The authenticate call simply returns None for is_active=False
-            # users. (Assuming the default ModelBackend authentication
-            # backend.)
+            # The authenticate call simply returns None for is_active=False users.
+            # (Assuming the default ModelBackend authentication backend.)
             if not user:
-                msg = _('Unable to log in with provided credentials.')
+                # msg = 'This user is a member that does not exist or has left.'
+                msg = 'Invalid information. Please verify your email address and password.'
                 raise serializers.ValidationError(msg, code='authorization')
         else:
             msg = _('Must include "email" and "password".')
