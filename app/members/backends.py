@@ -44,3 +44,17 @@ class APIFacebookBackend:
         except User.DoesNotExist:
             return None
 
+# class EmailBackend:
+#     def authenticate(self, request, password):
+#         confirm_password = user.password
+#         mypassword = password
+#         if mypassword == confirm_password:
+#             raise ValidationError('비밀번호가 일치하지 않습니다.')
+#         return password
+
+
+# def get_user(self, user_id):
+#     try:
+#         return User.objects.get(pk=user_id)
+#     except User.DoesNotExist:
+#         return None
