@@ -5,6 +5,8 @@ User = get_user_model()
 
 __all__ = (
     'UserSerializer',
+    'UserDetailSerializer',
+    'UserEmailSerializer',
 )
 
 
@@ -19,14 +21,8 @@ class UserSerializer(serializers.ModelSerializer):
             'img_profile',
             'first_name',
             'last_name',
-            'is_active',
-            'is_staff',
-            'is_superuser',
-            'last_login',
-            'date_joined',
         )
-        read_only_fields = ('pk', 'username', 'is_active', 'is_staff', 'is_superuser',
-                            'last_login', 'date_joined',)
+        read_only_fields = ('pk', 'username',)
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -40,11 +36,16 @@ class UserDetailSerializer(serializers.ModelSerializer):
             'img_profile',
             'first_name',
             'last_name',
-            'is_active',
-            'is_staff',
-            'is_superuser',
-            'last_login',
-            'date_joined',
         )
-        read_only_fields = ('pk', 'username', 'is_active', 'is_staff', 'is_superuser',
-                            'last_login', 'date_joined', 'email')
+        read_only_fields = ('pk', 'username', 'email',)
+
+
+class UserEmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'pk',
+            'email',
+            'username',
+        )
+        read_only_fields = ('pk', 'username',)

@@ -158,14 +158,17 @@ INSTALLED_APPS = [
     'raven.contrib.django.raven_compat',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
 ]
 
 
-# corsheader middleware 추가안함
-# cors whitelist 지정안함
 
+
+# corsheader middleware 추가
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -174,6 +177,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+# cors whitelist 지정
+
+CORS_ORIGIN_WHITELIST = (
+    'localhost:4200',
+)
+
 
 ROOT_URLCONF = 'config.urls'
 
