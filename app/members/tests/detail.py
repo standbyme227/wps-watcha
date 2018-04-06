@@ -39,6 +39,8 @@ class GetUserDetailsTest(APITestCase):
         url = reverse('members:user-detail', kwargs={'pk': test_user_pk})
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['email'], User.objects.get(pk=test_user_pk).email)
+        self.assertEqual(response.data['nickname'], User.objects.get(pk=test_user_pk).nickname)
 
     def test_get_user_details_with_different_pk(self):
         pk_list = self.get_user_pk_list()
@@ -50,7 +52,7 @@ class GetUserDetailsTest(APITestCase):
         url = reverse('members:user-detail', kwargs={'pk': different_pk})
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertEqual(len(response.data), 1)
+        # self.assertEqual(len(response.data), 1)
 
     def test_get_user_details_with_does_not_pk(self):
         test_user_pk = self.get_test_user_pk()
@@ -68,11 +70,7 @@ class GetUserDetailsTest(APITestCase):
         test_user_pk = self.get_test_user_pk()
         temp_token = 'c60101d80b61cfd0a7f90b203475dbd08ed504fd'
         invalid_token = ''.join(random.sample(temp_token, len(temp_token)))
-        print(f'invalid_token: {invalid_token}')
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + invalid_token)
         url = reverse('members:user-detail', kwargs={'pk': test_user_pk})
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        print(response)
-        print(response.data)
-
