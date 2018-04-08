@@ -51,6 +51,7 @@ AWS_STORAGE_BUCKET_NAME = secrets['AWS_STORAGE_BUCKET_NAME']
 # FACEBOOK 설정 지정
 FACEBOOK_APP_ID = secrets['FACEBOOK_APP_ID']
 FACEBOOK_SECRET_CODE = secrets['FACEBOOK_SECRET_CODE']
+FACEBOOK_HOST = "https://graph.facebook.com"
 # 일단 melon archive의 아이디와 secret으로 지정하자.
 
 REST_FRAMEWORK = {
