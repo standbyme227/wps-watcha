@@ -1,4 +1,4 @@
-"""app URL Configuration
+"""mysite URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.0/topics/http/urls/
@@ -13,19 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.urls import path, include
-from config import settings
-from . import views
 
+from django.urls import path, include
+
+
+app_name = 'apis'
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
-    path('api/members/', include('members.urls.apis')),
+    path('members/', include('members.urls.apis')),
+    path('movie/', include('movie.urls.apis'))
 ]
-# '/media/'로 시작하는 요청은 settings.MEDIA_ROOT폴더(ROOT_DIR/.media)에서 파일을 찾아 리턴
-# urlpatterns += static(
-#     settings.MEDIA_URL,
-#     document_root=settings.MEDIA_ROOT,
-# )
+
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

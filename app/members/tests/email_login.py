@@ -24,14 +24,11 @@ class EmailLoginTest(APITestCase):
             'password': 'pw123456789'
         }
         response = self.client.post(self.URL, data, format='json')
-        # print(response.data)
-        # print(response.data['token'])
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['user']['email'], data['email'])
 
         # 생성된 토큰 값 비교
-        # print(Token.objects.all())
         self.assertEqual(Token.objects.count(), 1)
         created_token = Token.objects.get(user_id=response.data['user']['pk'])
         self.assertEqual(created_token.key, response.data['token'])
