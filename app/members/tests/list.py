@@ -12,7 +12,7 @@ User = get_user_model()
 
 
 class GetUserListTest(APITestCase):
-    URL = reverse('members:user-list')
+    URL = reverse('apis:members:user-list')
     TEST_USER_CNT = 25
 
     @classmethod
@@ -46,7 +46,7 @@ class GetUserListTest(APITestCase):
         else:
             self.assertIsNone(response.data['next'])
 
-    def get_check_user(self, url=reverse('members:user-list'), pk=1):
+    def get_check_user(self, url=reverse('apis:members:user-list'), pk=1):
         response = self.client.get(url, format='json')
 
         page_pk_list = []

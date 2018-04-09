@@ -9,7 +9,7 @@ from .exceptions import FacebookResponseError, FacebookNotFoundError
 
 
 class FacebookLoginTest(APITestCase):
-    URL = reverse('members:facebook-login')
+    URL = reverse('apis:members:facebook-login')
 
     # 1. access_code를 받아와야함
     # 2. 그 access_code안의 data를 이용해서
@@ -58,9 +58,7 @@ class FacebookLoginTest(APITestCase):
 
     def get_short_term_access_token_from_facebook(self):
         app_access_token = self.get_app_access_token_from_facebook()
-        """
-        Calls API to get user's short-term access token from list of test users.
-        """
+
         url = self.host + "/%s/accounts/test-users" % self.app_id
         params = {'access_token': app_access_token}
         response = requests.get(url, params=params)

@@ -8,7 +8,7 @@ User = get_user_model()
 
 
 class EmailLoginTest(APITestCase):
-    URL = reverse('members:email-login')
+    URL = reverse('apis:members:email-login')
 
     @classmethod
     def setUpTestData(cls):

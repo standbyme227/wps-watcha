@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from bs4 import BeautifulSoup
 from django.db import models
@@ -9,86 +10,87 @@ __all__ = (
 
 
 class MovieManager(models.Manager):
-    def update_or_create_from_melon(self, movie_id):
 
-        from .movie import Movie
+    def update_or_create_from_naver(self, movie_id):
+        url = f'http://movie.naver.com/movie/bi/mi/basic.nhn'  # ?code=153651
 
-        url = f'https://www.melon.com/artist/detail.htm'
         params = {
-            'artistId': movie_id,
+            'code': movie_id
         }
         response = requests.get(url, params)
+        source = response.text
+        soup = BeautifulSoup(source, 'lxml')
 
-        soup = BeautifulSoup(response.text, 'lxml')
+        info_area = soup.find('div', class_='mv_info')
 
-        div_artist_info = soup.find('div', class_='wrap_atist_info')
-        div_wrap_thumb = soup.find('div', class_='wrap_thumb')
+        result = []
+        title = info_area.find('h3', class_='h_movie').find('a').text
+        raw_title_detail_text = info_area.find('strong', class_='h_movie2').text
+        title_detail_text = re.sub(r'\s', '', raw_title_detail_text)
 
-        dl = div_artist_info.find('dl', class_='atist_info clfix')
-        items = [item.get_text(strip=True) for item in dl.contents if not isinstance(item, str)]
-        it = iter(items)
-        description_dict = dict(zip(it, it))
+        # audience_score = info_area.find('span', class_='st_on').text
+        # critic_score = info_area.find('a', class_='spc').find('span', class_='st_off').text
+        # netizen = info_area.find('div', class_='score').find('a', class_='ntz_score').find('span', class_='st_on').text
 
-        section = soup.find('div', class_='section_atistinfo04')
-        dl2 = section.find('dl', class_='list_define clfix')
-        items = [item.get_text(strip=True) for item in dl2.contents if not isinstance(item, str)]
-        it2 = iter(items)
-        description_dict2 = dict(zip(it2, it2))
+        info_spec_area_1 = info_area.find('p', class_='info_spec')
+        genre_text = info_spec_area_1.select_one("a:nth-of-type(1)").text
+        # info_spec_area_a = info_spec_area_1.find_all('a')
+        nation = info_spec_area_1.select_one("a:nth-of-type(2)").text
 
-        name = div_artist_info.find('p', class_='title_atist').strong.next_sibling.strip()
+        d_day_year = info_spec_area_1.select_one("a:nth-of-type(3)").text
+        d_day_date = info_spec_area_1.select_one("a:nth-of-type(4)").text
+        d_day = d_day_year + d_day_date
 
-        url_img_cover = div_wrap_thumb.find('span', id='artistImgArea').find('img').get('src')
-        # url_img_cover_pattern = re.compile(r'(.*?.jpg)/melon.*?', re.DOTALL)
-        # url_img_cover = re.search(url_img_cover_pattern, url_img_cover_link).group(1)
+        film_rate = info_spec_area_1.select_one("a:nth-of-type(5)").text
+        running_time = info_spec_area_1.select_one("span:nth-of-type(3)").get_text(strip=True)
+        # int로 바꾼다.
 
-        real_name = description_dict2.get('본명')
-        nationality = description_dict2.get('국적')
-        birth_date_str = description_dict2.get('생일')
-        constellation = description_dict2.get('별자리')
-        blood_type = description_dict2.get('혈액형')
+        audience = info_spec_area_1.find_all("span")[-1].get_text()
 
-        # for short, full in Artist.CHOICES_BLOOD_TYPE:
-        #     if blood_type == None:
-        #         blood_type = Artist.BLOOD_TYPE_OTHER
-        #
-        #     elif blood_type.strip() == full:
-        #         blood_type = short
-        #         break
-        #     else:
-        #         blood_type = Artist.BLOOD_TYPE_OTHER
+        info_spec_area_2 = info_area.find('div', class_='info_spec2')
+        director = info_spec_area_2.select_one('a:nth-of-type(1)').text
 
-        for short, full in Artist.CHOICES_BLOOD_TYPE:
-            if blood_type == None:
-                blood_type = Artist.BLOOD_TYPE_OTHER
-            elif blood_type.strip() == full:
-                blood_type = short
-                break
-        else:
-            blood_type = Artist.BLOOD_TYPE_OTHER
+        people = info_spec_area_2.find_all('a', class_=None)
 
-        artist, artist_created = self.update_or_create(
-            melon_id=artist_id,
-            defaults={
-                'name': name,
-                'real_name': real_name if real_name else '',
-                'nationality': nationality,
-                'birth_date': datetime.strptime(
-                    birth_date_str, '%Y.%m.%d') if birth_date_str else None,
-                'constellation': constellation,
-                'blood_type': blood_type,
-            }
-        )
+        people_list = []
+        for name_data in people:
+            name = name_data.text
+            people_list.append(name)
 
-        temp_file = download(url_img_cover)
-        file_name = '{artist_id}.{ext}'.format(
-            artist_id=artist_id,
-            ext=get_buffer_ext(temp_file),
-        )
+        director = people_list[0]
+        actor = people_list[1:]
 
-        # if artist.image:
-        #     artist.image.delete()
-        # 아티스트 이미지가 있다면 지운다.
-        if not artist.image:
-            artist.image.save(file_name, File(temp_file))
-        # 아티스트 이미지가 없다면 만든다.
-        return artist, artist_created
+        # movie, movie_created = self.update_or_create(
+        #     movie_id=movie_id,
+        #     defaults={
+        #         'title' :
+        #     }
+        # )
+
+
+    # artist, artist_created = self.update_or_create(
+    #     melon_id=artist_id,
+    #     defaults={
+    #         'name': name,
+    #         'real_name': real_name if real_name else '',
+    #         'nationality': nationality,
+    #         'birth_date': datetime.strptime(
+    #             birth_date_str, '%Y.%m.%d') if birth_date_str else None,
+    #         'constellation': constellation,
+    #         'blood_type': blood_type,
+    #     }
+    # )
+    #
+    # temp_file = download(url_img_cover)
+    # file_name = '{artist_id}.{ext}'.format(
+    #     artist_id=artist_id,
+    #     ext=get_buffer_ext(temp_file),
+    # )
+    #
+    # # if artist.image:
+    # #     artist.image.delete()
+    # # 아티스트 이미지가 있다면 지운다.
+    # if not artist.image:
+    #     artist.image.save(file_name, File(temp_file))
+    # # 아티스트 이미지가 없다면 만든다.
+    # return artist, artist_created
