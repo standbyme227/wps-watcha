@@ -4,9 +4,7 @@ import os
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from datetime import datetime
-
 from django.core.files import File
-
 from movie.models import Movie
 from utils.file import *
 
@@ -15,12 +13,6 @@ PATH_MODULE = os.path.abspath(__name__)  # __name__ 모듈이라는 파일이 �
 ROOT_DIR = os.path.dirname(PATH_MODULE)
 PATH_DATA_DIR = os.path.join(ROOT_DIR, 'data')
 os.makedirs(PATH_DATA_DIR, exist_ok=True)
-
-# options = webdriver.ChromeOptions()
-# options.add_argument('headless')
-# options.add_argument('window-size=1920x1080')
-# options.add_argument("disable-gpu")
-# options.add_argument("user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36")
 
 
 
@@ -115,10 +107,10 @@ def update_or_create_from_crawler(request):
             else:
                 audience = 0
 
-            rank_share = ''
+            # rate_rank =
 
             info_spec_area_2 = info_area.find('div', class_='info_spec2')
-            director = info_spec_area_2.select_one('a:nth-of-type(1)').text
+            # director = info_spec_area_2.select_one('a:nth-of-type(1)').text
 
             people = info_spec_area_2.find_all('a', class_=None)
 
@@ -145,6 +137,25 @@ def update_or_create_from_crawler(request):
                 story = soup.find('div', class_='story_area').find('p', class_='con_tx').text
 
             poster_url = soup.find('div', class_='poster').find('img').get('src')
+
+            if driver.find_elements_by_xpath("//*[contains(text(), '예매율')]"):
+                rate_area = info_spec_area_1.select_one('span:nth-of-type(6)').text
+                rate_rank_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+                rate_rank = re.search(rate_rank_pattern, rate_area).group(1)
+
+                driver.find_element_by_xpath('//*[@id="content"]/div[1]/div[2]/div[1]/dl/dd[5]/div/p[1]/a').click()
+                html = driver.page_source
+                soup = BeautifulSoup(html, 'lxml')
+                num_list = []
+                for num_data in soup.select('div.b_star span.num'):
+                    num = num_data.get_text()
+                    num_list.append(num)
+                r = int(rate_rank) - 1
+                rank_share = num_list[int(f'{r}')]
+                driver.back()
+
+            else:
+                rank_share = ''
 
             for short, full in Movie.CHOICES_NATION_CODE:
                 if nation == None:
@@ -179,5 +190,6 @@ def update_or_create_from_crawler(request):
             if not movie.poster_image:
                 movie.poster_image.save(file_name, File(temp_file))
             driver.get('https://movie.naver.com/movie/running/current.nhn?order=point')
+
 
 
