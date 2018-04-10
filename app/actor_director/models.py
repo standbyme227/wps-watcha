@@ -1,0 +1,16 @@
+from django.db import models
+
+__all__ = (
+    'Member',
+)
+
+
+class Member(models.Model):
+    name = models.CharField('이름', max_length=50)
+    real_name = models.CharField('본명', max_length=50, null=True, blank=True)
+    img_profile = models.ImageField(upload_to='members', blank=True)
+    modified_date = models.DateTimeField('수정일시', auto_now=True)
+    created_date = models.DateTimeField('생성일시', auto_now_add=True)
+
+    def __str__(self):
+        return self.name

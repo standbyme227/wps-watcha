@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
-from movie.models import Movie
 
 
 class UserManager(BaseUserManager):
@@ -30,7 +29,6 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    movies = models.ManyToManyField(Movie, verbose_name='영화 목록', blank=True)
     email = models.EmailField(
         verbose_name='email',
         max_length=255,
@@ -55,5 +53,8 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['nickname']
 
+    class Meta:
+        ordering = ['-pk']
+
     def __str__(self):
-        return self.email
+        return f'{self.email}({self.nickname})'
