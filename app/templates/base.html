@@ -7,12 +7,23 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Team Project</title>
+    <link rel="stylesheet" href="{% static 'css/bases.css' %}">
+    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/artist-list.css' %}">
+    <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/song-list.css' %}">
 </head>
 <body>
 
     <div class="content-block">
         {% block content %}
         {% endblock %}
+    </div>
+
+    <div class="btn-container">
+        <form action="{% url 'movie:movie-search-from-naver' %}" method="get" class="'inline">
+            <button type="submit" class="btn">영화 검색하기</button>
+        </form>
     </div>
 
     <button id="btn-facebook" class="btn">페이스북 로그인</button>

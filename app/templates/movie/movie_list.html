@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+    <div class="movie-list-container">
+
+        <ul class="clearfix">
+            {% for movie in movies %}
+            <li class="clearfix">
+                <img src="{% if movie.poster_image %}{{ movie.poster_image.url }}{% endif %}" alt="" class="cover">
+                <div class="movie-info">
+                    <div class="title">{{ movie.title_ko }}</div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+
+    </div>
+
+{% endblock %}
