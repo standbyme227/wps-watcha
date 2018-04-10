@@ -61,7 +61,9 @@ class MovieManager(models.Manager):
         running_time = re.search(running_time_pattern, running_time_text).group(1)
 
         if info_spec_area_1.select_one('span.count'):
-            audience = info_spec_area_1.find_all("span")[-1].get_text()
+            audience_text = info_spec_area_1.find_all("span")[-1].get_text()
+            audience_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+            audience = re.search(audience_pattern, audience_text).group(1)
         else:
             audience = 0
 

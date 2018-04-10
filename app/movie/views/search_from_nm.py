@@ -44,8 +44,12 @@ def movie_search_from_naver(request):
                     nation = li.find('dd', class_='etc').find('em').find('a').text
                 else:
                     nation=None
+                dd = li.find_all('dd', class_='etc')
+                if len(dd) > 1:
+                    people_data = li.find_all('dd', class_='etc')[1]
+                    people = people_data.text
 
-                people = li.find_all('dd')[2].text
+
 
                 movie_info_list.append({
                     'title': title,
