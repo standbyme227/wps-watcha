@@ -1,6 +1,9 @@
+import re
 from datetime import datetime
 from bs4 import BeautifulSoup
+from django.core.files import File
 from django.db import models
+
 from utils.file import *
 
 __all__ = (
@@ -9,86 +12,144 @@ __all__ = (
 
 
 class MovieManager(models.Manager):
-    def update_or_create_from_melon(self, movie_id):
+
+    def update_or_create_from_naver(self, naver_movie_id):
 
         from .movie import Movie
 
-        url = f'https://www.melon.com/artist/detail.htm'
+        url = f'http://movie.naver.com/movie/bi/mi/basic.nhn'  # ?code=153651
+
         params = {
-            'artistId': movie_id,
+            'code': naver_movie_id
         }
         response = requests.get(url, params)
+        source = response.text
+        soup = BeautifulSoup(source, 'lxml')
 
-        soup = BeautifulSoup(response.text, 'lxml')
+        info_area = soup.find('div', class_='mv_info')
 
-        div_artist_info = soup.find('div', class_='wrap_atist_info')
-        div_wrap_thumb = soup.find('div', class_='wrap_thumb')
+        result = []
+        title = info_area.find('h3', class_='h_movie').find('a').text
+        raw_title_detail_text = info_area.find('strong', class_='h_movie2').text
+        title_detail_text = re.sub(r'\s', '', raw_title_detail_text)
 
-        dl = div_artist_info.find('dl', class_='atist_info clfix')
-        items = [item.get_text(strip=True) for item in dl.contents if not isinstance(item, str)]
-        it = iter(items)
-        description_dict = dict(zip(it, it))
+        # audience_score = info_area.find('span', class_='st_on').text
+        # critic_score = info_area.find('a', class_='spc').find('span', class_='st_off').text
+        # netizen = info_area.find('div', class_='score').find('a', class_='ntz_score').find('span', class_='st_on').text
 
-        section = soup.find('div', class_='section_atistinfo04')
-        dl2 = section.find('dl', class_='list_define clfix')
-        items = [item.get_text(strip=True) for item in dl2.contents if not isinstance(item, str)]
-        it2 = iter(items)
-        description_dict2 = dict(zip(it2, it2))
+        info_spec_area_1 = info_area.find('p', class_='info_spec')
 
-        name = div_artist_info.find('p', class_='title_atist').strong.next_sibling.strip()
 
-        url_img_cover = div_wrap_thumb.find('span', id='artistImgArea').find('img').get('src')
-        # url_img_cover_pattern = re.compile(r'(.*?.jpg)/melon.*?', re.DOTALL)
-        # url_img_cover = re.search(url_img_cover_pattern, url_img_cover_link).group(1)
+        genre_list = []
+        genre_text = info_spec_area_1.select("span:nth-of-type(1) a")
+        for genre_data in genre_text:
+            genre = genre_data.text
+            genre_list.append(genre)
 
-        real_name = description_dict2.get('본명')
-        nationality = description_dict2.get('국적')
-        birth_date_str = description_dict2.get('생일')
-        constellation = description_dict2.get('별자리')
-        blood_type = description_dict2.get('혈액형')
+        nation = info_spec_area_1.select_one("span:nth-of-type(2) a:nth-of-type(1)").text
 
-        # for short, full in Artist.CHOICES_BLOOD_TYPE:
-        #     if blood_type == None:
-        #         blood_type = Artist.BLOOD_TYPE_OTHER
-        #
-        #     elif blood_type.strip() == full:
-        #         blood_type = short
-        #         break
-        #     else:
-        #         blood_type = Artist.BLOOD_TYPE_OTHER
+        span = info_spec_area_1.find_all('span')
 
-        for short, full in Artist.CHOICES_BLOOD_TYPE:
-            if blood_type == None:
-                blood_type = Artist.BLOOD_TYPE_OTHER
-            elif blood_type.strip() == full:
-                blood_type = short
+        if len(span) > 3:
+            running_time_text = info_spec_area_1.select_one("span:nth-of-type(3)").get_text(strip=True)
+
+            d_day_year = info_spec_area_1.select_one("span:nth-of-type(4) a:nth-of-type(1)").text
+            d_day_date = info_spec_area_1.select_one("span:nth-of-type(4) a:nth-of-type(2)").text
+            if len(span) > 4:
+                film_rate = info_spec_area_1.select_one("span:nth-of-type(5) a").text
+            else:
+                film_rate = ''
+
+        else:
+            running_time_text = None
+            d_day_year = info_spec_area_1.select_one("span:nth-of-type(3) a:nth-of-type(1)").text
+            d_day_date = info_spec_area_1.select_one("span:nth-of-type(3) a:nth-of-type(2)").text
+            if len(span) > 3:
+                film_rate = info_spec_area_1.select_one("span:nth-of-type(4) a").text
+            else:
+                film_rate = ''
+
+
+        d_day = d_day_year + d_day_date
+        if running_time_text:
+            running_time_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+            running_time = re.search(running_time_pattern, running_time_text).group(1)
+        else:
+            running_time = None
+
+
+
+        if info_spec_area_1.select_one('span.count'):
+            audience_text = info_spec_area_1.find_all("span")[-1].get_text()
+            audience_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+            audience = re.search(audience_pattern, audience_text).group(1)
+        else:
+            audience = 0
+
+        rank_share = ''
+
+        info_spec_area_2 = info_area.find('div', class_='info_spec2')
+        director = info_spec_area_2.select_one('a:nth-of-type(1)').text
+
+        people = info_spec_area_2.find_all('a', class_=None)
+
+        people_list = []
+        for name_data in people:
+            name = name_data.text
+            people_list.append(name)
+
+        director = people_list[0]
+        actor = people_list[1:]
+
+        people_id_list = []
+        for a in info_spec_area_2.find_all('a', class_=None):
+            people_id_link = a.get('href')
+            people_id_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+            people_id = re.search(people_id_pattern, people_id_link).group(1)
+            people_id_list.append(people_id)
+
+        if soup.find('div', class_='story_area').find('p', class_='h_tx_story'):
+            story1 = soup.find('div', class_='story_area').find('p', class_='h_tx_story').text
+            story2 = soup.find('div', class_='story_area').find('p', class_='con_tx').text
+            story = story1 + story2
+        else:
+            story = soup.find('div', class_='story_area').find('p', class_='con_tx').text
+
+        poster_url = soup.find('div', class_='poster').find('img').get('src')
+
+        for short, full in Movie.CHOICES_NATION_CODE:
+            if nation == None:
+                nation = Movie.ETC
+            elif nation.strip() == full:
+                nation = short
                 break
         else:
-            blood_type = Artist.BLOOD_TYPE_OTHER
+            nation = Movie.ETC
 
-        artist, artist_created = self.update_or_create(
-            melon_id=artist_id,
+
+        movie, movie_created = self.update_or_create(
+            naver_movie_id=naver_movie_id,
             defaults={
-                'name': name,
-                'real_name': real_name if real_name else '',
-                'nationality': nationality,
-                'birth_date': datetime.strptime(
-                    birth_date_str, '%Y.%m.%d') if birth_date_str else None,
-                'constellation': constellation,
-                'blood_type': blood_type,
+                'title_ko': title,
+                'title_detail': title_detail_text,
+                'nation': nation,
+                'running_time': running_time,
+                'film_rate': film_rate,
+                'rank_share': rank_share,
+                'audience': audience,
+                'story': story,
+                'd_day': datetime.strptime(d_day, '%Y.%m.%d') if d_day else None,
             }
         )
 
-        temp_file = download(url_img_cover)
-        file_name = '{artist_id}.{ext}'.format(
-            artist_id=artist_id,
+
+
+        temp_file = download(poster_url)
+        file_name = '{movie_id}.{ext}'.format(
+            movie_id=naver_movie_id,
             ext=get_buffer_ext(temp_file),
         )
 
-        # if artist.image:
-        #     artist.image.delete()
-        # 아티스트 이미지가 있다면 지운다.
-        if not artist.image:
-            artist.image.save(file_name, File(temp_file))
-        # 아티스트 이미지가 없다면 만든다.
-        return artist, artist_created
+        if not movie.poster_image:
+            movie.poster_image.save(file_name, File(temp_file))
+        return movie, movie_created

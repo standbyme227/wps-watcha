@@ -10,7 +10,7 @@ User = get_user_model()
 
 
 class LogoutTest(APITestCase):
-    URL = reverse('members:logout')
+    URL = reverse('apis:members:logout')
     TEST_USER_CNT = 4
 
     @classmethod

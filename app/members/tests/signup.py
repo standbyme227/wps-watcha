@@ -8,7 +8,7 @@ User = get_user_model()
 
 
 class SignupTest(APITestCase):
-    URL = reverse('members:signup')
+    URL = reverse('apis:members:signup')
 
     # test용 DB data 초기화 메소드
     @classmethod
