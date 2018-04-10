@@ -153,6 +153,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'actor_director',
     'members',
     'movie',
 
@@ -161,9 +162,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
 ]
-
-
-
 
 # corsheader middleware 추가
 
