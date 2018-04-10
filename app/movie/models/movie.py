@@ -41,7 +41,7 @@ class Movie(models.Model):
 
     nation = models.CharField('국가', max_length=100, blank=True, choices=CHOICES_NATION_CODE)
 
-    running_time = models.CharField('상영시간', max_length=100, blank=True )
+    running_time = models.IntegerField('상영시간', blank=True, null=True )
     film_rate = models.CharField('상영 등급', max_length=100, blank=True)
 
     rank_share = models.CharField('예매율', max_length=100, blank=True)

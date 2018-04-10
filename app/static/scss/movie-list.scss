@@ -1,4 +1,4 @@
-.artist-list-container {
+.movie-list-container {
   ul {
     li {
       float:left;
@@ -19,11 +19,11 @@
         height: 150px;
         border:1px solid #ddd
       }
-      .artist-info {
+      .movie-info {
         float: left;
         padding: 5px 0 0 15px;
 
-        .name {
+        .title {
           font-weight: bold;
           font-size: 1.1rem;
           margin-bottom: 4px;

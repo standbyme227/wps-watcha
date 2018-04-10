@@ -1,4 +1,4 @@
-.artist-list-container ul li {
+.movie-list-container ul li {
   float: left;
   width: 50%;
   border-bottom: 1px solid #ddd;
@@ -7,24 +7,24 @@
   height: 180px;
 }
 
-.artist-list-container ul li a {
+.movie-list-container ul li a {
   display: inline-block;
   color: #333;
 }
 
-.artist-list-container ul li img.cover {
+.movie-list-container ul li img.cover {
   float: left;
   width: 150px;
   height: 150px;
   border: 1px solid #ddd;
 }
 
-.artist-list-container ul li .artist-info {
+.movie-list-container ul li .movie-info {
   float: left;
   padding: 5px 0 0 15px;
 }
 
-.artist-list-container ul li .artist-info .name {
+.movie-list-container ul li .movie-info .title {
   font-weight: bold;
   font-size: 1.1rem;
   margin-bottom: 4px;

@@ -39,26 +39,45 @@ class MovieManager(models.Manager):
 
         info_spec_area_1 = info_area.find('p', class_='info_spec')
 
+
         genre_list = []
         genre_text = info_spec_area_1.select("span:nth-of-type(1) a")
         for genre_data in genre_text:
             genre = genre_data.text
             genre_list.append(genre)
 
-        # info_spec_area_a = info_spec_area_1.find_all('a')
         nation = info_spec_area_1.select_one("span:nth-of-type(2) a:nth-of-type(1)").text
 
-        d_day_year = info_spec_area_1.select_one("span:nth-of-type(4) a:nth-of-type(1)").text
-        d_day_date = info_spec_area_1.select_one("span:nth-of-type(4) a:nth-of-type(2)").text
+        span = info_spec_area_1.find_all('span')
+
+        if len(span) > 3:
+            running_time_text = info_spec_area_1.select_one("span:nth-of-type(3)").get_text(strip=True)
+
+            d_day_year = info_spec_area_1.select_one("span:nth-of-type(4) a:nth-of-type(1)").text
+            d_day_date = info_spec_area_1.select_one("span:nth-of-type(4) a:nth-of-type(2)").text
+            if len(span) > 4:
+                film_rate = info_spec_area_1.select_one("span:nth-of-type(5) a").text
+            else:
+                film_rate = ''
+
+        else:
+            running_time_text = None
+            d_day_year = info_spec_area_1.select_one("span:nth-of-type(3) a:nth-of-type(1)").text
+            d_day_date = info_spec_area_1.select_one("span:nth-of-type(3) a:nth-of-type(2)").text
+            if len(span) > 3:
+                film_rate = info_spec_area_1.select_one("span:nth-of-type(4) a").text
+            else:
+                film_rate = ''
+
+
         d_day = d_day_year + d_day_date
+        if running_time_text:
+            running_time_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+            running_time = re.search(running_time_pattern, running_time_text).group(1)
+        else:
+            running_time = None
 
-        film_rate = info_spec_area_1.select_one("span:nth-of-type(5) a").text
-        # film_rate = None
-        rank_share = ''
 
-        running_time_text = info_spec_area_1.select_one("span:nth-of-type(3)").get_text(strip=True)
-        running_time_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
-        running_time = re.search(running_time_pattern, running_time_text).group(1)
 
         if info_spec_area_1.select_one('span.count'):
             audience_text = info_spec_area_1.find_all("span")[-1].get_text()
@@ -66,6 +85,8 @@ class MovieManager(models.Manager):
             audience = re.search(audience_pattern, audience_text).group(1)
         else:
             audience = 0
+
+        rank_share = ''
 
         info_spec_area_2 = info_area.find('div', class_='info_spec2')
         director = info_spec_area_2.select_one('a:nth-of-type(1)').text
