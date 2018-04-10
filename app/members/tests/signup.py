@@ -28,8 +28,8 @@ class SignupTest(APITestCase):
         response = self.client.post(self.URL, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 2)
-        self.assertEqual(User.objects.last().email, data['email'])
-        self.assertEqual(User.objects.last().nickname, data['nickname'])
+        self.assertEqual(User.objects.get(nickname=data['nickname']).email, data['email'])
+        self.assertEqual(User.objects.get(email=data['email']).nickname, data['nickname'])
         # 생성된 토큰 값 비교
         created_token = Token.objects.get(user_id=response.data['user']['pk'])
         self.assertEqual(created_token.key, response.data['token'])
