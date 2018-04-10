@@ -69,7 +69,7 @@ class Movie(models.Model):
     ticketing_rate = models.CharField('예매율', max_length=10, blank=True) # (구)rank_share
     audience = models.IntegerField('누적관객수', null=True, blank=True)
 
-    Poster_image = models.ImageField('포스터 이미지', upload_to='poster', blank=True)
+    poster_image = models.ImageField('포스터 이미지', upload_to='poster', blank=True)
     still_cut = models.ManyToManyField(
         StillCut,
         blank=True

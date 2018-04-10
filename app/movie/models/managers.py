@@ -86,7 +86,7 @@ class MovieManager(models.Manager):
         else:
             audience = 0
 
-        rank_share = ''
+        ticketing_rate = ''
 
         info_spec_area_2 = info_area.find('div', class_='info_spec2')
         director = info_spec_area_2.select_one('a:nth-of-type(1)').text
@@ -111,9 +111,9 @@ class MovieManager(models.Manager):
         if soup.find('div', class_='story_area').find('p', class_='h_tx_story'):
             story1 = soup.find('div', class_='story_area').find('p', class_='h_tx_story').text
             story2 = soup.find('div', class_='story_area').find('p', class_='con_tx').text
-            story = story1 + story2
+            intro = story1 + story2
         else:
-            story = soup.find('div', class_='story_area').find('p', class_='con_tx').text
+            intro = soup.find('div', class_='story_area').find('p', class_='con_tx').text
 
         poster_url = soup.find('div', class_='poster').find('img').get('src')
 
@@ -131,13 +131,13 @@ class MovieManager(models.Manager):
             naver_movie_id=naver_movie_id,
             defaults={
                 'title_ko': title,
-                'title_detail': title_detail_text,
+                'title_en': title_detail_text,
                 'nation': nation,
                 'running_time': running_time,
                 'film_rate': film_rate,
-                'rank_share': rank_share,
+                'ticketing_rate': ticketing_rate,
                 'audience': audience,
-                'story': story,
+                'intro': intro,
                 'd_day': datetime.strptime(d_day, '%Y.%m.%d') if d_day else None,
             }
         )
