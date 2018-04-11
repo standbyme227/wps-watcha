@@ -69,17 +69,9 @@ class Movie(models.Model):
     audience = models.IntegerField('누적관객수', null=True, blank=True)
 
     Poster_image = models.ImageField('포스터 이미지', upload_to='poster', blank=True)
-    still_cut = models.ManyToManyField(
-        StillCut,
-        blank=True
-    )
     members = models.ManyToManyField(
         Member,
         through='MovieToMember',
-        blank=True
-    )
-    trailer = models.ManyToManyField(
-        TrailerYouTube,
         blank=True
     )
     user = models.ManyToManyField(
