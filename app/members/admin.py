@@ -55,7 +55,6 @@ class UserAdmin(DjangoUserAdmin):
             'groups',
             'user_permissions',
         )}),
-        ('movies', {'fields': ('movies',)}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
 
