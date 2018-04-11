@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from datetime import datetime
 from django.core.files import File
+
 from movie.models import Movie
 from utils.file import *
 
@@ -29,8 +30,8 @@ def update_or_create_from_crawler(request):
     # driver.find_element_by_id('movieChartAllView').click()
     # # html의 id 값으로 해당 태그를 가져와서 클릭한다.
 
-    driver.get('https://movie.naver.com/movie/running/current.nhn?order=point')
-    # 위의 2과정의 목적이가 이곳이기에 그냥 이걸 불러온다.
+    driver.get('https://movie.naver.com/movie/running/current.nhn?order=open')
+    # 위의 2과정의 목적이가 이곳이기에 그냥 이걸 불러온다.(수정함, 개봉일 순서대로)
 
     # driver.find_elements_by_class_name('lst_detail_t1')
     html = driver.page_source
@@ -136,7 +137,10 @@ def update_or_create_from_crawler(request):
             else:
                 story = soup.find('div', class_='story_area').find('p', class_='con_tx').text
 
-            poster_url = soup.find('div', class_='poster').find('img').get('src')
+            poster_area = soup.find('div', class_='poster').find('img').get('src')
+            poster_pattern = re.compile(r'(.*?)\?type=m77_110_2', re.DOTALL)
+            poster_url = re.search(poster_pattern, poster_area).group(1)
+
 
             if driver.find_elements_by_xpath("//*[contains(text(), '예매율')]"):
                 rate_area = info_spec_area_1.select_one('span:nth-of-type(6)').text
