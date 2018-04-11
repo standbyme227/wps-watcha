@@ -6,11 +6,21 @@ from ...models import Movie, TrailerYouTube
 
 
 class Command(BaseCommand):
-    def handle(self, *args, **kwargs):
-        movie_cnt = 3
-        trailer_cnt = 2
+    def add_arguments(self, parser):
+        # Named (optional) arguments
+        parser.add_argument('--movie_cnt', dest='movie_cnt', type=int)
+        parser.add_argument('--trailer_cnt', dest='trailer_cnt', type=int)
+        parser.add_argument('--all', dest='all')
 
-        movie_list = Movie.objects.filter(id__lte=movie_cnt)
+    def handle(self, *args, **options):
+        movie_cnt = 1 if not options['movie_cnt'] else options['movie_cnt']
+        trailer_cnt = 1 if not options['trailer_cnt'] else options['trailer_cnt']
+
+        if options['all']:
+            movie_list = Movie.objects.all()
+        else:
+            movie_list = Movie.objects.all()[:movie_cnt]
+
         if movie_list.count() == 0:
             raise CommandError('Movie does not exist')
 
@@ -37,3 +47,4 @@ class Command(BaseCommand):
                     title=title,
                     url_thumbnail=url_thumbnail,
                 )
+        self.stdout.write(self.style.SUCCESS('Success: setdata_trailer command'))

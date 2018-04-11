@@ -20,6 +20,9 @@ class TrailerYouTube(models.Model):
     modified_date = models.DateTimeField('수정일시', auto_now=True)
     created_date = models.DateTimeField('생성일시', auto_now_add=True)
 
+    class Meta:
+        ordering = ['movie']
+
     def __str__(self):
         return f'{self.youtube_id}: {self.title}'
 

@@ -87,4 +87,4 @@ class Movie(models.Model):
     objects = MovieManager()
 
     def __str__(self):
-        return self.title_ko
+        return f'{self.id}: {self.title_ko}'
