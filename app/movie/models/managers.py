@@ -167,9 +167,9 @@ class MovieManager(models.Manager):
                 'nation': nation,
                 'running_time': running_time,
                 'film_rate': film_rate,
-                'rank_share': rank_share,
+                'ticketing_rate': rank_share,
                 'audience': audience,
-                'story': story,
+                'intro': story,
                 'd_day': datetime.strptime(d_day, '%Y.%m.%d') if d_day else None,
             }
         )
