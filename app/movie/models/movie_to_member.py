@@ -33,3 +33,4 @@ class MovieToMember(models.Model):
 
     def __str__(self):
         return f'movie: {self.movie}, member: {self.member}'
+
