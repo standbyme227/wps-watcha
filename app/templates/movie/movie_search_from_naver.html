@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <h3>Naver에서 Movie 검색</h3>
+
+    <form action="">
+        <label for="keyword">제목 :</label>
+        <input id="keyword" name="keyword" type="text" class="form-control" placeholder="영화제목">
+        <button type="submit">검색하기</button>
+    </form>
+
+    {% for movie_info in movie_info_list %}
+    <form action=" {% url 'movie:movie-add-from-naver' %} " method="POST">
+    {# 주석처리는 이렇게 한다. #}
+        {% csrf_token %}
+        <ul>
+            <li>
+                <img src="{{ movie_info.url_img_cover }}" alt="" height="100">
+                <span>
+                    {{ movie_info.naver_movie_id }} | {{ movie_info.title }} | {{ movie_info.nation }} |
+                    {{ movie_info.genre }} | {{ movie_info.people }}
+                </span>
+                <input type="hidden" name="naver_movie_id" value="{{ movie_info.naver_movie_id }}">
+                {% if movie_info.is_exist %}
+                    <button type="submit">DB애 업데이트</button>
+                {% else %}
+                    <button type="submit">DB에 등록하기</button>
+                {% endif %}
+            </li>
+        </ul>
+    </form>
+    {% endfor %}
+</div>
+{% endblock %}

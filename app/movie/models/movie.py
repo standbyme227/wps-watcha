@@ -1,12 +1,11 @@
 from django.core.validators import MaxValueValidator
 from django.db import models
 
-from actor_director.models import Member
 from config import settings
-from .stillcut import StillCut
-from .tag import Tag
-from .trailer_youtube import TrailerYouTube
+from actor_director.models import Member
+from .managers import MovieManager
 from .genre import Genre
+from .tag import Tag
 
 __all__ = (
     'Movie',
@@ -49,7 +48,7 @@ class Movie(models.Model):
 
     naver_movie_id = models.CharField('네이버 영화 아이디', max_length=10, unique=True, null=True, blank=True)
     title_ko = models.CharField('영화제목(한글)', max_length=100, blank=True)
-    title_en = models.CharField('영화제목(영문)', max_length=100, blank=True)
+    title_en = models.CharField('영화제목(영문)', max_length=100, blank=True) # (구)title_detail
     title_slug = models.SlugField(null=True, blank=True)
     genre = models.ManyToManyField(
         Genre,
@@ -63,12 +62,12 @@ class Movie(models.Model):
     d_day = models.DateField('개봉일', max_length=50, null=True, blank=True)
     film_rate = models.CharField('상영 등급', max_length=10, choices=CHOICES_FILE_RATE_TYPE, blank=True)
     running_time = models.IntegerField('상영시간', null=True, blank=True)
-    intro = models.TextField('줄거리', blank=True)
+    intro = models.TextField('줄거리', blank=True) # (구)story
     nation = models.CharField('국가', max_length=5, choices=CHOICES_NATION_CODE, blank=True)
-    ticketing_rate = models.CharField('예매율', max_length=10, blank=True)
+    ticketing_rate = models.CharField('예매율', max_length=10, blank=True) # (구)rank_share
     audience = models.IntegerField('누적관객수', null=True, blank=True)
 
-    Poster_image = models.ImageField('포스터 이미지', upload_to='poster', blank=True)
+    poster_image = models.ImageField('포스터 이미지', upload_to='poster', blank=True)
     members = models.ManyToManyField(
         Member,
         through='MovieToMember',
@@ -85,7 +84,7 @@ class Movie(models.Model):
     class Meta:
         ordering = ['-pk']
 
-    # objects = MovieManager()
+    objects = MovieManager()
 
     def __str__(self):
         return self.title_ko

@@ -1,0 +1,34 @@
+.movie-list-container {
+  ul {
+    li {
+      float:left;
+      width: 50%;
+      border-bottom: 1px solid #ddd;
+      box-sizing: border-box;
+      padding: 15px;
+      height: 180px;
+
+      a {
+        display:inline-block;
+        color: #333;
+      }
+
+      img.cover {
+        float: left;
+        width: 150px;
+        height: 150px;
+        border:1px solid #ddd
+      }
+      .movie-info {
+        float: left;
+        padding: 5px 0 0 15px;
+
+        .title {
+          font-weight: bold;
+          font-size: 1.1rem;
+          margin-bottom: 4px;
+        }
+      }
+    }
+  }
+}
