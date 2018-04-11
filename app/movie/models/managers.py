@@ -1,5 +1,7 @@
 import re
 from datetime import datetime
+
+from PIL import Image
 from bs4 import BeautifulSoup
 from django.core.files import File
 from django.db import models
@@ -25,17 +27,16 @@ class MovieManager(models.Manager):
         response = requests.get(url, params)
         # source = response.text
         # soup = BeautifulSoup(source, 'lxml')
+        chrome_option = webdriver.ChromeOptions()
+        chrome_option.add_argument("--headless")
+        chrome_option.add_argument('window-size=1920x1080')
+        chrome_option.add_argument("--disable-gpu")
+        chrome_option.add_argument(
+            "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36")
 
-        driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver')
+        driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver', chrome_options=chrome_option)
         driver.implicitly_wait(3)
-
-        # options = webdriver.ChromeOptions()
-        # options.add_argument('headless')
-        # options.add_argument('window-size=1920x1080')
-        # options.add_argument("disable-gpu")
-        # options.add_argument(
-        #     "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) "
-        #     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36")
 
         driver.get(response.url)
         html = driver.page_source
@@ -92,9 +93,8 @@ class MovieManager(models.Manager):
         else:
             audience = 0
 
-
         info_spec_area_2 = info_area.find('div', class_='info_spec2')
-        director = info_spec_area_2.select_one('a:nth-of-type(1)').text
+        # director = info_spec_area_2.select_one('a:nth-of-type(1)').text
 
         people = info_spec_area_2.find_all('a', class_=None)
 
@@ -120,7 +120,9 @@ class MovieManager(models.Manager):
         else:
             story = soup.find('div', class_='story_area').find('p', class_='con_tx').text
 
-        poster_url = soup.find('div', class_='poster').find('img').get('src')
+        poster_area = soup.find('div', class_='poster').find('img').get('src')
+        poster_pattern = re.compile(r'(.*?)\?type=.*?', re.DOTALL)
+        poster_url = re.search(poster_pattern, poster_area).group(1)
 
         if driver.find_elements_by_xpath("//*[contains(text(), '예매율')]"):
             rate_area = info_spec_area_1.select_one('span:nth-of-type(6)').text
@@ -140,6 +142,12 @@ class MovieManager(models.Manager):
 
         else:
             rank_share = ''
+
+        # actor_director_id
+        # name
+        # real name(영어)
+        # type(주연, 조연)
+        # 역할
 
         for short, full in Movie.CHOICES_NATION_CODE:
             if nation == None:
@@ -165,12 +173,118 @@ class MovieManager(models.Manager):
             }
         )
 
+        # temp_file = download(poster_url)
+        # img = Image.open(temp_file)
+        # img.resize((460, 600))
+        #
+        # file_name = '{movie_id}.{ext}'.format(
+        #     movie_id=naver_movie_id,
+        #     ext=get_buffer_ext(temp_file),
+        # )
+        # img.save(file_name)
+        #
+        # if not movie.poster_image:
+        #     movie.poster_image.save(img)
+        # return movie, movie_created
+
         temp_file = download(poster_url)
-        file_name = '{movie_id}.{ext}'.format(
+
+        ext = get_buffer_ext(temp_file)
+        im = Image.open(temp_file)
+        large = im.resize((460, 650))
+        temp_file = BytesIO()
+        large.save(temp_file, ext)
+
+        file_name = '{movie_id}_large.{ext}'.format(
             movie_id=naver_movie_id,
-            ext=get_buffer_ext(temp_file),
+            ext=ext,
         )
 
         if not movie.poster_image:
             movie.poster_image.save(file_name, File(temp_file))
+
+        driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[2]/a').click()
+        # 배우의 정보가 나오는 부분을 누른다.
+        driver.find_element_by_xpath('//*[@id="actorMore"]').click()
+        # 배우 더보기 버튼을 누른다.
+        html = driver.page_source
+        soup = BeautifulSoup(html, 'lxml')
+
+        # li_list = soup.select('div.made_people ul.lst_people li')
+        li_list = soup.find_all('ul', class_='lst_people')
+
+        for li in li_list:
+            from actor_director.models import Member
+            from movie.models import MovieToMember
+            img_tag = li.find('img')
+            if img_tag:
+                img_profile_url = img_tag.get('src')
+            else:
+                img_profile_url = ''
+            p_info = li.select('div.p_info')
+            for p in p_info:
+                id_area = p.find('a', class_='k_name').get('href')
+                id_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+                actor_director_id = re.search(id_pattern, id_area).group(1)
+
+                name = p.find('a', class_='k_name').text
+                real_name = p.find('em', class_='e_name').text
+                part = p.find('em', class_='p_part').text
+                character = p.select_one('p.pe_cmt').get_text(strip=True)
+
+                for short, full in MovieToMember.CHOICES_MEMBER_TYPE:
+                    if part == None:
+                        part = MovieToMember.D
+                    elif part.strip() == full:
+                        part = short
+                        break
+                else:
+                    part = MovieToMember.D
+
+                member, member_created = Member.objects.update_or_create(
+                    actor_director_id=actor_director_id,
+                    defaults={
+                        'name': name,
+                        'real_name': real_name,
+                    }
+                )
+
+                temp_file = download(img_profile_url)
+                file_name = '{actor_director_id}.{ext}'.format(
+                    actor_director_id=actor_director_id,
+                    ext=get_buffer_ext(temp_file),
+                )
+
+                if not member.img_profile:
+                    member.img_profile.save(file_name, File(temp_file))
+
+                # MovieToMember.objects.update_or_create(
+                #     member=member,
+                #     movie=member.casting_movie_list.get_or_create(movie=movie),
+                # )
+
+                # MovieToMember.objects.update_or_create(
+                #     member=movie.movie_member_list.get_or_create(member=member),
+                #     movie=member.casting_movie_list.get_or_create(movie=movie),
+                #     defaults={
+                #         'role_name': character,
+                #     }
+                # )
+
+                movie.movie_member_list.update_or_create(
+                    member=member,
+                    movie=movie,
+                    defaults={
+                        'role_name': character,
+                        'type': part,
+                    }
+                )
+                # ManyToMany를 사용할때 저장시키기 위해서는 한쪽의 related_name에 접근해서 만들면 된다.
+                # 처음에 그걸 모르고 MTM자체에다가 저장시키려고 했지만
+                # 오류에 오류를 거쳐서 이렇게 되는걸 알게되었다.
+                # 아마도 어떠한 중개모델의 입장의경우 스스로 존재하는 부분이 아니기에
+                # 접근가능한 모델이 있어야했고(여기선 두개 Movie and Member
+                # 나는 Movie를 기점으로 만들고 있었기에
+                # Movie instance에 넣을 수 있도록 고안하게되었다.
+
         return movie, movie_created

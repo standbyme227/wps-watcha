@@ -20,7 +20,7 @@
                 <img src="{{ movie_info.url_img_cover }}" alt="" height="100">
                 <span>
                     {{ movie_info.naver_movie_id }} | {{ movie_info.title }} | {{ movie_info.nation }} |
-                    {{ movie_info.genre }} | {{ movie_info.people }}
+                    {{ movie_info.people }}
                 </span>
                 <input type="hidden" name="naver_movie_id" value="{{ movie_info.naver_movie_id }}">
                 {% if movie_info.is_exist %}

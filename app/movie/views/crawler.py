@@ -1,6 +1,8 @@
 import re
 
 import os
+
+from PIL import Image
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from datetime import datetime
@@ -9,20 +11,20 @@ from django.core.files import File
 from movie.models import Movie
 from utils.file import *
 
-
 PATH_MODULE = os.path.abspath(__name__)  # __name__ 모듈이라는 파일이 있는 위치를 뽑아내기위한 abspath
 ROOT_DIR = os.path.dirname(PATH_MODULE)
 PATH_DATA_DIR = os.path.join(ROOT_DIR, 'data')
 os.makedirs(PATH_DATA_DIR, exist_ok=True)
 
 
-
 def update_or_create_from_crawler(request):
+    chrome_option = webdriver.ChromeOptions()
+    chrome_option.add_argument("--headless")
+    chrome_option.add_argument("--disable-gpu")
 
-    driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver')
+    driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver', chrome_options=chrome_option)
+    # 웹드라이버로 뭘 지정할건지 설정 및 option 부가
 
-    # driver = webdriver.PhantomJS('/Users/shsf/Projects/phantomjs-2.1.1-macosx/bin/phantomjs')
-    # 웹드라이버로 뭘 지정할건지 설정
     driver.implicitly_wait(3)
     # 드라이버의 웹 자원 로드를 위해 3초까지 기다려준다.
 
@@ -31,9 +33,7 @@ def update_or_create_from_crawler(request):
     # # html의 id 값으로 해당 태그를 가져와서 클릭한다.
 
     driver.get('https://movie.naver.com/movie/running/current.nhn?order=open')
-    # 위의 2과정의 목적이가 이곳이기에 그냥 이걸 불러온다.(수정함, 개봉일 순서대로)
 
-    # driver.find_elements_by_class_name('lst_detail_t1')
     html = driver.page_source
     soup = BeautifulSoup(html, 'lxml')
     ul = soup.select('ul.lst_detail_t1')
@@ -49,8 +49,6 @@ def update_or_create_from_crawler(request):
 
             info_area = soup.find('div', class_='mv_info')
 
-            result = []
-
             naver_movie_id_a = info_area.find('h3', class_='h_movie').find('a').get('href')
             naver_movie_id_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
             naver_movie_id = re.search(naver_movie_id_pattern, naver_movie_id_a).group(1)
@@ -58,10 +56,6 @@ def update_or_create_from_crawler(request):
             title = info_area.find('h3', class_='h_movie').find('a').text
             raw_title_detail_text = info_area.find('strong', class_='h_movie2').text
             title_detail_text = re.sub(r'\s', '', raw_title_detail_text)
-
-            # audience_score = info_area.find('span', class_='st_on').text
-            # critic_score = info_area.find('a', class_='spc').find('span', class_='st_off').text
-            # netizen = info_area.find('div', class_='score').find('a', class_='ntz_score').find('span', class_='st_on').text
 
             info_spec_area_1 = info_area.find('p', class_='info_spec')
 
@@ -108,10 +102,7 @@ def update_or_create_from_crawler(request):
             else:
                 audience = 0
 
-            # rate_rank =
-
             info_spec_area_2 = info_area.find('div', class_='info_spec2')
-            # director = info_spec_area_2.select_one('a:nth-of-type(1)').text
 
             people = info_spec_area_2.find_all('a', class_=None)
 
@@ -120,15 +111,8 @@ def update_or_create_from_crawler(request):
                 name = name_data.text
                 people_list.append(name)
 
-            director = people_list[0]
-            actor = people_list[1:]
-
-            people_id_list = []
-            for a in info_spec_area_2.find_all('a', class_=None):
-                people_id_link = a.get('href')
-                people_id_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
-                people_id = re.search(people_id_pattern, people_id_link).group(1)
-                people_id_list.append(people_id)
+            # director = people_list[0]
+            # actor = people_list[1:]
 
             if soup.find('div', class_='story_area').find('p', class_='h_tx_story'):
                 story1 = soup.find('div', class_='story_area').find('p', class_='h_tx_story').text
@@ -140,7 +124,6 @@ def update_or_create_from_crawler(request):
             poster_area = soup.find('div', class_='poster').find('img').get('src')
             poster_pattern = re.compile(r'(.*?)\?type=m77_110_2', re.DOTALL)
             poster_url = re.search(poster_pattern, poster_area).group(1)
-
 
             if driver.find_elements_by_xpath("//*[contains(text(), '예매율')]"):
                 rate_area = info_spec_area_1.select_one('span:nth-of-type(6)').text
@@ -174,26 +157,92 @@ def update_or_create_from_crawler(request):
                 naver_movie_id=naver_movie_id,
                 defaults={
                     'title_ko': title,
-                    'title_detail': title_detail_text,
+                    'title_en': title_detail_text,
                     'nation': nation,
                     'running_time': running_time,
                     'film_rate': film_rate,
-                    'rank_share': rank_share,
+                    'ticketing_rate': rank_share,
                     'audience': audience,
-                    'story': story,
+                    'intro': story,
                     'd_day': datetime.strptime(d_day, '%Y.%m.%d') if d_day else None,
                 }
             )
 
             temp_file = download(poster_url)
-            file_name = '{movie_id}.{ext}'.format(
+
+            ext = get_buffer_ext(temp_file)
+            im = Image.open(temp_file)
+            large = im.resize((460, 650))
+            temp_file = BytesIO()
+            large.save(temp_file, ext)
+
+            file_name = '{movie_id}_large.{ext}'.format(
                 movie_id=naver_movie_id,
-                ext=get_buffer_ext(temp_file),
+                ext=ext,
             )
 
             if not movie.poster_image:
                 movie.poster_image.save(file_name, File(temp_file))
+
+            driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[2]/a').click()
+            driver.find_element_by_xpath('//*[@id="actorMore"]').click()
+            html = driver.page_source
+            soup = BeautifulSoup(html, 'lxml')
+
+            li_list = soup.find_all('ul', class_='lst_people')
+
+            for li in li_list:
+                from actor_director.models import Member
+                from movie.models import MovieToMember
+                img_tag = li.find('img')
+                if img_tag:
+                    img_profile_url = img_tag.get('src')
+                else:
+                    img_profile_url = ''
+                p_info = li.select('div.p_info')
+                for p in p_info:
+                    id_area = p.find('a', class_='k_name').get('href')
+                    id_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+                    actor_director_id = re.search(id_pattern, id_area).group(1)
+
+                    name = p.find('a', class_='k_name').text
+                    real_name = p.find('em', class_='e_name').text
+                    part = p.find('em', class_='p_part').text
+                    character = p.select_one('p.pe_cmt').get_text(strip=True)
+
+                    for short, full in MovieToMember.CHOICES_MEMBER_TYPE:
+                        if part == None:
+                            part = MovieToMember.D
+                        elif part.strip() == full:
+                            part = short
+                            break
+                    else:
+                        part = MovieToMember.D
+
+                    member, member_created = Member.objects.update_or_create(
+                        actor_director_id=actor_director_id,
+                        defaults={
+                            'name': name,
+                            'real_name': real_name,
+                        }
+                    )
+
+                    temp_file = download(img_profile_url)
+                    file_name = '{actor_director_id}.{ext}'.format(
+                        actor_director_id=actor_director_id,
+                        ext=get_buffer_ext(temp_file),
+                    )
+
+                    if not member.img_profile:
+                        member.img_profile.save(file_name, File(temp_file))
+
+                    movie.movie_member_list.update_or_create(
+                        member=member,
+                        movie=movie,
+                        defaults={
+                            'role_name': character,
+                            'type': part,
+                        }
+                    )
+
             driver.get('https://movie.naver.com/movie/running/current.nhn?order=point')
-
-
-
