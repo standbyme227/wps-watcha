@@ -31,7 +31,7 @@ class APIFacebookBackend:
             response_dict = response.json()
             facebook_id = response_dict['id']
             url_picture = response_dict['picture']['data']['url']
-            user, _ = User.objects.get_or_create(username=facebook_id)
+            user, _ = User.objects.get_or_create(username=facebook_id, email=None)
             if not user.img_profile:
                 temp_file = download(url_picture)
                 ext = get_buffer_ext(temp_file)

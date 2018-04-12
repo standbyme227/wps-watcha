@@ -52,6 +52,7 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
             'nickname',
             'img_profile',
+            'img_profile_thumbnail',
             'first_name',
             'last_name',
         )
@@ -67,6 +68,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             'username',
             'nickname',
             'img_profile',
+            'img_profile_thumbnail',
             'first_name',
             'last_name',
         )

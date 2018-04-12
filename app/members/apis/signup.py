@@ -16,6 +16,10 @@ class SignupView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
+            if not serializer.initial_data['email']:
+                data = {"email": ["This field may not be blank."]}
+                return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
+
             if not serializer.initial_data['password']:
                 data = {"password": ["This field may not be blank."]}
                 return Response(data=data, status=status.HTTP_400_BAD_REQUEST)

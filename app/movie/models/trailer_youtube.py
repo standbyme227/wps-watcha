@@ -1,6 +1,6 @@
 from django.db import models
 
-from .movie import Movie
+from ..models import Movie
 
 __all__ = (
     'TrailerYouTube',
@@ -8,7 +8,8 @@ __all__ = (
 
 
 class TrailerYouTube(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    # Youtube 예고편을 추가하기 위한 모델 OneToMany
+    movie = models.ForeignKey(Movie, verbose_name='영화', on_delete=models.CASCADE, blank=True, null=True)
     youtube_id = models.CharField('YouTube ID', primary_key=True, max_length=20)
     title = models.CharField('제목', max_length=200)
     url_thumbnail = models.URLField(
@@ -29,3 +30,4 @@ class TrailerYouTube(models.Model):
     @property
     def get_trailer_url(self):
         return f'https://youtu.be/{self.youtube_id}'
+

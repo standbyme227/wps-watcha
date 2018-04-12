@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from movie.serializers import MovieSerializer, GenreSerializer
+from movie.serializers import MovieListSerializer, GenreSerializer
 from movie.models import UserToMovie, Movie
 
 User = get_user_model()
@@ -11,7 +11,7 @@ __all__ = (
 )
 
 
-class UserRelatedMovieSerializer(MovieSerializer):
+class UserRelatedMovieListSerializer(MovieListSerializer):
     genre = GenreSerializer(many=True)
 
     # 장르의 텍스트만 리스트형태로 전달하고 싶을 때에는 아래처럼 SlugRelatedField를 사용
@@ -31,7 +31,7 @@ class UserRelatedMovieSerializer(MovieSerializer):
 
 
 class UserToMovieSerializer(serializers.ModelSerializer):
-    movie = UserRelatedMovieSerializer()
+    movie = UserRelatedMovieListSerializer()
 
     class Meta:
         model = UserToMovie

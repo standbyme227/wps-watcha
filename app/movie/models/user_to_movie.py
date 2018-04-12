@@ -9,11 +9,14 @@ __all__ = (
 
 
 class UserToMovie(models.Model):
+    # User랑 Movie를 위한 중개모델
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='interesting_movie_list',
         on_delete=models.CASCADE,
     )
+
     movie = models.ForeignKey(
         Movie,
         related_name='interested_user_list',
