@@ -31,6 +31,7 @@ class Command(BaseCommand):
             '시사교양',
         )
         for item in genre_list:
-            Genre.objects.create(
+            obj, created = Genre.objects.get_or_create(
                 genre=item
             )
+        self.stdout.write(self.style.SUCCESS('Success: setdata_genre command'))

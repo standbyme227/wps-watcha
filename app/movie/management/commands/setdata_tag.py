@@ -103,6 +103,7 @@ class Command(BaseCommand):
             '기차',
         )
         for item in tag_list:
-            Tag.objects.create(
+            obj, created = Tag.objects.get_or_create(
                 tag=item
             )
+        self.stdout.write(self.style.SUCCESS('Success: setdata_tag command'))
