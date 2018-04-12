@@ -90,25 +90,6 @@ class Movie(models.Model):
         blank=True,
     )
 
-    @property
-    def stillcut(self):
-        return ', '.join(self.stillcut_set.values_list(
-            'still_img',
-            'modified_date',
-            'created_date',
-            ).distinct()
-                         )
-
-    @property
-    def trailer(self):
-        return ', '.join(self.trailer_youtube_set.values_list(
-            'youtube_id',
-            'title',
-            'url_thumbnail',
-            'modified_date',
-            'created_date',
-            flat=True).distinct()
-                         )
 
     class Meta:
         ordering = ['-pk']
