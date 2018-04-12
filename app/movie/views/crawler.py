@@ -132,7 +132,8 @@ def update_or_create_from_crawler(request):
                 rate_rank_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
                 rate_rank = re.search(rate_rank_pattern, rate_area).group(1)
 
-                driver.find_element_by_xpath('//*[@id="content"]/div[1]/div[2]/div[1]/dl/dd[5]/div/p[1]/a').click()
+                driver.find_element_by_xpath('//*[@id="content"]/div[1]/div[2]/div[1]/dl/dd/div/p[@class="rate"]/a').click()
+
                 html = driver.page_source
                 soup = BeautifulSoup(html, 'lxml')
                 num_list = []
@@ -169,6 +170,21 @@ def update_or_create_from_crawler(request):
                     'd_day': datetime.strptime(d_day, '%Y.%m.%d') if d_day else None,
                 }
             )
+
+            from ..models.genre import Genre
+
+            for short, full in Genre.CHOICES_GENRE_TYPE:
+                if genre == None:
+                    genre = Genre.ETC
+                elif genre.strip() == full:
+                    genre = short
+                    break
+            else:
+                genre = Genre.ETC
+
+            for genre in genre_list:
+                genre, genre_created = Genre.objects.get_or_create(genre=genre)
+                movie.movie_genre_list.update_or_create(genre=genre, movie=movie)
 
             temp_file = download(poster_url)
 

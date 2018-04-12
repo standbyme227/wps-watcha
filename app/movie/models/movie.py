@@ -56,6 +56,7 @@ class Movie(models.Model):
     title_slug = models.SlugField(null=True, blank=True)
     genre = models.ManyToManyField(
         Genre,
+        through='MovieToGenre',
         blank=True
     )
     tag = models.ManyToManyField(

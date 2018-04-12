@@ -172,8 +172,24 @@ class MovieManager(models.Manager):
                 'd_day': datetime.strptime(d_day, '%Y.%m.%d') if d_day else None,
             }
         )
+
+        from .genre import Genre
+
+        for short, full in Genre.CHOICES_GENRE_TYPE:
+            if genre == None:
+                genre = Genre.ETC
+            elif genre.strip() == full:
+                genre = short
+                break
+        else:
+            genre = Genre.ETC
+
         for genre in genre_list:
-            genre, genre_crated = movie.genre.update_or_create(genre=genre)
+            genre, genre_created = Genre.objects.get_or_create(genre=genre)
+            movie.movie_genre_list.update_or_create(genre=genre, movie=movie)
+
+            # genre, genre_created = movie.movie_genre_list.update_or_create(genre=genre)
+            # movie.movie_genre_list.update_or_create(genre=genre, movie=movie)
 
         # temp_file = download(poster_url)
         # img = Image.open(temp_file)

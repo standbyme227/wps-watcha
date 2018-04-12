@@ -6,4 +6,5 @@ from .stillcut import *
 from .tag import *
 from .trailer_youtube import *
 from .user_to_movie import *
+from .movie_to_genre import *
 
