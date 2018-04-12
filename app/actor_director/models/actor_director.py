@@ -6,6 +6,7 @@ __all__ = (
 
 
 class Member(models.Model):
+    actor_director_id = models.CharField('감독/배우 아이디', max_length=10, unique=True, null=True, blank=True)
     name = models.CharField('이름', max_length=50)
     real_name = models.CharField('본명', max_length=50, null=True, blank=True)
     img_profile = models.ImageField(upload_to='members', blank=True)
@@ -14,3 +15,5 @@ class Member(models.Model):
 
     def __str__(self):
         return self.name
+
+

@@ -38,12 +38,15 @@ def movie_search_from_naver(request):
                 url_img_cover = li.select_one('p.result_thumb img').get('src')
 
                 title = li.find('dt').find('a').text
-                rating = li.find('dd').find('em', class_='num').text
-                genre = li.find('dd', class_='etc').find('a').text
-                if li.find('dd', class_='etc').find('em'):
+                # rating = li.find('dd').find('em', class_='num').text
+                # if li.find('dd', class_='etc'):
+                #     genre = li.find('dd', class_='etc').find('a').text
+
+                if li.find('dd', class_='etc'):
                     nation = li.find('dd', class_='etc').find('em').find('a').text
                 else:
                     nation=None
+
                 dd = li.find_all('dd', class_='etc')
                 if len(dd) > 1:
                     people_data = li.find_all('dd', class_='etc')[1]
@@ -55,8 +58,8 @@ def movie_search_from_naver(request):
                     'title': title,
                     'naver_movie_id': movie_id,
                     'url_img_cover': url_img_cover,
-                    'rating': rating,
-                    'genre': genre,
+                    # 'rating': rating,
+                    # 'genre': genre,
                     'nation': nation,
                     'people': people,
                     'is_exist': Movie.objects.filter(naver_movie_id=movie_id).exists(),
