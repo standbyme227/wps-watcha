@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup
 from django.core.files import File
 from django.db import models
 from selenium import webdriver
+
+
 from utils.file import *
 
 __all__ = (
@@ -307,5 +309,36 @@ class MovieManager(models.Manager):
                 # 접근가능한 모델이 있어야했고(여기선 두개 Movie and Member
                 # 나는 Movie를 기점으로 만들고 있었기에
                 # Movie instance에 넣을 수 있도록 고안하게되었다.
+
+        # driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[3]/a').click()
+        # html = driver.page_source
+        # soup = BeautifulSoup(html, 'lxml')
+        # img_area = soup.select('li._list a img')
+        # if img_area:
+        #     just_three =  img_area[:3]
+        #     num = 1
+        #     for i in just_three:
+        #         stillcut_url = i.get('src')
+        #         stillcut_pattern = re.compile(r'(.*?)\?type=.*?', re.DOTALL)
+        #         stillcut = re.search(stillcut_pattern, stillcut_url).group(1)
+        #
+        #         temp_file = download(stillcut_url)
+        #
+        #         ext = get_buffer_ext(temp_file)
+        #         im = Image.open(temp_file)
+        #         still = im.resize((1280, 720))
+        #         temp_file = BytesIO()
+        #         still.save(temp_file, ext)
+        #         file_name = '{movie_id}_stillcut_{num}.{ext}'.format(
+        #             movie_id=naver_movie_id,
+        #             ext=ext,
+        #             num=num,
+        #         )
+        #         from movie.models import StillCut
+        #         num += 1
+        #         if not StillCut.still_img:
+        #             StillCut.still_img.save(file_name, File(temp_file))
+
+
 
         return movie, movie_created

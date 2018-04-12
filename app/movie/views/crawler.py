@@ -267,5 +267,9 @@ def update_or_create_from_crawler(request):
                             'type': part,
                         }
                     )
+            # driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[3]/a').click()
+            # html = driver.page_source
+            # soup = BeautifulSoup(html, 'lxml')
+
 
             driver.get('https://movie.naver.com/movie/running/current.nhn?order=open')

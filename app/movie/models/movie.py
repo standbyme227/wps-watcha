@@ -96,7 +96,7 @@ class Movie(models.Model):
             'still_img',
             'modified_date',
             'created_date',
-            flat=True).distinct()
+            ).distinct()
                          )
 
     @property
