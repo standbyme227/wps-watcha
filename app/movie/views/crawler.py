@@ -18,11 +18,13 @@ os.makedirs(PATH_DATA_DIR, exist_ok=True)
 
 
 def update_or_create_from_crawler(request):
-    chrome_option = webdriver.ChromeOptions()
-    chrome_option.add_argument("--headless")
-    chrome_option.add_argument("--disable-gpu")
+    # chrome_option = webdriver.ChromeOptions()
+    # chrome_option.add_argument("--headless")
+    # chrome_option.add_argument("--disable-gpu")
+    #
+    # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver', chrome_options=chrome_option)
 
-    driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver', chrome_options=chrome_option)
+    driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver')
     # 웹드라이버로 뭘 지정할건지 설정 및 option 부가
 
     driver.implicitly_wait(3)
@@ -185,7 +187,8 @@ def update_or_create_from_crawler(request):
                 movie.poster_image.save(file_name, File(temp_file))
 
             driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[2]/a').click()
-            driver.find_element_by_xpath('//*[@id="actorMore"]').click()
+            # if driver.find_element_by_xpath('//*[@id="actorMore"]'):
+            #     driver.find_element_by_xpath('//*[@id="actorMore"]').click()
             html = driver.page_source
             soup = BeautifulSoup(html, 'lxml')
 
@@ -208,7 +211,11 @@ def update_or_create_from_crawler(request):
                     name = p.find('a', class_='k_name').text
                     real_name = p.find('em', class_='e_name').text
                     part = p.find('em', class_='p_part').text
-                    character = p.select_one('p.pe_cmt').get_text(strip=True)
+
+                    if p.select_one('p.pe_cmt'):
+                        character = p.select_one('p.pe_cmt').get_text(strip=True)
+                    else:
+                        character = ''
 
                     for short, full in MovieToMember.CHOICES_MEMBER_TYPE:
                         if part == None:
@@ -245,4 +252,4 @@ def update_or_create_from_crawler(request):
                         }
                     )
 
-            driver.get('https://movie.naver.com/movie/running/current.nhn?order=point')
+            driver.get('https://movie.naver.com/movie/running/current.nhn?order=open')

@@ -172,6 +172,8 @@ class MovieManager(models.Manager):
                 'd_day': datetime.strptime(d_day, '%Y.%m.%d') if d_day else None,
             }
         )
+        for genre in genre_list:
+            genre, genre_crated = movie.genre.update_or_create(genre=genre)
 
         # temp_file = download(poster_url)
         # img = Image.open(temp_file)
@@ -230,7 +232,10 @@ class MovieManager(models.Manager):
                 name = p.find('a', class_='k_name').text
                 real_name = p.find('em', class_='e_name').text
                 part = p.find('em', class_='p_part').text
-                character = p.select_one('p.pe_cmt').get_text(strip=True)
+                if p.select_one('p.pe_cmt'):
+                    character = p.select_one('p.pe_cmt').get_text(strip=True)
+                else:
+                    character = ''
 
                 for short, full in MovieToMember.CHOICES_MEMBER_TYPE:
                     if part == None:
