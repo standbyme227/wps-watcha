@@ -35,7 +35,8 @@ def update_or_create_from_crawler(request):
     # # html의 id 값으로 해당 태그를 가져와서 클릭한다.
 
     driver.get('https://movie.naver.com/movie/running/current.nhn?order=open')
-
+    # source = response.text
+    # soup = BeautifulSoup(source, 'lxml')
     html = driver.page_source
     soup = BeautifulSoup(html, 'lxml')
     ul = soup.select('ul.lst_detail_t1')
@@ -203,53 +204,48 @@ def update_or_create_from_crawler(request):
                 movie.poster_image.save(file_name, File(temp_file))
 
             driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[2]/a').click()
-            # if driver.find_element_by_xpath('//*[@id="actorMore"]'):
-            #     driver.find_element_by_xpath('//*[@id="actorMore"]').click()
+            if driver.find_elements_by_xpath('//*/button[@id="actorMore"]'):
+                driver.find_element_by_xpath('//*[@id="actorMore"]').click()
+            from actor_director.models import Member
+            from movie.models import MovieToMember
             html = driver.page_source
             soup = BeautifulSoup(html, 'lxml')
 
-            li_list = soup.find_all('ul', class_='lst_people')
-
-            for li in li_list:
-                from actor_director.models import Member
-                from movie.models import MovieToMember
-                img_tag = li.find('img')
+            director_part = soup.find('h4', class_='h_director').find('strong', class_='blind').text
+            div_list = soup.find_all('div', class_='dir_obj')
+            for div in div_list:
+                img_tag = div.find('p', class_='thumb_dir').find('img')
                 if img_tag:
                     img_profile_url = img_tag.get('src')
                 else:
                     img_profile_url = ''
-                p_info = li.select('div.p_info')
-                for p in p_info:
-                    id_area = p.find('a', class_='k_name').get('href')
-                    id_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
-                    actor_director_id = re.search(id_pattern, id_area).group(1)
 
-                    name = p.find('a', class_='k_name').text
-                    real_name = p.find('em', class_='e_name').text
-                    part = p.find('em', class_='p_part').text
+                id_area = div.find('a', class_='k_name').get('href')
+                id_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+                actor_director_id = re.search(id_pattern, id_area).group(1)
 
-                    if p.select_one('p.pe_cmt'):
-                        character = p.select_one('p.pe_cmt').get_text(strip=True)
-                    else:
-                        character = ''
+                name = div.find('a', class_='k_name').text
+                real_name = div.find('em', class_='e_name').text
 
-                    for short, full in MovieToMember.CHOICES_MEMBER_TYPE:
-                        if part == None:
-                            part = MovieToMember.D
-                        elif part.strip() == full:
-                            part = short
-                            break
-                    else:
+                part = director_part
+
+                for short, full in MovieToMember.CHOICES_MEMBER_TYPE:
+                    if part == None:
                         part = MovieToMember.D
+                    elif part.strip() == full:
+                        part = short
+                        break
+                else:
+                    part = MovieToMember.D
 
-                    member, member_created = Member.objects.update_or_create(
-                        actor_director_id=actor_director_id,
-                        defaults={
-                            'name': name,
-                            'real_name': real_name,
-                        }
-                    )
-
+                member, member_created = Member.objects.update_or_create(
+                    actor_director_id=actor_director_id,
+                    defaults={
+                        'name': name,
+                        'real_name': real_name,
+                    }
+                )
+                if not img_profile_url == '':
                     temp_file = download(img_profile_url)
                     file_name = '{actor_director_id}.{ext}'.format(
                         actor_director_id=actor_director_id,
@@ -259,17 +255,102 @@ def update_or_create_from_crawler(request):
                     if not member.img_profile:
                         member.img_profile.save(file_name, File(temp_file))
 
-                    movie.movie_member_list.update_or_create(
-                        member=member,
-                        movie=movie,
-                        defaults={
-                            'role_name': character,
-                            'type': part,
-                        }
+                movie.movie_member_list.update_or_create(
+                    member=member,
+                    movie=movie,
+                    defaults={
+                        'type': part,
+                    }
+                )
+
+            # ul = soup.find('ul', class_='lst_people')
+            li_list = soup.select('ul.lst_people > li')
+            for li in li_list:
+                img_tag = li.find('img')
+                if img_tag:
+                    img_profile_url = img_tag.get('src')
+                else:
+                    img_profile_url = ''
+
+                id_area = li.find('a', class_='k_name').get('href')
+                id_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+                actor_director_id = re.search(id_pattern, id_area).group(1)
+
+                name = li.find('a', class_='k_name').text
+                real_name = li.find('em', class_='e_name').text
+                part = li.find('em', class_='p_part').text
+
+                if li.select_one('p.pe_cmt'):
+                    character = li.select_one('p.pe_cmt').get_text(strip=True)
+                else:
+                    character = ''
+
+                for short, full in MovieToMember.CHOICES_MEMBER_TYPE:
+                    if part == None:
+                        part = MovieToMember.D
+                    elif part.strip() == full:
+                        part = short
+                        break
+                else:
+                    part = MovieToMember.D
+
+                member, member_created = Member.objects.update_or_create(
+                    actor_director_id=actor_director_id,
+                    defaults={
+                        'name': name,
+                        'real_name': real_name,
+                    }
+                )
+                if not img_profile_url == '':
+                    temp_file = download(img_profile_url)
+                    file_name = '{actor_director_id}.{ext}'.format(
+                        actor_director_id=actor_director_id,
+                        ext=get_buffer_ext(temp_file),
                     )
-            # driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[3]/a').click()
-            # html = driver.page_source
-            # soup = BeautifulSoup(html, 'lxml')
+
+                    if not member.img_profile:
+                        member.img_profile.save(file_name, File(temp_file))
+
+                movie.movie_member_list.update_or_create(
+                    member=member,
+                    movie=movie,
+                    defaults={
+                        'role_name': character,
+                        'type': part,
+                    }
+                )
+            driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[3]/a').click()
+            html = driver.page_source
+            soup = BeautifulSoup(html, 'lxml')
+            img_area = soup.select('li._list a img')
+            if img_area:
+                just_three = img_area[0:3]
+                num = 1
+                for i in just_three:
+                    stillcut_url = i.get('src')
+                    stillcut_pattern = re.compile(r'(.*?)\?type=.*?', re.DOTALL)
+                    if not len(stillcut_url) < 85 :
+                        stillcut = re.search(stillcut_pattern, stillcut_url).group(1)
+
+                        temp_file = download(stillcut)
+
+                        ext = get_buffer_ext(temp_file)
+                        im = Image.open(temp_file)
+                        still = im.resize((1280, 720))
+                        temp_file = BytesIO()
+                        still.save(temp_file, ext)
+                        file_name = '{movie_id}_stillcut_{num}.{ext}'.format(
+                            movie_id=naver_movie_id,
+                            ext=ext,
+                            num=num,
+                        )
+                        test_file_name = 'still_cut/' + file_name
+
+                        from movie.models import StillCut
+                        if not StillCut.objects.filter(still_img=test_file_name):
+                            stillcut = StillCut.objects.create(movie=movie)
+                            stillcut.still_img.save(file_name, File(temp_file))
+                        num += 1
 
 
             driver.get('https://movie.naver.com/movie/running/current.nhn?order=open')

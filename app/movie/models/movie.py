@@ -54,17 +54,9 @@ class Movie(models.Model):
     title_ko = models.CharField('영화제목(한글)', max_length=100, blank=True)
     title_en = models.CharField('영화제목(영문)', max_length=100, blank=True)  # (구)title_detail
     title_slug = models.SlugField(null=True, blank=True)
-    genre = models.ManyToManyField(
-        Genre,
-        through='MovieToGenre',
-        blank=True
-    )
-    tag = models.ManyToManyField(
-        Tag,
-        blank=True
-    )
-    rating_avg = models.DecimalField('평점평균', default=0.0, max_digits=2, decimal_places=1,
-                                     validators=[MaxValueValidator(5), ], blank=True, )
+
+    movie_created_date = models.IntegerField('제작년도', null=True, blank=True)
+
     d_day = models.DateField('개봉일', max_length=50, null=True, blank=True)
     film_rate = models.CharField('상영 등급', max_length=10, choices=CHOICES_FILE_RATE_TYPE, blank=True)
     running_time = models.IntegerField('상영시간', null=True, blank=True)
@@ -72,13 +64,25 @@ class Movie(models.Model):
     nation = models.CharField('국가', max_length=5, choices=CHOICES_NATION_CODE, blank=True)
     ticketing_rate = models.CharField('예매율', max_length=10, blank=True)  # (구)rank_share
     audience = models.IntegerField('누적관객수', null=True, blank=True)
-
     poster_image = models.ImageField('포스터 이미지', upload_to='poster', blank=True)
 
+    rating_avg = models.DecimalField('평점평균', default=0.0, max_digits=2, decimal_places=1,
+                                     validators=[MaxValueValidator(5), ], blank=True, )
     members = models.ManyToManyField(
         Member,
         through='MovieToMember',
         blank=True,
+    )
+
+    genre = models.ManyToManyField(
+        Genre,
+        through='MovieToGenre',
+        blank=True
+    )
+
+    tag = models.ManyToManyField(
+        Tag,
+        blank=True
     )
 
     modified_date = models.DateTimeField('수정일시', auto_now=True)
@@ -98,13 +102,6 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title_ko
-
-    # def save(self, *args, **kwargs):
-    #     self._save_member()
-    #     super().save(*args, **kwargs)
-
-    # def _save_member(self, member):
-    #     movie_to_member, created = self.movie_member_list.get_or_create(user=member)
 
     # def save(self, *args, **kwargs):
     #     self._save_resizing_process()
