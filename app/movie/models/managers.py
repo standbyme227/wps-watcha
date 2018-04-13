@@ -36,7 +36,9 @@ class MovieManager(models.Manager):
         #     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36")
         #
         # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver', chrome_options=chrome_option)
-        driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver')
+        # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver')
+        # driver = webdriver.Chrome('chromedriver')
+        driver = webdriver.Chrome('/srv/project/')
         driver.implicitly_wait(3)
 
         driver.get(response.url)

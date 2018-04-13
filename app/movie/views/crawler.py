@@ -25,7 +25,8 @@ def update_or_create_from_crawler(request):
     # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver', chrome_options=chrome_option)
 
     # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver')
-    driver = webdriver.Chrome('chromedriver')
+    # driver = webdriver.Chrome('chromedriver')
+    driver = webdriver.Chrome('/srv/project/')
     # 웹드라이버로 뭘 지정할건지 설정 및 option 부가
 
     driver.implicitly_wait(3)
