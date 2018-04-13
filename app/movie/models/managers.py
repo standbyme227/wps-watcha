@@ -347,8 +347,10 @@ class MovieManager(models.Manager):
             for i in just_three:
                 stillcut_url = i.get('src')
                 stillcut_pattern = re.compile(r'(.*?)\?type=.*?', re.DOTALL)
-                stillcut = re.search(stillcut_pattern, stillcut_url).group(1)
-
+                if len(stillcut_url) > 85:
+                    stillcut = re.search(stillcut_pattern, stillcut_url).group(1)
+                else:
+                    stillcut = stillcut_url
                 temp_file = download(stillcut)
 
                 ext = get_buffer_ext(temp_file)
@@ -367,5 +369,6 @@ class MovieManager(models.Manager):
                 if not StillCut.objects.filter(still_img=test_file_name):
                     stillcut = StillCut.objects.create(movie=movie)
                     stillcut.still_img.save(file_name, File(temp_file))
+
                 num += 1
         return movie, movie_created

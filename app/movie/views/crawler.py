@@ -329,28 +329,30 @@ def update_or_create_from_crawler(request):
                 for i in just_three:
                     stillcut_url = i.get('src')
                     stillcut_pattern = re.compile(r'(.*?)\?type=.*?', re.DOTALL)
-                    if not len(stillcut_url) < 85 :
+                    if len(stillcut_url) > 85 :
                         stillcut = re.search(stillcut_pattern, stillcut_url).group(1)
+                    else:
+                        stillcut = stillcut_url
+                    temp_file = download(stillcut)
 
-                        temp_file = download(stillcut)
+                    ext = get_buffer_ext(temp_file)
+                    im = Image.open(temp_file)
+                    still = im.resize((1280, 720))
+                    temp_file = BytesIO()
+                    still.save(temp_file, ext)
+                    file_name = '{movie_id}_stillcut_{num}.{ext}'.format(
+                        movie_id=naver_movie_id,
+                        ext=ext,
+                        num=num,
+                    )
+                    test_file_name = 'still_cut/' + file_name
 
-                        ext = get_buffer_ext(temp_file)
-                        im = Image.open(temp_file)
-                        still = im.resize((1280, 720))
-                        temp_file = BytesIO()
-                        still.save(temp_file, ext)
-                        file_name = '{movie_id}_stillcut_{num}.{ext}'.format(
-                            movie_id=naver_movie_id,
-                            ext=ext,
-                            num=num,
-                        )
-                        test_file_name = 'still_cut/' + file_name
+                    from movie.models import StillCut
+                    if not StillCut.objects.filter(still_img=test_file_name):
+                        stillcut = StillCut.objects.create(movie=movie)
+                        stillcut.still_img.save(file_name, File(temp_file))
 
-                        from movie.models import StillCut
-                        if not StillCut.objects.filter(still_img=test_file_name):
-                            stillcut = StillCut.objects.create(movie=movie)
-                            stillcut.still_img.save(file_name, File(temp_file))
-                        num += 1
+                    num += 1
 
 
             driver.get('https://movie.naver.com/movie/running/current.nhn?order=open')

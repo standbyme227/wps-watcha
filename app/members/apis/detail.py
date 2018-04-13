@@ -20,6 +20,17 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         IsAdminOrIsSelf,
     )
 
+    # def get(self, request, *args, **kwargs):
+    #     token = Token.objects.get(user=request.user)
+    #     user_profile = self.get_object(token=token)
+    #     queryset = User.objects.filter(user)
+    #     serializer_class = UserDetailSerializer
+    #
+    #     permission_classes = (
+    #         IsAdminOrIsSelf,
+    #     )
+
+
     def update(self, request, *args, **kwargs):
         user_profile = self.get_object()
         serializer = self.get_serializer(user_profile, data=request.data, partial=True)
