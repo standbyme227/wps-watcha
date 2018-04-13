@@ -17,10 +17,10 @@
 #     pagination_class = SmallResultSetPagination
 from rest_framework import generics
 
-from ..serializer import MovieSerializer
+from ..serializers import MovieListSerializer
 from ..models import Movie
 
 
 class MovieListView(generics.ListAPIView):
     queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
+    serializer_class = MovieListSerializer

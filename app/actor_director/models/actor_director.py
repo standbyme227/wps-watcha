@@ -15,8 +15,3 @@ class Member(models.Model):
 
     def __str__(self):
         return self.name
-
-    # def __str__(self):
-    #     return f'이름: {self.name}, type: {self.casting_movie_list.objects.type}'
-
-

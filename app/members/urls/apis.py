@@ -9,6 +9,7 @@ from ..apis import (
     LogoutView,
     UserImageUpdateView,
     UserEmailUpdateView,
+    WantWatchedMovieListView,
 )
 
 app_name = 'members'
@@ -22,4 +23,6 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('<int:pk>/img-profile/', UserImageUpdateView.as_view(), name='user-img-profile'),
     path('<int:pk>/email/', UserEmailUpdateView.as_view(), name='email-update'),
+    path('<int:pk>/want-movie/', WantWatchedMovieListView.as_view(want_movie=True), name='want-movie'),
+    path('<int:pk>/watched-movie/', WantWatchedMovieListView.as_view(watched_movie=True), name='watched-movie'),
 ]
