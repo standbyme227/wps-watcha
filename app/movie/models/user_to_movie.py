@@ -1,6 +1,6 @@
+from django.conf import settings
 from django.db import models
 
-from config import settings
 from ..models import Movie
 
 __all__ = (

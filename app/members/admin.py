@@ -44,7 +44,7 @@ class UserAdmin(DjangoUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('id', 'email', 'nickname', 'is_active', 'is_staff', 'is_superuser', 'date_joined')
+    list_display = ('id', 'email', 'nickname', 'username', 'is_active', 'is_staff', 'is_superuser', 'date_joined')
     fieldsets = (
         (None, {'fields': ('email', 'password', 'nickname')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'img_profile')}),

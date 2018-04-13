@@ -36,10 +36,15 @@ class MovieManager(models.Manager):
         #     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36")
         #
         # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver', chrome_options=chrome_option)
-        driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver')
+        # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver')
+        driver = webdriver.Chrome('chromedriver')
         driver.implicitly_wait(3)
 
         driver.get(response.url)
+
+        if driver.switch_to.alert:
+            driver.switch_to.alert.accept()
+
         html = driver.page_source
         soup = BeautifulSoup(html, 'lxml')
 
