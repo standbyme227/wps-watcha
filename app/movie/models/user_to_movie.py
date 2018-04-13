@@ -1,11 +1,12 @@
 from django.db import models
 
-from config import settings
+from django.conf import settings
 from ..models import Movie
 
 __all__ = (
     'UserToMovie',
 )
+
 
 
 class UserToMovie(models.Model):
