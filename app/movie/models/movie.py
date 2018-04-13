@@ -90,7 +90,6 @@ class Movie(models.Model):
         blank=True,
     )
 
-
     class Meta:
         ordering = ['-pk']
 

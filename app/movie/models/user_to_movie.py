@@ -36,4 +36,3 @@ class UserToMovie(models.Model):
 
     def __str__(self):
         return f'UserToMovie (User: {self.user}, Movie: {self.movie})'
-

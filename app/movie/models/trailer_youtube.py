@@ -1,6 +1,6 @@
 from django.db import models
-from movie.models import Movie
 
+from ..models import Movie
 
 __all__ = (
     'TrailerYouTube',
@@ -12,7 +12,22 @@ class TrailerYouTube(models.Model):
     movie = models.ForeignKey(Movie, verbose_name='영화', on_delete=models.CASCADE, blank=True, null=True)
     youtube_id = models.CharField('YouTube ID', primary_key=True, max_length=20)
     title = models.CharField('제목', max_length=200)
-    url_thumbnail = models.URLField('커버 이미지 URL', max_length=200, blank=True)
+    url_thumbnail = models.URLField(
+        '커버 이미지 URL',
+        max_length=200,
+        blank=True,
+        help_text='this image is 320px wide and 180px tall.'
+    )
     modified_date = models.DateTimeField('수정일시', auto_now=True)
     created_date = models.DateTimeField('생성일시', auto_now_add=True)
+
+    class Meta:
+        ordering = ['movie']
+
+    def __str__(self):
+        return f'{self.youtube_id}: {self.title}'
+
+    @property
+    def get_trailer_url(self):
+        return f'https://youtu.be/{self.youtube_id}'
 

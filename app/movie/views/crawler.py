@@ -24,7 +24,8 @@ def update_or_create_from_crawler(request):
     #
     # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver', chrome_options=chrome_option)
 
-    driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver')
+    # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver')
+    driver = webdriver.Chrome('chromedriver')
     # 웹드라이버로 뭘 지정할건지 설정 및 option 부가
 
     driver.implicitly_wait(3)
@@ -35,6 +36,9 @@ def update_or_create_from_crawler(request):
     # # html의 id 값으로 해당 태그를 가져와서 클릭한다.
 
     driver.get('https://movie.naver.com/movie/running/current.nhn?order=open')
+
+    if driver.switch_to.alert:
+        driver.switch_to.alert.accept()
 
     html = driver.page_source
     soup = BeautifulSoup(html, 'lxml')

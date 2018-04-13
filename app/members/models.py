@@ -38,6 +38,7 @@ class User(AbstractUser):
         max_length=255,
         unique=True,
         blank=True,
+        null=True,
         help_text=_('Required. 255 characters or fewer.'),
         error_messages={
             'unique': _("A user with that email already exists."),
