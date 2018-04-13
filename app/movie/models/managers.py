@@ -37,8 +37,7 @@ class MovieManager(models.Manager):
         #
         # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver', chrome_options=chrome_option)
         # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver')
-        # driver = webdriver.Chrome('chromedriver')
-        driver = webdriver.Chrome('/srv/project/')
+        driver = webdriver.Chrome('chromedriver')
         driver.implicitly_wait(3)
 
         driver.get(response.url)
