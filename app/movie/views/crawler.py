@@ -23,7 +23,6 @@ def update_or_create_from_crawler(request):
     # chrome_option.add_argument("--disable-gpu")
     #
     # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver', chrome_options=chrome_option)
-
     # driver = webdriver.Chrome('/Users/shsf/Projects/chromedriver')
     driver = webdriver.Chrome('chromedriver')
     # driver = webdriver.Chrome('/srv/project/')
@@ -69,12 +68,6 @@ def update_or_create_from_crawler(request):
 
             info_spec_area_1 = info_area.find('p', class_='info_spec')
 
-            genre_list = []
-            genre_text = info_spec_area_1.select("span:nth-of-type(1) a")
-            for genre_data in genre_text:
-                genre = genre_data.text
-                genre_list.append(genre)
-
             nation = info_spec_area_1.select_one("span:nth-of-type(2) a:nth-of-type(1)").text
 
             span = info_spec_area_1.find_all('span')
@@ -84,19 +77,23 @@ def update_or_create_from_crawler(request):
 
                 d_day_year = info_spec_area_1.select_one("span:nth-of-type(4) a:nth-of-type(1)").text
                 d_day_date = info_spec_area_1.select_one("span:nth-of-type(4) a:nth-of-type(2)").text
-                if len(span) > 4:
-                    film_rate = info_spec_area_1.select_one("span:nth-of-type(5) a").text
-                else:
-                    film_rate = ''
 
             else:
                 running_time_text = None
                 d_day_year = info_spec_area_1.select_one("span:nth-of-type(3) a:nth-of-type(1)").text
                 d_day_date = info_spec_area_1.select_one("span:nth-of-type(3) a:nth-of-type(2)").text
-                if len(span) > 3:
-                    film_rate = info_spec_area_1.select_one("span:nth-of-type(4) a").text
-                else:
-                    film_rate = ''
+
+            film_rate_area = driver.find_elements_by_xpath("//*[contains(text(), '관람가')]")
+            film_rate = film_rate_area[1].text
+
+            for short, full in Movie.CHOICES_FILE_RATE_TYPE:
+                if film_rate == None:
+                    film_rate = Movie.ETC
+                elif film_rate.strip() == full:
+                    film_rate = short
+                    break
+            else:
+                film_rate = Movie.ETC
 
             d_day = d_day_year + d_day_date
             if running_time_text:
@@ -179,16 +176,13 @@ def update_or_create_from_crawler(request):
                 }
             )
 
-            from ..models.genre import Genre
+            genre_list = []
+            genre_text = info_spec_area_1.select("span:nth-of-type(1) a")
+            for genre_data in genre_text:
+                genre = genre_data.text
+                genre_list.append(genre)
 
-            for short, full in Genre.CHOICES_GENRE_TYPE:
-                if genre == None:
-                    genre = Genre.ETC
-                elif genre.strip() == full:
-                    genre = short
-                    break
-            else:
-                genre = Genre.ETC
+            from ..models.genre import Genre
 
             for genre in genre_list:
                 genre, genre_created = Genre.objects.get_or_create(genre=genre)
