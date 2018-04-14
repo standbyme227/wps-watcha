@@ -40,8 +40,8 @@ def update_or_create_from_crawler(request):
     # source = response.text
     # soup = BeautifulSoup(source, 'lxml')
 
-    if driver.switch_to.alert:
-        driver.switch_to.alert.accept()
+    # if driver.switch_to.alert:
+    #     driver.switch_to.alert.accept()
 
     html = driver.page_source
     soup = BeautifulSoup(html, 'lxml')
@@ -65,6 +65,9 @@ def update_or_create_from_crawler(request):
             title = info_area.find('h3', class_='h_movie').find('a').text
             raw_title_detail_text = info_area.find('strong', class_='h_movie2').text
             title_detail_text = re.sub(r'\s', '', raw_title_detail_text)
+
+            created_date_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+            movie_created_date = re.search(created_date_pattern, raw_title_detail_text).group(1)
 
             info_spec_area_1 = info_area.find('p', class_='info_spec')
 
@@ -166,6 +169,7 @@ def update_or_create_from_crawler(request):
                 defaults={
                     'title_ko': title,
                     'title_en': title_detail_text,
+                    'movie_created_date': int(movie_created_date),
                     'nation': nation,
                     'running_time': running_time,
                     'film_rate': film_rate,

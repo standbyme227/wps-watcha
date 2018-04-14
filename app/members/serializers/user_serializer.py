@@ -59,21 +59,6 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ('pk', 'username',)
 
 
-class UserDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = (
-            'pk',
-            'email',
-            'username',
-            'nickname',
-            'img_profile',
-            'img_profile_thumbnail',
-            'first_name',
-            'last_name',
-        )
-        read_only_fields = ('pk', 'username', 'email',)
-
 
 class UserEmailSerializer(serializers.ModelSerializer):
     class Meta:
