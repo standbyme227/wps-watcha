@@ -90,9 +90,11 @@ class MovieManager(models.Manager):
             running_time = None
 
         if info_spec_area_1.select_one('span.count'):
-            audience_text = info_spec_area_1.find_all("span")[-1].get_text()
-            audience_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
-            audience = re.search(audience_pattern, audience_text).group(1)
+            audience_area = info_spec_area_1.find_all("span")[-1].get_text()
+            audience_pattern = re.compile(r'(.*?\,\d+)명.*?', re.DOTALL)
+            audience_text = re.search(audience_pattern, audience_area).group(1)
+            audience = audience_text.replace(',', '')
+
         else:
             audience = 0
 
@@ -172,7 +174,7 @@ class MovieManager(models.Manager):
                 'running_time': running_time,
                 'film_rate': film_rate,
                 'ticketing_rate': rank_share,
-                'audience': audience,
+                'audience': int(audience),
                 'intro': story,
             }
         )

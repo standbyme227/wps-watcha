@@ -8,7 +8,6 @@ User = get_user_model()
 __all__ = (
     # 'UserToMovieSerializer',
     'UserSerializer',
-    'UserDetailSerializer',
     'UserEmailSerializer',
 )
 
