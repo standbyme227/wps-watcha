@@ -15,6 +15,16 @@ class MovieListSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = (
+            'id',
+            'title_ko'
+            'ticketing_rate'
+        )
+
+
 class WantWatchedMovieListSerializer(MovieListSerializer):
     genre = GenreSerializer(many=True)
 

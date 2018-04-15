@@ -1,22 +1,9 @@
-# from django.contrib.auth import get_user_model
-# from rest_framework import generics
-#
-# from utils.pagination import SmallResultSetPagination
-# from ..serializers import UserSerializer
-#
-# User = get_user_model()
-#
-# __all__ = (
-#     'MovieListView',
-# )
-#
-#
-# class MovieListView(generics.ListAPIView):
-#     queryset = User.objects.filter(is_active=True, is_staff=False, is_superuser=False)
-#     serializer_class = UserSerializer
-#     pagination_class = SmallResultSetPagination
-from rest_framework import generics
 
+from rest_framework import generics, authentication
+from rest_framework.views import APIView
+
+from ..permissions import IsAdminOrReadOnly
+from utils.pagination import MovieListDefaultPagination, BoxOfficeRankingPagination, BoxOfficeRankingFivePagination
 from ..serializers import MovieListSerializer
 from ..models import Movie
 
@@ -24,3 +11,19 @@ from ..models import Movie
 class MovieListView(generics.ListAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieListSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    pagination_class = MovieListDefaultPagination
+
+
+
+class MovieBoxofficeRankingView(APIView):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permission_classes = (IsAdminOrReadOnly,)
+    pagination_class = BoxOfficeRankingPagination
+
+    # def get(self, request, format=None):
+    #     movie = Movie.objects.filter()
+    #     user = User.objects.get(auth_token=token)
+    #     serializer = UserSerializer(user, data=request.data, partial=True)
+    #     serializer.is_valid(raise_exception=True)
+    #     return Response(serializer.data)
