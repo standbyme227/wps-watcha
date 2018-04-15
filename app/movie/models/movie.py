@@ -103,6 +103,15 @@ class Movie(models.Model):
     def __str__(self):
         return self.title_ko
 
+    def give_rating_user(self, user, rating):
+        rating, rating_created = self.interested_user_list.get_or_create(
+            user=user,
+            rating=rating,
+        )
+        if not rating_created:
+            rating.delete()
+        return rating_created
+
     # def save(self, *args, **kwargs):
     #     self._save_resizing_process()
     #     super().save(*args, **kwargs)

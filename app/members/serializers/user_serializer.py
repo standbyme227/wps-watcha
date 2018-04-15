@@ -51,11 +51,11 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
             'nickname',
             'img_profile',
-            'img_profile_thumbnail',
             'first_name',
             'last_name',
         )
-        read_only_fields = ('pk', 'username',)
+        read_only_fields = ('pk', 'username', 'email')
+
 
 
 
@@ -67,4 +67,4 @@ class UserEmailSerializer(serializers.ModelSerializer):
             'email',
             'username',
         )
-        read_only_fields = ('pk', 'username',)
+        # read_only_fields = ('pk', 'username',)
