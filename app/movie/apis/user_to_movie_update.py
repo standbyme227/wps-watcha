@@ -4,7 +4,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import UserToMovie
+from ..models import UserToMovie, Movie
 from ..serializers import UserToMovieUpdateSerializer
 
 User = get_user_model()
@@ -30,5 +30,7 @@ class UserCheckedMovieUpdateView(APIView):
 
         if serializer.is_valid():
             serializer.save()
+            # movie = get_object_or_404(Movie, pk=request.data['movie'])
+            Movie.objects.update_rating_avg(id=request.data['movie'])
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
