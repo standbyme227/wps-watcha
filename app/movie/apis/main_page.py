@@ -1,4 +1,3 @@
-
 from rest_framework import (
     generics,
     authentication,
@@ -11,13 +10,18 @@ from utils.pagination import (
     MovieListDefaultPagination,
 )
 from ..serializers import (
-    MovieMinimumListSerializer,)
+    MovieMinimumListSerializer, )
 
 from ..models import Movie
 
 __all__ = (
     'WatchaRatingTopMovieListView',
+    'GenreMovieListView',
+    'TagMovieListView',
 )
+
+
+
 
 class WatchaRatingTopMovieListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
@@ -30,66 +34,34 @@ class WatchaRatingTopMovieListView(APIView):
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data)
 
-class TopMovieInKoreaListView(APIView):
+class TagMovieListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = MovieListDefaultPagination
 
+    TAG = ''
     def get(self, request, format=None):
-        movie = Movie.objects.filter(tag__tag='국내 누적관객수 TOP 영화')
-        serializer = MovieMinimumListSerializer(movie, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+        movie = Movie.objects.filter(tag__tag=self.TAG)
+        movie_list = []
+        for item in movie:
+            movie_list.append(item)
+
+        serializer = MovieMinimumListSerializer(movie_list, many=True)
         return Response(serializer.data)
 
-class TopAudienceMovieListView(APIView):
+
+class GenreMovieListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = MovieListDefaultPagination
 
-    def get(self, request, format=None):
-        movie = Movie.objects.filter(tag__tag='역대 100만 관객 돌파 영화')
-        serializer = MovieMinimumListSerializer(movie, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        return Response(serializer.data)
-
-class TopMovieInTheWorldListView(APIView):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
-    pagination_class = MovieListDefaultPagination
+    GENRE = ''
 
     def get(self, request, format=None):
-        movie = Movie.objects.filter(tag__tag='전세계 흥행 TOP 영화')
-        serializer = MovieMinimumListSerializer(movie, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+        movie = Movie.objects.filter(genre__genre=self.GENRE)
+        movie_list = []
+        for item in movie:
+            movie_list.append(item)
+
+        serializer = MovieMinimumListSerializer(movie_list, many=True)
         return Response(serializer.data)
-
-class HeroMovieListView:
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
-    pagination_class = MovieListDefaultPagination
-
-    def get(self, request, format=None):
-        movie = Movie.objects.filter(tag__tag='슈퍼 히어로 영화')
-        serializer = MovieMinimumListSerializer(movie, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        return Response(serializer.data)
-
-class SportsMovieListView:
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
-    pagination_class = MovieListDefaultPagination
-
-    def get(self, request, format=None):
-        movie = Movie.objects.filter(tag__tag='스포츠 영화')
-        serializer = MovieMinimumListSerializer(movie, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        return Response(serializer.data)
-
-# class GenreMovieListView:
-#     authentication_classes = (authentication.TokenAuthentication,)
-#     permission_classes = (IsAdminOrReadOnly,)
-#     pagination_class = MovieListDefaultPagination
-#
-#     def get(self, request, format=None):
-#         genre =
-

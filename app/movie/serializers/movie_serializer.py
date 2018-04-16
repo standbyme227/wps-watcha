@@ -18,6 +18,7 @@ class MovieListSerializer(serializers.ModelSerializer):
 
 
 class MovieMinimumListSerializer(serializers.ModelSerializer):
+    genre = GenreSerializer(many=True)
     class Meta:
         model = Movie
         fields = (
@@ -25,6 +26,8 @@ class MovieMinimumListSerializer(serializers.ModelSerializer):
             'title_ko',
             'poster_image',
             'rating_avg',
+            'genre',
+            'tag',
         )
 
 
