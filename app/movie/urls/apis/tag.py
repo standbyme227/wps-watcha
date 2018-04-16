@@ -1,16 +1,10 @@
 from django.urls import path, include
 
 from ...apis import (
-    MovieListView,
-    MovieEvalListView,
-    UserCheckedMovieListView,
-    MovieBoxofficeRankingListView,
-    GenreMovieListView,
     TagMovieListView,
-    MovieListSerializer,
 )
 
-app_name = 'movie'
+app_name = 'tag'
 
 urlpatterns = [
     path('top/korea/', TagMovieListView.as_view(TAG='국내 누적관객수 TOP 영화'), name='top-of-korea-movie-list'),

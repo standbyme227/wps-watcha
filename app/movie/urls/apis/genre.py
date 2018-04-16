@@ -4,7 +4,7 @@ from ...apis import (
     GenreMovieListView,
 )
 
-app_name = 'movie'
+app_name = 'genre'
 
 urlpatterns = [
     path('action/', GenreMovieListView.as_view(GENRE='액션'), name='action-movie-list'),

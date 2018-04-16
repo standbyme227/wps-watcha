@@ -21,8 +21,6 @@ __all__ = (
 )
 
 
-
-
 class WatchaRatingTopMovieListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
@@ -34,12 +32,14 @@ class WatchaRatingTopMovieListView(APIView):
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data)
 
+
 class TagMovieListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = MovieListDefaultPagination
 
     TAG = ''
+
     def get(self, request, format=None):
         movie = Movie.objects.filter(tag__tag=self.TAG)
         movie_list = []
