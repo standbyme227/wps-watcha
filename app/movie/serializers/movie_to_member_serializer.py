@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from actor_director.serializers import MemberNameListSerializer
+from actor_director.serializers import MemberNameListSerializer, MemberDefaultListSerializer
 from ..models import MovieToMember
 
 __all__ = (
@@ -8,11 +8,15 @@ __all__ = (
 )
 
 class MovieToMemberListSerializer(serializers.ModelSerializer):
-    # member = MemberNameListSerializer(source='movie_member_list', many=True, read_only=True)
+    name = serializers.ReadOnlyField(source='member.name')
+    real_name = serializers.ReadOnlyField(source='member.real_name')
+
     class Meta:
         model = MovieToMember
         fields = (
             'type',
-            'role_name',
+            # 'role_name',
             'member',
+            'name',
+            'real_name',
         )

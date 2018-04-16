@@ -1,4 +1,6 @@
 from rest_framework import serializers, filters
+
+from actor_director.serializers import MemberDefaultListSerializer
 from movie.serializers.movie_to_member_serializer import MovieToMemberListSerializer
 from ...serializers import GenreSerializer
 from ...models import Movie
@@ -56,7 +58,6 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
 
 class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
     members = MovieToMemberListSerializer(source='movie_member_list', many=True, read_only=True)
-
     class Meta:
         model = Movie
         fields = (

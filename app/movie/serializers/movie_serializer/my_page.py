@@ -6,9 +6,6 @@ __all__ = (
     'WantWatchedMovieListSerializer',
 )
 
-
-
-
 class WantWatchedMovieListSerializer(MovieListSerializer):
     genre = GenreSerializer(many=True)
 

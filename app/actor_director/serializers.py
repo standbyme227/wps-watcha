@@ -3,6 +3,7 @@ from actor_director.models import Member
 
 
 class MemberDefaultListSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Member
         fields = '__all__'
