@@ -9,7 +9,7 @@ class SmallResultSetPagination(PageNumberPagination):
 class MovieListDefaultPagination(PageNumberPagination):
     page_size = 8
     page_size_query_param = 'page_size'
-    max_page_size = 8
+    max_page_size = 40
 
 class MovieListEvalPagination(PageNumberPagination):
     page_size = 40
@@ -24,5 +24,5 @@ class BoxOfficeRankingPagination(PageNumberPagination):
 class BoxOfficeRankingFivePagination(PageNumberPagination):
     page_size = 5
     page_size_query_param = 'page_size'
-    max_page_size = 5
+    max_page_size = 10
 

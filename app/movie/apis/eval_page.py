@@ -20,13 +20,6 @@ __all__ = (
 )
 
 
-# class MovieEvalListView(generics.ListAPIView):
-#     queryset = Movie.objects.all()
-#     serializer_class = MovieMinimumListSerializer
-#     authentication_classes = (authentication.TokenAuthentication,)
-#     pagination_class = MovieListEvalPagination
-#
-
 class EvalTagMovieListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)

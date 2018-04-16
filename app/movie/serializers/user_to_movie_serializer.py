@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from ..serializers import WantWatchedMovieListSerializer
+from movie.serializers.movie_serializer.my_page import WantWatchedMovieListSerializer
 from ..models import UserToMovie
 
 User = get_user_model()

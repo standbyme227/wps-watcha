@@ -1,43 +1,54 @@
 from rest_framework import (
     authentication,
-    filters,
 )
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from ..permissions import IsAdminOrReadOnly
 
 from utils.pagination import (
     BoxOfficeRankingPagination,
     BoxOfficeRankingFivePagination,
+    MovieListDefaultPagination
 )
 from ..serializers import (
-    MovieBoxOfficeRankingSerializer,
-)
+    MovieNameBoxOfficeRankingSerializer,
+    MovieBoxOfficeRankingFiveSerializer,
+    MovieBoxOfficeRankingSerializer)
 
 from ..models import Movie
 
 __all__ = (
-    'MovieBoxofficeRankingListView',
+    'MovieBoxofficeRankingNameListView',
     'MovieBoxofficeRankingFiveListView',
+    'MovieBoxofficeRankingListView'
 )
 
 
-class MovieBoxofficeRankingListView(APIView):
+
+class MovieBoxofficeRankingNameListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = BoxOfficeRankingPagination
 
-    # filter_backends = (filters.OrderingFilter,)
-    # ordering_fields = ('resource__ticketing_rate',)
-    # ordering = ('resource__ticketing_rate',)
-
     def get(self, request, format=None):
         movie = Movie.objects.filter(ticketing_rate__gte=0.0)
-        serializer = MovieBoxOfficeRankingSerializer(movie, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+        movie_list = []
+        for item in movie:
+            movie_list.append(item)
+
+        serializer = MovieNameBoxOfficeRankingSerializer(movie_list, many=True)
         return Response(serializer.data)
+
+
+
+
+
+
+
+
+
+
 
 
 class MovieBoxofficeRankingFiveListView(APIView):
@@ -47,6 +58,24 @@ class MovieBoxofficeRankingFiveListView(APIView):
 
     def get(self, request, format=None):
         movie = Movie.objects.filter(ticketing_rate__gte=0.0)
-        serializer = MovieBoxOfficeRankingSerializer(movie, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+        movie_list = []
+        for item in movie:
+            movie_list.append(item)
+
+        serializer = MovieBoxOfficeRankingFiveSerializer(movie_list, many=True)
+        return Response(serializer.data)
+
+
+class MovieBoxofficeRankingListView(APIView):
+    authentication_classes = (authentication.TokenAuthentication,)
+    permissions_classes = (IsAdminOrReadOnly,)
+    pagination_class = MovieListDefaultPagination
+
+    def get(self, request, format=None):
+        movie = Movie.objects.filter(ticketing_rate__gte=0.0)
+        movie_list = []
+        for item in movie:
+            movie_list.append(item)
+
+        serializer = MovieBoxOfficeRankingSerializer(movie_list, many=True)
         return Response(serializer.data)

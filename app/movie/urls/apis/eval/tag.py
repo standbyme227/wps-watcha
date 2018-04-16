@@ -4,7 +4,7 @@ from ....apis import (
     EvalTagMovieListView,
 )
 
-app_name = 'tag'
+app_name = 'eval-tag'
 
 urlpatterns = [
     path('top/korea/', EvalTagMovieListView.as_view(TAG='국내 누적관객수 TOP 영화'), name='top-of-korea-movie-list'),

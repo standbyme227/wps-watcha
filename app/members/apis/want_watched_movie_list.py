@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from movie.models import UserToMovie
-from movie.serializers import WantWatchedMovieListSerializer, UserToMovieUpdateSerializer
-
+from movie.serializers import UserToMovieUpdateSerializer
+from movie.serializers.movie_serializer.my_page import WantWatchedMovieListSerializer
 
 User = get_user_model()
 
