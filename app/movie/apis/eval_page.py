@@ -1,24 +1,23 @@
-
 from rest_framework import (
     generics,
     authentication,
 )
 
-
 from utils.pagination import (
-    MovieListDefaultPagination,
+    MovieListEvalPagination,
 )
 from ..serializers import (
-    MovieMinimumListSerializer,)
+    MovieMinimumListSerializer, )
 
 from ..models import Movie
 
 __all__ = (
-    'MovieListView',
+    'MovieEvalListView',
 )
 
-class MovieListView(generics.ListAPIView):
+
+class MovieEvalListView(generics.ListAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieMinimumListSerializer
     authentication_classes = (authentication.TokenAuthentication,)
-    pagination_class = MovieListDefaultPagination
+    pagination_class = MovieListEvalPagination
