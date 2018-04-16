@@ -33,6 +33,7 @@ class UserToMovie(models.Model):
         unique_together = (
             ('user', 'movie'),
         )
+        ordering = ['-pk']
 
     def __str__(self):
         return f'UserToMovie (User: {self.user}, Movie: {self.movie})'
