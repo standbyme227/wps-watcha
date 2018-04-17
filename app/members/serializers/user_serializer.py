@@ -8,7 +8,6 @@ User = get_user_model()
 __all__ = (
     # 'UserToMovieSerializer',
     'UserSerializer',
-    'UserDetailSerializer',
     'UserEmailSerializer',
 )
 
@@ -52,27 +51,12 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
             'nickname',
             'img_profile',
-            'img_profile_thumbnail',
             'first_name',
             'last_name',
         )
-        read_only_fields = ('pk', 'username',)
+        read_only_fields = ('pk', 'username', 'email')
 
 
-class UserDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = (
-            'pk',
-            'email',
-            'username',
-            'nickname',
-            'img_profile',
-            'img_profile_thumbnail',
-            'first_name',
-            'last_name',
-        )
-        read_only_fields = ('pk', 'username', 'email',)
 
 
 class UserEmailSerializer(serializers.ModelSerializer):
@@ -83,4 +67,4 @@ class UserEmailSerializer(serializers.ModelSerializer):
             'email',
             'username',
         )
-        read_only_fields = ('pk', 'username',)
+        # read_only_fields = ('pk', 'username',)

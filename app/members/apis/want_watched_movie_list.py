@@ -5,8 +5,13 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from movie.models import UserToMovie
+<<<<<<< HEAD
 from movie.serializers import WantWatchedMovieListSerializer
 from utils.pagination import SmallResultSetPagination, StandardResultSetPagination
+=======
+from movie.serializers import UserToMovieUpdateSerializer
+from movie.serializers.movie_serializer.my_page import WantWatchedMovieListSerializer
+>>>>>>> dev
 
 User = get_user_model()
 
