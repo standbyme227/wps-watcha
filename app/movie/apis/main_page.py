@@ -30,7 +30,7 @@ class WatchaRatingTopMovieListView(APIView):
     def get(self, request, format=None):
         if not request.user.is_anonymous:
             movie = Movie.objects.\
-                exclude(interested_user_list__token=request.user.auth_token).filter(rating_avg__gte=4.3).order_by('?')
+                exclude(interested_user_list__id=request.user.pk).filter(rating_avg__gte=4.3).order_by('?')
         else:
             movie = Movie.objects.filter(rating_avg__gte=4.3).order_by('?')
         movie_list = []
@@ -54,7 +54,7 @@ class TagMovieListView(APIView):
     def get(self, request, format=None):
         if not request.user.is_anonymous:
             movie = Movie.objects.\
-                exclude(interested_user_list__token=request.user.auth_token).filter(tag__tag=self.TAG).order_by('?')
+                exclude(interested_user_list__id=request.user.pk).filter(tag__tag=self.TAG).order_by('?')
         else:
             movie = Movie.objects.filter(tag__tag=self.TAG).order_by('?')
         movie_list = []
@@ -75,7 +75,7 @@ class GenreMovieListView(APIView):
     def get(self, request, format=None):
         if not request.user.is_anonymous:
             movie = Movie.objects.\
-                exclude(interested_user_list__token=request.user.auth_token).filter(genre__genre=self.GENRE).order_by('?')
+                exclude(interested_user_list__id=request.user.pk).filter(genre__genre=self.GENRE).order_by('?')
         else:
             movie = Movie.objects.filter(genre__genre=self.GENRE).order_by('?')
         movie_list = []
