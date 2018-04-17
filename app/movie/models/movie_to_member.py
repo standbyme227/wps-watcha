@@ -9,10 +9,10 @@ __all__ = (
 
 
 class MovieToMember(models.Model):
-    A = 1
-    B = 2
-    C = 3
-    D = 4
+    A = '1'
+    B = '2'
+    C = '3'
+    D = '4'
     CHOICES_MEMBER_TYPE = (
         (A, '감독'),
         (B, '주연'),

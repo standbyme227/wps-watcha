@@ -1,11 +1,16 @@
 from rest_framework import serializers
 
-from ..serializers import GenreSerializer
+from actor_director.serializers import MemberDetailSerializer
 from ..models import Movie, UserToMovie
-from movie.serializers.user_to_movie_serializer import UserToMovieWantWatchedListSerializer
+from ..serializers.genre_serializer import GenreSerializer
+from ..serializers.stillcut_serializer import StillCutSerializer
+from ..serializers.tag_serializer import TagSerializer
+from ..serializers.user_to_movie_serializer import UserToMovieWantWatchedListSerializer
 
 __all__ = (
     'MovieListSerializer',
+    'MovieDetailSerializer',
+    'MovieSimpleDetailSerializer',
     'WantWatchedMovieListSerializer',
 )
 
@@ -14,6 +19,60 @@ class MovieListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = '__all__'
+
+
+class MovieDetailSerializer(serializers.ModelSerializer):
+    # still_cuts = serializers.StringRelatedField(many=True)
+    still_cuts = StillCutSerializer(many=True)
+    genre = GenreSerializer(many=True)
+    tag = TagSerializer(many=True)
+    members = MemberDetailSerializer(many=True)
+
+    class Meta:
+        model = Movie
+        fields = (
+            'id',
+            'title_ko',
+            'title_en',
+            'd_day',
+            'film_rate',
+            'running_time',
+            'intro',
+            'nation',
+            'ticketing_rate',
+            'audience',
+            'rating_avg',
+            'poster_image',
+            'still_cuts',
+            'genre',
+            'tag',
+            'members',
+            'user',
+        )
+
+
+class MovieSimpleDetailSerializer(serializers.ModelSerializer):
+    login_user_checked = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Movie
+        fields = (
+            'id',
+            'title_ko',
+            'poster_image',
+            'login_user_checked',
+        )
+
+    def get_login_user_checked(self, obj):
+        items = UserToMovie.objects.filter(user=self.context['login_user'], movie=obj)
+        if len(items) == 1:
+            for item in items:
+                serializer = UserToMovieWantWatchedListSerializer(item)
+                return serializer.data
+        elif len(items) == 0:
+            return {'no-data': 'does not exist.'}
+        else:
+            return {'error': 'Problems with data consistency'}
 
 
 class WantWatchedMovieListSerializer(MovieListSerializer):
