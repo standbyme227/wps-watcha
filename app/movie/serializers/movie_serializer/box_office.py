@@ -40,7 +40,7 @@ class MovieNameBoxOfficeRankingSerializer(serializers.ModelSerializer):
 
 class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
-    film_rate = serializers.CharField(source='get_type_display', read_only=True)
+    film_rate = serializers.CharField(source='get_film_rate_display', read_only=True)
 
     class Meta:
         model = Movie
