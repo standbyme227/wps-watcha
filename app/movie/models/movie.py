@@ -96,7 +96,7 @@ class Movie(models.Model):
     )
 
     class Meta:
-        ordering = ['-ticketing_rate']
+        ordering = ['-pk']
 
     objects = MovieManager()
 

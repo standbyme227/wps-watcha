@@ -8,10 +8,12 @@ __all__ = (
     'MovieNameBoxOfficeRankingSerializer',
 )
 
+
 class MovieListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
         fields = '__all__'
+
 
 class MovieMinimumListSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
@@ -49,4 +51,3 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
             'rating_avg',
             'poster_image',
         )
-

@@ -27,10 +27,20 @@ class WatchaRatingTopMovieListView(APIView):
     pagination_class = MovieListDefaultPagination
 
     def get(self, request, format=None):
-        movie = Movie.objects.filter(rating_avg__gte=4.3)
-        serializer = MovieMinimumListSerializer(movie, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+        if not request.user.is_anonymous:
+            movie = Movie.objects.\
+                exclude(interested_user_list__token=request.user.token).filter(rating_avg__gte=4.3).order_by('?')
+        else:
+            movie = Movie.objects.filter(rating_avg__gte=4.3).order_by('?')
+        movie_list = []
+        for item in movie:
+            movie_list.append(item)
+
+        serializer = MovieMinimumListSerializer(movie_list, many=True)
         return Response(serializer.data)
+        # serializer = MovieMinimumListSerializer(movie, data=request.data, partial=True)
+        # serializer.is_valid(raise_exception=True)
+        # return Response(serializer.data)
 
 
 class TagMovieListView(APIView):
@@ -41,7 +51,11 @@ class TagMovieListView(APIView):
     TAG = ''
 
     def get(self, request, format=None):
-        movie = Movie.objects.filter(tag__tag=self.TAG)
+        if not request.user.is_anonymous:
+            movie = Movie.objects.\
+                exclude(interested_user_list__token=request.user.token).filter(tag__tag=self.TAG).order_by('?')
+        else:
+            movie = Movie.objects.filter(tag__tag=self.TAG).order_by('?')
         movie_list = []
         for item in movie:
             movie_list.append(item)
@@ -58,7 +72,11 @@ class GenreMovieListView(APIView):
     GENRE = ''
 
     def get(self, request, format=None):
-        movie = Movie.objects.filter(genre__genre=self.GENRE)
+        if not request.user.is_anonymous:
+            movie = Movie.objects.\
+                exclude(interested_user_list__token=request.user.token).filter(genre__genre=self.GENRE).order_by('?')
+        else:
+            movie = Movie.objects.filter(genre__genre=self.GENRE).order_by('?')
         movie_list = []
         for item in movie:
             movie_list.append(item)

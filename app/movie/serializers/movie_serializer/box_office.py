@@ -1,6 +1,5 @@
 from rest_framework import serializers, filters
-
-from actor_director.serializers import MemberDefaultListSerializer
+from rest_framework.compat import MaxValueValidator
 from movie.serializers.movie_to_member_serializer import MovieToMemberListSerializer
 from ...serializers import GenreSerializer
 from ...models import Movie
@@ -28,6 +27,7 @@ class MovieMinimumListSerializer(serializers.ModelSerializer):
 
 
 class MovieNameBoxOfficeRankingSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Movie
         fields = (
@@ -36,6 +36,7 @@ class MovieNameBoxOfficeRankingSerializer(serializers.ModelSerializer):
             'ticketing_rate',
             'rating_avg',
         )
+
 
 class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)

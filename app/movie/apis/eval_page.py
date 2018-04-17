@@ -21,6 +21,7 @@ __all__ = (
 
 
 class EvalTagMovieListView(APIView):
+
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = MovieListEvalPagination
@@ -28,7 +29,12 @@ class EvalTagMovieListView(APIView):
     TAG = ''
 
     def get(self, request, format=None):
-        movie = Movie.objects.filter(tag__tag=self.TAG)
+        if not request.user.is_anonymous:
+            movie = Movie.objects.\
+                exclude(interested_user_list__token=request.user.token).filter(tag__tag=self.TAG).order_by('?')
+        else:
+            movie = Movie.objects.filter(tag__tag=self.TAG).order_by('?')
+        # movie = Movie.objects.filter(tag__tag=self.TAG)
         movie_list = []
         for item in movie:
             movie_list.append(item)
@@ -45,7 +51,12 @@ class EvalGenreMovieListView(APIView):
     GENRE = ''
 
     def get(self, request, format=None):
-        movie = Movie.objects.filter(genre__genre=self.GENRE)
+        if not request.user.is_anonymous:
+            movie = Movie.objects.\
+                exclude(interested_user_list__token=request.user.token).filter(genre__genre=self.GENRE).order_by('?')
+        else:
+            movie = Movie.objects.filter(genre__genre=self.GENRE).order_by('?')
+        # movie = Movie.objects.filter(genre__genre=self.GENRE)
         movie_list = []
         for item in movie:
             movie_list.append(item)
