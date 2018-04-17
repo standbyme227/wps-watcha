@@ -1,6 +1,7 @@
 from rest_framework import (
     authentication,
 )
+from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -29,7 +30,7 @@ class MovieBoxofficeRankingNameListView(APIView):
     queryset = Movie.objects.filter(ticketing_rate__gte=0.0)
     serializer_class = MovieNameBoxOfficeRankingSerializer
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     pagination_class = BoxOfficeRankingPagination
 
 
@@ -66,7 +67,7 @@ class MovieBoxofficeRankingFiveListView(APIView):
     queryset = Movie.objects.filter(ticketing_rate__gte=0.0)
     serializer_class = MovieBoxOfficeRankingFiveSerializer
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     pagination_class = BoxOfficeRankingFivePagination
 
     def get(self, request):
@@ -111,7 +112,7 @@ class MovieBoxofficeRankingListView(APIView):
     queryset = Movie.objects.filter(ticketing_rate__gte=0.0)
     serializer_class = MovieBoxOfficeRankingSerializer
     authentication_classes = (authentication.TokenAuthentication,)
-    permissions_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     pagination_class = MovieListDefaultPagination
 
     def get(self, request):

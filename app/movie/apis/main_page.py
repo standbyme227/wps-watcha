@@ -2,6 +2,7 @@ from rest_framework import (
     generics,
     authentication,
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -23,7 +24,7 @@ __all__ = (
 
 class WatchaRatingTopMovieListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     pagination_class = MovieListDefaultPagination
 
     def get(self, request, format=None):
@@ -45,7 +46,7 @@ class WatchaRatingTopMovieListView(APIView):
 
 class TagMovieListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     pagination_class = MovieListDefaultPagination
 
     TAG = ''
@@ -66,7 +67,7 @@ class TagMovieListView(APIView):
 
 class GenreMovieListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     pagination_class = MovieListDefaultPagination
 
     GENRE = ''
