@@ -27,10 +27,16 @@ class WatchaRatingTopMovieListView(APIView):
     pagination_class = MovieListDefaultPagination
 
     def get(self, request, format=None):
-        movie = Movie.objects.filter(rating_avg__gte=4.3)
-        serializer = MovieMinimumListSerializer(movie, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
+        movie = Movie.objects.filter(rating_avg__gte=4.3).order_by('?')
+        movie_list = []
+        for item in movie:
+            movie_list.append(item)
+
+        serializer = MovieMinimumListSerializer(movie_list, many=True)
         return Response(serializer.data)
+        # serializer = MovieMinimumListSerializer(movie, data=request.data, partial=True)
+        # serializer.is_valid(raise_exception=True)
+        # return Response(serializer.data)
 
 
 class TagMovieListView(APIView):

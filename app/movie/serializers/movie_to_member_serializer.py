@@ -10,7 +10,7 @@ __all__ = (
 class MovieToMemberListSerializer(serializers.ModelSerializer):
     name = serializers.ReadOnlyField(source='member.name')
     real_name = serializers.ReadOnlyField(source='member.real_name')
-    # type = serializers.CharField(source='get_type_display', read_only=True)
+    type = serializers.CharField(source='get_type_display', read_only=True)
     # type = serializers.CharField(choices=MovieToMember.CHOICES_MEMBER_TYPE)
     class Meta:
         model = MovieToMember
@@ -21,6 +21,3 @@ class MovieToMemberListSerializer(serializers.ModelSerializer):
             'name',
             'real_name',
         )
-
-    def get_type(self, obj):
-        return obj.get_type_display()

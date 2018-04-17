@@ -26,7 +26,7 @@ __all__ = (
 
 
 class MovieBoxofficeRankingNameListView(APIView):
-    queryset = Movie.objects.filter(ticketing_rate__gte=0.0)
+    queryset = Movie.objects.filter(ticketing_rate__gte=0.0).order_by('-ticketing_rate')
     serializer_class = MovieNameBoxOfficeRankingSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
@@ -68,7 +68,7 @@ class MovieBoxofficeRankingNameListView(APIView):
 
 
 class MovieBoxofficeRankingFiveListView(APIView):
-    queryset = Movie.objects.filter(ticketing_rate__gte=0.0)
+    queryset = Movie.objects.filter(ticketing_rate__gte=0.0).order_by('-ticketing_rate')
     serializer_class = MovieBoxOfficeRankingFiveSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
@@ -109,11 +109,15 @@ class MovieBoxofficeRankingFiveListView(APIView):
 
 
 class MovieBoxofficeRankingListView(APIView):
-    queryset = Movie.objects.filter(ticketing_rate__gte=0.0)
+    queryset = Movie.objects.filter(ticketing_rate__gte=0.0).order_by('-ticketing_rate')
     serializer_class = MovieBoxOfficeRankingSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     permissions_classes = (IsAdminOrReadOnly,)
     pagination_class = MovieListDefaultPagination
+
+    # def filter_queryset(self, queryset):
+    #     queryset = super(MovieBoxofficeRankingListView, self).filter_queryset(queryset)
+    #     return queryset.order_by('-ticketing_rate')
 
     # def get(self, request, format=None):
     #     movie = Movie.objects.filter(ticketing_rate__gte=0.0)
@@ -146,6 +150,8 @@ class MovieBoxofficeRankingListView(APIView):
     def get_paginated_response(self, data):
         assert self.paginator is not None
         return self.paginator.get_paginated_response(data)
+
+
 
 # class MovieBoxofficeRankingListView(APIView):
 #     authentication_classes = (authentication.TokenAuthentication,)

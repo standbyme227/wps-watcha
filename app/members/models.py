@@ -44,7 +44,7 @@ class User(AbstractUser):
             'unique': _("A user with that email already exists."),
         },
     )
-    nickname = models.CharField(verbose_name='nickname', max_length=20, blank=False, null=False, unique=True)
+    nickname = models.CharField(verbose_name='nickname', max_length=20, blank=False, null=False)
     img_profile = models.ImageField(upload_to='user', blank=True)
     # img_profile_thumbnail = models.ImageField(upload_to='user', blank=True)
 
