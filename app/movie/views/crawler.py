@@ -106,9 +106,11 @@ def update_or_create_from_crawler(request):
                 running_time = None
 
             if info_spec_area_1.select_one('span.count'):
-                audience_text = info_spec_area_1.find_all("span")[-1].get_text()
-                audience_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
-                audience = re.search(audience_pattern, audience_text).group(1)
+                audience_area = info_spec_area_1.find_all("span")[-1].get_text()
+                audience_pattern = re.compile(r'(.*?\,*\d+)명.*?', re.DOTALL)
+                audience_text = re.search(audience_pattern, audience_area).group(1)
+                audience = audience_text.replace(',', '')
+
             else:
                 audience = 0
 
@@ -153,7 +155,7 @@ def update_or_create_from_crawler(request):
                 driver.back()
 
             else:
-                rank_share = ''
+                rank_share = None
 
             for short, full in Movie.CHOICES_NATION_CODE:
                 if nation == None:

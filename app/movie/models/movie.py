@@ -62,7 +62,8 @@ class Movie(models.Model):
     running_time = models.IntegerField('상영시간', null=True, blank=True)
     intro = models.TextField('줄거리', blank=True)  # (구)story
     nation = models.CharField('국가', max_length=5, choices=CHOICES_NATION_CODE, blank=True)
-    ticketing_rate = models.CharField('예매율', max_length=10, blank=True)  # (구)rank_share
+    ticketing_rate = models.DecimalField('예매율', default=0.0, max_digits=5, decimal_places=2,
+                                     validators=[MaxValueValidator(100), ], blank=True, null=True)  # (구)rank_share
     audience = models.IntegerField('누적관객수', null=True, blank=True)
     poster_image = models.ImageField('포스터 이미지', upload_to='poster', blank=True)
 
@@ -95,12 +96,21 @@ class Movie(models.Model):
     )
 
     class Meta:
-        ordering = ['-pk']
+        ordering = ['-ticketing_rate']
 
     objects = MovieManager()
 
     def __str__(self):
         return self.title_ko
+
+    def give_rating_user(self, user, rating):
+        rating, rating_created = self.interested_user_list.get_or_create(
+            user=user,
+            rating=rating,
+        )
+        if not rating_created:
+            rating.delete()
+        return rating_created
 
     # def save(self, *args, **kwargs):
     #     self._save_resizing_process()

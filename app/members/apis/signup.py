@@ -16,13 +16,24 @@ class SignupView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
+            user_email = serializer.initial_data['email']
+            user_nickname = serializer.initial_data['nickname']
+
             if not serializer.initial_data['email']:
-                data = {"email": ["This field may not be blank."]}
+                data = {"email": ["email을 입력해주세요."]}
                 return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
 
             if not serializer.initial_data['password']:
-                data = {"password": ["This field may not be blank."]}
+                data = {"password": ["비밀번호를 입력해주세요."]}
                 return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
+
+            if User.objects.filter(email=user_email):
+                data = {"email": ["이미 사용중인 이메일 입니다."]}
+                return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
+
+            # if User.objects.filter(nickname=user_nickname):
+            #     data = {"nickname": ["이미 사용중인 닉네임 입니다."]}
+            #     return Response(data=data, status=status.HTTP_400_BAD_REQUEST)
 
             user = User.objects.create_user(
                 email=serializer.initial_data['email'],
