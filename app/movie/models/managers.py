@@ -1,4 +1,5 @@
 import re
+import statistics
 from datetime import datetime
 
 from PIL import Image
@@ -41,6 +42,10 @@ class MovieManager(models.Manager):
         driver.implicitly_wait(3)
 
         driver.get(response.url)
+
+        if driver.switch_to.alert:
+            driver.switch_to.alert.accept()
+
         html = driver.page_source
         soup = BeautifulSoup(html, 'lxml')
 
@@ -365,3 +370,18 @@ class MovieManager(models.Manager):
 
                 num += 1
         return movie, movie_created
+
+    def update_rating_avg(self, id):
+        from ..models import UserToMovie
+        items = UserToMovie.objects.filter(movie=id)
+        rating_list = []
+        for item in items:
+            if item.rating:
+                rating_list.append(item.rating)
+        rating_avg = round(statistics.mean(rating_list), 1)
+
+        from ..models import Movie
+        movie_cnt = Movie.objects.filter(pk=id).update(
+            rating_avg=rating_avg
+        )
+        return movie_cnt
