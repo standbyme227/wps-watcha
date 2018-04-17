@@ -26,24 +26,19 @@ __all__ = (
 
 
 class MovieBoxofficeRankingNameListView(APIView):
-    queryset = Movie.objects.filter(ticketing_rate__gte=0.0).order_by('-ticketing_rate')
+    queryset = Movie.objects.filter(ticketing_rate__gte=0.0)
     serializer_class = MovieNameBoxOfficeRankingSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = BoxOfficeRankingPagination
 
-    # def get(self, request, format=None):
-    #     movie = Movie.objects.filter(ticketing_rate__gte=0.0)
-    #     movie_list = []
-    #     for item in movie:
-    #         movie_list.append(item)
-    #
-    #     serializer = MovieNameBoxOfficeRankingSerializer(movie_list, many=True)
-    #     return Response(serializer.data)
-
 
     def get(self, request):
-        page = self.paginate_queryset(self.queryset)
+        if not request.user.is_anonymous:
+            queryset = self.queryset.exclude(interested_user_list__token=request.user.token).order_by('-ticketing_rate')
+        else:
+            queryset = self.queryset.order_by('-ticketing_rate')
+        page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)
@@ -68,14 +63,18 @@ class MovieBoxofficeRankingNameListView(APIView):
 
 
 class MovieBoxofficeRankingFiveListView(APIView):
-    queryset = Movie.objects.filter(ticketing_rate__gte=0.0).order_by('-ticketing_rate')
+    queryset = Movie.objects.filter(ticketing_rate__gte=0.0)
     serializer_class = MovieBoxOfficeRankingFiveSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     permission_classes = (IsAdminOrReadOnly,)
     pagination_class = BoxOfficeRankingFivePagination
 
     def get(self, request):
-        page = self.paginate_queryset(self.queryset)
+        if not request.user.is_anonymous:
+            queryset = self.queryset.exclude(interested_user_list__token=request.user.token).order_by('-ticketing_rate')
+        else:
+            queryset = self.queryset.order_by('-ticketing_rate')
+        page = self.paginate_queryset(queryset)
         if page is not None:
             serializer =self.serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)
@@ -109,26 +108,18 @@ class MovieBoxofficeRankingFiveListView(APIView):
 
 
 class MovieBoxofficeRankingListView(APIView):
-    queryset = Movie.objects.filter(ticketing_rate__gte=0.0).order_by('-ticketing_rate')
+    queryset = Movie.objects.filter(ticketing_rate__gte=0.0)
     serializer_class = MovieBoxOfficeRankingSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     permissions_classes = (IsAdminOrReadOnly,)
     pagination_class = MovieListDefaultPagination
 
-    # def filter_queryset(self, queryset):
-    #     queryset = super(MovieBoxofficeRankingListView, self).filter_queryset(queryset)
-    #     return queryset.order_by('-ticketing_rate')
-
-    # def get(self, request, format=None):
-    #     movie = Movie.objects.filter(ticketing_rate__gte=0.0)
-    #     movie_list = []
-    #     for item in movie:
-    #         movie_list.append(item)
-    #
-    #     serializer = MovieBoxOfficeRankingSerializer(movie_list, many=True)
-    #     return Response(serializer.data)
     def get(self, request):
-        page = self.paginate_queryset(self.queryset)
+        if not request.user.is_anonymous:
+            queryset = self.queryset.exclude(interested_user_list__token=request.user.token).order_by('-ticketing_rate')
+        else:
+            queryset = self.queryset.order_by('-ticketing_rate')
+        page = self.paginate_queryset(queryset)
         if page is not None:
             serializer = self.serializer_class(page, many=True)
             return self.get_paginated_response(serializer.data)
@@ -151,18 +142,3 @@ class MovieBoxofficeRankingListView(APIView):
         assert self.paginator is not None
         return self.paginator.get_paginated_response(data)
 
-
-
-# class MovieBoxofficeRankingListView(APIView):
-#     authentication_classes = (authentication.TokenAuthentication,)
-#     permissions_classes = (IsAdminOrReadOnly,)
-#     pagination_class = MovieListDefaultPagination
-#
-#     def get(self, request, format=None):
-#         movie = Movie.objects.filter(ticketing_rate__gte=0.0)
-#         movie_list = []
-#         for item in movie:
-#             movie_list.append(item)
-#
-#         serializer = MovieBoxOfficeRankingSerializer(movie_list, many=True)
-#         return Response(serializer.data)
