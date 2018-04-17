@@ -97,7 +97,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TrailerYouTube',
             fields=[
-                ('youtube_id', models.CharField(max_length=20, primary_key=True, serialize=False, verbose_name='YouTube ID')),
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('youtube_id', models.CharField(max_length=20, serialize=False, verbose_name='YouTube ID')),
                 ('title', models.CharField(max_length=200, verbose_name='제목')),
                 ('url_thumbnail', models.URLField(blank=True, help_text='this image is 320px wide and 180px tall.', verbose_name='커버 이미지 URL')),
                 ('modified_date', models.DateTimeField(auto_now=True, verbose_name='수정일시')),
