@@ -1,6 +1,6 @@
+from django.conf import settings
 from django.db import models
 
-from config import settings
 from ..models import Movie
 
 __all__ = (
@@ -33,6 +33,7 @@ class UserToMovie(models.Model):
         unique_together = (
             ('user', 'movie'),
         )
+        ordering = ['-pk']
 
     def __str__(self):
         return f'UserToMovie (User: {self.user}, Movie: {self.movie})'

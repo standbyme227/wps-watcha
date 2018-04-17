@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         movie_cnt = 1 if not options['movie_cnt'] else options['movie_cnt']
-        trailer_cnt = 1 if not options['trailer_cnt'] else options['trailer_cnt']
+        trailer_cnt = 2 if not options['trailer_cnt'] else options['trailer_cnt']
 
         if options['all']:
             movie_list = Movie.objects.all()
