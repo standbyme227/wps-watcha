@@ -86,8 +86,13 @@ def update_or_create_from_crawler(request):
                 d_day_year = info_spec_area_1.select_one("span:nth-of-type(3) a:nth-of-type(1)").text
                 d_day_date = info_spec_area_1.select_one("span:nth-of-type(3) a:nth-of-type(2)").text
 
-            film_rate_area = driver.find_elements_by_xpath("//*[contains(text(), '관람가')]")
-            film_rate = film_rate_area[1].text
+            film_rate = ''
+            film_rate_area1 = driver.find_elements_by_xpath("//*[contains(text(), '관람가')]")
+            if film_rate_area1:
+                film_rate = film_rate_area1[1].text
+            film_rate_area2 = driver.find_elements_by_xpath("//*[contains(text(), '관람불가')]")
+            if film_rate_area2:
+                film_rate = film_rate_area2[1].text
 
             for short, full in Movie.CHOICES_FILE_RATE_TYPE:
                 if film_rate == None:

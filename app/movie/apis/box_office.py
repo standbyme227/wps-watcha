@@ -1,6 +1,7 @@
 from rest_framework import (
     authentication,
 )
+from rest_framework.permissions import IsAuthenticated
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -29,13 +30,13 @@ class MovieBoxofficeRankingNameListView(APIView):
     queryset = Movie.objects.filter(ticketing_rate__gte=0.0)
     serializer_class = MovieNameBoxOfficeRankingSerializer
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     pagination_class = BoxOfficeRankingPagination
 
 
     def get(self, request):
         if not request.user.is_anonymous:
-            queryset = self.queryset.exclude(interested_user_list__token=request.user.token).order_by('-ticketing_rate')
+            queryset = self.queryset.exclude(interested_user_list__id=request.user.pk).order_by('-ticketing_rate')
         else:
             queryset = self.queryset.order_by('-ticketing_rate')
         page = self.paginate_queryset(queryset)
@@ -66,12 +67,12 @@ class MovieBoxofficeRankingFiveListView(APIView):
     queryset = Movie.objects.filter(ticketing_rate__gte=0.0)
     serializer_class = MovieBoxOfficeRankingFiveSerializer
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     pagination_class = BoxOfficeRankingFivePagination
 
     def get(self, request):
         if not request.user.is_anonymous:
-            queryset = self.queryset.exclude(interested_user_list__token=request.user.token).order_by('-ticketing_rate')
+            queryset = self.queryset.exclude(interested_user_list__id=request.user.pk).order_by('-ticketing_rate')
         else:
             queryset = self.queryset.order_by('-ticketing_rate')
         page = self.paginate_queryset(queryset)
@@ -111,12 +112,12 @@ class MovieBoxofficeRankingListView(APIView):
     queryset = Movie.objects.filter(ticketing_rate__gte=0.0)
     serializer_class = MovieBoxOfficeRankingSerializer
     authentication_classes = (authentication.TokenAuthentication,)
-    permissions_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     pagination_class = MovieListDefaultPagination
 
     def get(self, request):
         if not request.user.is_anonymous:
-            queryset = self.queryset.exclude(interested_user_list__token=request.user.token).order_by('-ticketing_rate')
+            queryset = self.queryset.exclude(interested_user_list__id=request.user.pk).order_by('-ticketing_rate')
         else:
             queryset = self.queryset.order_by('-ticketing_rate')
         page = self.paginate_queryset(queryset)

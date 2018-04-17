@@ -2,6 +2,7 @@ from rest_framework import (
     generics,
     authentication,
 )
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -23,13 +24,13 @@ __all__ = (
 
 class WatchaRatingTopMovieListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     pagination_class = MovieListDefaultPagination
 
     def get(self, request, format=None):
         if not request.user.is_anonymous:
             movie = Movie.objects.\
-                exclude(interested_user_list__token=request.user.token).filter(rating_avg__gte=4.3).order_by('?')
+                exclude(interested_user_list__id=request.user.pk).filter(rating_avg__gte=4.3).order_by('?')
         else:
             movie = Movie.objects.filter(rating_avg__gte=4.3).order_by('?')
         movie_list = []
@@ -45,7 +46,7 @@ class WatchaRatingTopMovieListView(APIView):
 
 class TagMovieListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     pagination_class = MovieListDefaultPagination
 
     TAG = ''
@@ -53,7 +54,7 @@ class TagMovieListView(APIView):
     def get(self, request, format=None):
         if not request.user.is_anonymous:
             movie = Movie.objects.\
-                exclude(interested_user_list__token=request.user.token).filter(tag__tag=self.TAG).order_by('?')
+                exclude(interested_user_list__id=request.user.pk).filter(tag__tag=self.TAG).order_by('?')
         else:
             movie = Movie.objects.filter(tag__tag=self.TAG).order_by('?')
         movie_list = []
@@ -66,7 +67,7 @@ class TagMovieListView(APIView):
 
 class GenreMovieListView(APIView):
     authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticated,)
     pagination_class = MovieListDefaultPagination
 
     GENRE = ''
@@ -74,7 +75,7 @@ class GenreMovieListView(APIView):
     def get(self, request, format=None):
         if not request.user.is_anonymous:
             movie = Movie.objects.\
-                exclude(interested_user_list__token=request.user.token).filter(genre__genre=self.GENRE).order_by('?')
+                exclude(interested_user_list__id=request.user.pk).filter(genre__genre=self.GENRE).order_by('?')
         else:
             movie = Movie.objects.filter(genre__genre=self.GENRE).order_by('?')
         movie_list = []

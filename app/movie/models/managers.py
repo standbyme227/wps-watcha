@@ -43,8 +43,8 @@ class MovieManager(models.Manager):
 
         driver.get(response.url)
 
-        if driver.switch_to.alert:
-            driver.switch_to.alert.accept()
+        # if driver.switch_to.alert:
+        #     driver.switch_to.alert.accept()
 
         html = driver.page_source
         soup = BeautifulSoup(html, 'lxml')
@@ -55,7 +55,7 @@ class MovieManager(models.Manager):
         raw_title_detail_text = info_area.find('strong', class_='h_movie2').text
         title_detail_text = re.sub(r'\s', '', raw_title_detail_text)
 
-        created_date_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+        created_date_pattern = re.compile(r'.*?(\d+)$', re.DOTALL)
         movie_created_date = re.search(created_date_pattern, raw_title_detail_text).group(1)
 
         info_spec_area_1 = info_area.find('p', class_='info_spec')
@@ -75,11 +75,21 @@ class MovieManager(models.Manager):
             d_day_year = info_spec_area_1.select_one("span:nth-of-type(3) a:nth-of-type(1)").text
             d_day_date = info_spec_area_1.select_one("span:nth-of-type(3) a:nth-of-type(2)").text
 
-        film_rate_area = driver.find_elements_by_xpath("//*[contains(text(), '관람가')]")
-        film_rate = film_rate_area[1].text
+        film_rate = ''
+        film_rate_area1 = driver.find_elements_by_xpath("//*[contains(text(), '관람가')]")
+        if film_rate_area1:
+            film_rate = film_rate_area1[1].text
+        film_rate_area2 = driver.find_elements_by_xpath("//*[contains(text(), '관람불가')]")
+        if film_rate_area2:
+            film_rate = film_rate_area2[1].text
+
+        # elif film_rate_area2:
+        #     film_rate = film_rate_area[1].text
+        # else:
+        #     film_rate = ''
 
         for short, full in Movie.CHOICES_FILE_RATE_TYPE:
-            if film_rate == None:
+            if film_rate == '':
                 film_rate = Movie.ETC
             elif film_rate.strip() == full:
                 film_rate = short
