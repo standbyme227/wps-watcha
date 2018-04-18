@@ -1,7 +1,7 @@
 from rest_framework import (
     generics,
     authentication,
-)
+    permissions)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -21,13 +21,14 @@ __all__ = (
     'TagMovieListView',
 )
 
-
-class WatchaRatingTopMovieListView(APIView):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+class WatchaRatingTopMovieListView(generics.ListAPIView):
+    permission_classes = (
+        permissions.IsAuthenticated,
+    )
     pagination_class = MovieListDefaultPagination
+    serializer_class = MovieMinimumListSerializer
 
-    def get(self, request, format=None):
+    def list(self, request, *args, **kwargs):
         if not request.user.is_anonymous:
             movie = Movie.objects.\
                 exclude(interested_user_list__id=request.user.pk).filter(rating_avg__gte=4.3).order_by('?')
@@ -38,20 +39,20 @@ class WatchaRatingTopMovieListView(APIView):
             movie_list.append(item)
 
         serializer = MovieMinimumListSerializer(movie_list, many=True)
-        return Response(serializer.data)
-        # serializer = MovieMinimumListSerializer(movie, data=request.data, partial=True)
-        # serializer.is_valid(raise_exception=True)
-        # return Response(serializer.data)
+        page = self.paginate_queryset(serializer.data)
+        return self.get_paginated_response(page)
 
 
-class TagMovieListView(APIView):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+
+class TagMovieListView(generics.ListAPIView):
+    permission_classes = (
+        permissions.IsAuthenticated,
+    )
     pagination_class = MovieListDefaultPagination
-
+    serializer_class = MovieMinimumListSerializer
     TAG = ''
 
-    def get(self, request, format=None):
+    def list(self, request, *args, **kwargs):
         if not request.user.is_anonymous:
             movie = Movie.objects.\
                 exclude(interested_user_list__id=request.user.pk).filter(tag__tag=self.TAG).order_by('?')
@@ -62,17 +63,19 @@ class TagMovieListView(APIView):
             movie_list.append(item)
 
         serializer = MovieMinimumListSerializer(movie_list, many=True)
-        return Response(serializer.data)
+        page = self.paginate_queryset(serializer.data)
+        return self.get_paginated_response(page)
 
 
-class GenreMovieListView(APIView):
-    authentication_classes = (authentication.TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+class GenreMovieListView(generics.ListAPIView):
+    permission_classes = (
+        permissions.IsAuthenticated,
+    )
     pagination_class = MovieListDefaultPagination
-
+    serializer_class = MovieMinimumListSerializer
     GENRE = ''
 
-    def get(self, request, format=None):
+    def list(self, request, *args, **kwargs):
         if not request.user.is_anonymous:
             movie = Movie.objects.\
                 exclude(interested_user_list__id=request.user.pk).filter(genre__genre=self.GENRE).order_by('?')
@@ -83,4 +86,5 @@ class GenreMovieListView(APIView):
             movie_list.append(item)
 
         serializer = MovieMinimumListSerializer(movie_list, many=True)
-        return Response(serializer.data)
+        page = self.paginate_queryset(serializer.data)
+        return self.get_paginated_response(page)

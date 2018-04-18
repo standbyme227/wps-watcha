@@ -20,7 +20,7 @@ class MovieMinimumListSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'title_ko',
-            'poster_image',
+            'poster_image_m',
             'rating_avg',
             'tag',
         )
@@ -50,6 +50,7 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
             'ticketing_rate',
             'rating_avg',
             'poster_image',
+            'poster_image_m',
             'd_day',
             'audience',
             'film_rate',
@@ -68,7 +69,7 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
             'title_ko',
             'ticketing_rate',
             'rating_avg',
-            'poster_image',
+            'poster_image_m',
             'members',
             'd_day',
             'audience',

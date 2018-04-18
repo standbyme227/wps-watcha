@@ -9,7 +9,7 @@ from utils.pagination import (
     MovieListDefaultPagination,
 )
 from ..serializers import (
-    MovieMinimumListSerializer, MovieListSerializer)
+    MovieListSerializer)
 
 from ..models import Movie
 
@@ -19,6 +19,6 @@ __all__ = (
 
 class MovieListView(generics.ListAPIView):
     queryset = Movie.objects.all()
-    serializer_class = MovieMinimumListSerializer
+    serializer_class = MovieListSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     pagination_class = MovieListDefaultPagination
