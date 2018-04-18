@@ -207,7 +207,6 @@ class MovieManager(models.Manager):
             movie.movie_genre_list.update_or_create(genre=genre, movie=movie)
 
         temp_file = download(poster_url)
-
         ext = get_buffer_ext(temp_file)
         im = Image.open(temp_file)
         large = im.resize((460, 650))
@@ -222,6 +221,7 @@ class MovieManager(models.Manager):
 
         if not movie.poster_image:
             movie.poster_image.save(file_name, File(temp_file))
+
 
         driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[2]/a').click()
         if driver.find_elements_by_xpath('//*/button[@id="actorMore"]'):
@@ -321,6 +321,7 @@ class MovieManager(models.Manager):
                     'real_name': real_name,
                 }
             )
+
             if not img_profile_url == '':
                 temp_file = download(img_profile_url)
                 file_name = '{actor_director_id}.{ext}'.format(

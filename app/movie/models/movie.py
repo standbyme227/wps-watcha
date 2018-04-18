@@ -67,6 +67,8 @@ class Movie(models.Model):
     audience = models.IntegerField('누적관객수', null=True, blank=True)
     poster_image = models.ImageField('포스터 이미지', upload_to='poster', blank=True)
     poster_image_m = models.ImageField('작은 포스터 이미지', upload_to='poster/medium', blank=True)
+    poster_image_ios = models.ImageField('IOS 포스터 이미지', upload_to='poster/ios', blank=True)
+    poster_image_ios_small = models.ImageField('IOS 포스터 이미지', upload_to='poster/ios', blank=True)
 
     rating_avg = models.DecimalField('평점평균', default=0.0, max_digits=2, decimal_places=1,
                                      validators=[MaxValueValidator(5), ], blank=True, )
@@ -141,15 +143,20 @@ class Movie(models.Model):
             # large.save(temp_file, ext)
             # self.poster_image.save(f'{name}_large.{ext}', File(temp_file), save=False)
 
-            medium = im.resize((220, 314))
+            medium = im.resize((225, 342))
             temp_file = BytesIO()
             medium.save(temp_file, format="JPEG", quality=70, optimize=True, progressive=True)
             self.poster_image_m.save(f'{name}_medium.{ext}', File(temp_file), save=False)
-            #
-            # small = im.resize((140, 200))
-            # temp_file = BytesIO()
-            # small.save(temp_file, ext)
-            # self.poster_image.save(f'{name}_small.{ext}', File(temp_file), save=False)
+
+            ios = im.resize((150, 228))
+            temp_file = BytesIO()
+            ios.save(temp_file, ext, optimize=True, progressive=True)
+            self.poster_image_ios.save(f'{name}_ios.{ext}', File(temp_file), save=False)
+
+            small = im.resize((75, 114))
+            temp_file = BytesIO()
+            small.save(temp_file, ext, optimize=True, progressive=True)
+            self.poster_image_ios_small.save(f'{name}_ios_small.{ext}', File(temp_file), save=False)
 
         else:
-            self.poster_image_m.delete(save=False)
+            self.poster_image_m.delete(save=False) and self.poster_image_ios.delete(save=False)

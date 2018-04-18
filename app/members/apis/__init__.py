@@ -5,4 +5,4 @@ from .login import AuthTokenForFacebookAccessTokenView, AuthTokenForEmailView
 from .logout import LogoutView
 from .img_profile import UserImageUpdateView
 from .email_update import UserEmailUpdateView
-from .want_watched_movie_list import *
+from .want_watched_movie_list import WantWatchedMovieListView

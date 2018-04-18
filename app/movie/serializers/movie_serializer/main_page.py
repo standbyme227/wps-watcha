@@ -41,15 +41,3 @@ class MovieNameBoxOfficeRankingSerializer(serializers.ModelSerializer):
             'rating_avg',
         )
 
-
-class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Movie
-        fields = (
-            'id',
-            'title_ko',
-            'ticketing_rate',
-            'rating_avg',
-            'poster_image',
-            'poster_image_m',
-        )

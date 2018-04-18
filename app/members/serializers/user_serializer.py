@@ -57,6 +57,15 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ('pk', 'username', 'email')
 
 
+class UserMinimumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'pk',
+            'email',
+            'nickname',
+            'img_profile',
+        )
 
 
 class UserEmailSerializer(serializers.ModelSerializer):

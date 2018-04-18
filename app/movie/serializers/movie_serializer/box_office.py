@@ -1,5 +1,5 @@
-from rest_framework import serializers, filters
-from rest_framework.compat import MaxValueValidator
+from rest_framework import serializers
+from movie.serializers.user_to_movie_serializer import UsertoMovieCommentListSerialzier
 from movie.serializers.movie_to_member_serializer import MovieToMemberListSerializer
 from ...serializers import GenreSerializer
 from ...models import Movie
@@ -14,7 +14,6 @@ __all__ = (
 
 
 class MovieMinimumListSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Movie
         fields = (
@@ -27,7 +26,6 @@ class MovieMinimumListSerializer(serializers.ModelSerializer):
 
 
 class MovieNameBoxOfficeRankingSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Movie
         fields = (
@@ -41,12 +39,14 @@ class MovieNameBoxOfficeRankingSerializer(serializers.ModelSerializer):
 class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     film_rate = serializers.CharField(source='get_film_rate_display', read_only=True)
+    user = UsertoMovieCommentListSerialzier(read_only=True, many=True)
 
     class Meta:
         model = Movie
         fields = (
             'id',
             'title_ko',
+            'movie_created_date',
             'ticketing_rate',
             'rating_avg',
             'poster_image',
@@ -56,12 +56,14 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
             'film_rate',
             'running_time',
             'genre',
+            'user'
         )
 
 
 class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
     members = MovieToMemberListSerializer(source='movie_member_list', many=True, read_only=True)
     film_rate = serializers.CharField(source='get_type_display', read_only=True)
+
     class Meta:
         model = Movie
         fields = (
@@ -76,4 +78,3 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
             'film_rate',
             'running_time',
         )
-

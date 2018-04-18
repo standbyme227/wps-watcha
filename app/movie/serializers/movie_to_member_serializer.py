@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from ..models import MovieToMember
-from actor_director.serializers import MemberNameListSerializer, MemberDefaultListSerializer
+
 
 __all__ = (
-    'MovieToMemberListSerializer'
+    'MovieToMemberListSerializer',
 )
 
 

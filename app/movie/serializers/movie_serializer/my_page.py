@@ -1,8 +1,8 @@
 from rest_framework import serializers
-
 from movie.serializers.user_to_movie_serializer import UserToMovieWantWatchedListSerializer
-from ...serializers import GenreSerializer
-from ...models import Movie, UserToMovie
+from movie.models import Movie, UserToMovie
+from movie.serializers import GenreSerializer
+
 
 __all__ = (
     'WantWatchedMovieListSerializer',
