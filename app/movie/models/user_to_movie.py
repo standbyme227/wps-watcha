@@ -7,7 +7,6 @@ __all__ = (
 )
 
 
-
 class UserToMovie(models.Model):
     # User랑 Movie를 위한 중개모델
 

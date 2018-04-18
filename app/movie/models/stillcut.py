@@ -10,11 +10,10 @@ __all__ = (
 
 class StillCut(models.Model):
     # stillcut 추가할 모델 OneToMany
-    movie = models.ForeignKey(Movie, verbose_name='영화', on_delete=models.CASCADE, blank=True, null=True)
+    movie = models.ForeignKey(Movie, related_name='still_cuts', verbose_name='영화', on_delete=models.CASCADE, blank=True, null=True)
     still_img = models.ImageField('스틸 이미지', upload_to='still_cut', blank=True, unique=True)
     modified_date = models.DateTimeField('수정일시', auto_now=True)
     created_date = models.DateTimeField('생성일시', auto_now_add=True)
-
 
     class Meta:
         ordering = ['-pk']

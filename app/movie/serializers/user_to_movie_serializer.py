@@ -1,11 +1,11 @@
-from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from ..models import UserToMovie
 
-User = get_user_model()
+from members.serializers.user_serializer import UserSimpleDetailSerializer
+from ..models import UserToMovie
 
 __all__ = (
     'UserToMovieBasicSerializer',
+    'UserToMovieWithUserSerializer',
     'UserToMovieUpdateSerializer',
     'UserToMovieWantWatchedListSerializer',
 )
@@ -17,6 +17,23 @@ class UserToMovieBasicSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class UserToMovieWithUserSerializer(serializers.ModelSerializer):
+    user = UserSimpleDetailSerializer(read_only=True)
+
+    class Meta:
+        model = UserToMovie
+        fields = (
+            'id',
+            'user_want_movie',
+            'user_watched_movie',
+            'rating',
+            'comment',
+            'modified_date',
+            'user',
+            'movie',
+        )
+
+
 class UserToMovieUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserToMovie
@@ -25,8 +42,6 @@ class UserToMovieUpdateSerializer(serializers.ModelSerializer):
 
 
 class UserToMovieWantWatchedListSerializer(serializers.ModelSerializer):
-    # login_user_id = serializers.IntegerField(source='user')
-
     class Meta:
         model = UserToMovie
         fields = (
@@ -38,4 +53,3 @@ class UserToMovieWantWatchedListSerializer(serializers.ModelSerializer):
             'user',
             'movie',
         )
-

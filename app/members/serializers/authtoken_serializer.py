@@ -2,9 +2,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from rest_framework.compat import authenticate as rest_authenticate
 
 User = get_user_model()
+
+__all__ = (
+    'TokenSerializer',
+)
 
 
 class TokenSerializer(serializers.Serializer):

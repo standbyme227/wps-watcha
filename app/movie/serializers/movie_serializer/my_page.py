@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
-from movie.serializers.user_to_movie_serializer import UserToMovieWantWatchedListSerializer
-from ...serializers import GenreSerializer, MovieListSerializer
+from .movie_detail_page import MovieListSerializer
+from ...serializers.user_to_movie_serializer import UserToMovieWantWatchedListSerializer
+from ...serializers.genre_serializer import GenreSerializer
 from ...models import Movie, UserToMovie
 
 __all__ = (
