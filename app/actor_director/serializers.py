@@ -5,6 +5,7 @@ from .models import Member
 
 __all__ = (
     'MemberDetailSerializer',
+    'MemberSimpleDetailSerializer',
 )
 
 
@@ -43,3 +44,13 @@ class MemberDetailSerializer(serializers.ModelSerializer):
         from movie.serializers import MovieSimpleDetailSerializer
         serializer = MovieSimpleDetailSerializer(movie_list, many=True, context=self.context)
         return serializer.data
+
+
+class MemberSimpleDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member
+        fields = (
+            'id',
+            'name',
+            'img_profile',
+        )

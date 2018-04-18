@@ -3,14 +3,15 @@ from rest_framework import permissions, status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from utils.pagination import StandardResultSetPagination
+from utils.pagination import StandardResultSetPagination, SmallResultSetPagination
 from ..models import UserToMovie
-from ..serializers import UserToMovieBasicSerializer
+from ..serializers import UserToMovieBasicSerializer, UserToMovieWithUserSerializer
 
 User = get_user_model()
 
 __all__ = (
     'UserCheckedMovieListView',
+    'MovieCheckingDataListView',
 )
 
 
@@ -43,3 +44,23 @@ class UserCheckedMovieListView(generics.ListCreateAPIView):
         movie_list = self.request.query_params.getlist('pk')
         user_to_movie = UserToMovie.objects.filter(user=self.request.user, movie__in=movie_list)
         return user_to_movie
+
+
+class MovieCheckingDataListView(generics.ListAPIView):
+    permission_classes = (
+        permissions.IsAuthenticated,
+    )
+
+    serializer_class = UserToMovieWithUserSerializer
+    pagination_class = SmallResultSetPagination
+
+    def get_queryset(self):
+        movie_pk = self.kwargs['pk']
+        order = self.request.query_params.get('order', None)
+        if order == 'rating_desc':
+            order_val = '-rating'
+        elif order == 'rating_asc':
+            order_val = 'rating'
+        else:
+            order_val = '-modified_date'
+        return UserToMovie.objects.filter(movie=movie_pk, rating__isnull=False).exclude(comment='').order_by(order_val)

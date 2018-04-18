@@ -1,14 +1,8 @@
-from django.contrib.auth import get_user_model
-from rest_framework import permissions, status, generics
-from rest_framework.generics import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework import permissions, generics
 
 from members.permissions import IsUserOrReadOnly
 from ..models import UserToMovie, Movie
 from ..serializers import UserToMovieUpdateSerializer
-
-User = get_user_model()
 
 __all__ = (
     'UserCheckedMovieUpdateView',
