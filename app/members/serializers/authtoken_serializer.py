@@ -1,9 +1,13 @@
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework import serializers
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
+__all__ = (
+    'TokenSerializer',
+)
 
 
 class TokenSerializer(serializers.Serializer):
@@ -18,18 +22,20 @@ class TokenSerializer(serializers.Serializer):
     # def validate(self, attrs):
     #     password = attrs.get('password')
     #     if password:
-    #         user = authenticate(password=password,)
+    #         user = rest_authenticate(password=password)
     #         if not user:
-    #             msg = _('Unable to log in with provided credentials.')
-    #             raise serializers.ValidationError(msg, code='authorization')
+    #             raise serializers.ValidationError('비밀번호가 일치하지 않습니다.')
     #     else:
-    #         msg = _('Must include "username" and "password".')
-    #         raise serializers.ValidationError(msg, code='authorization')
+    #         raise serializers.ValidationError('비밀번호 값을 넣어줘야합니다.')
     #     attrs['user'] = user
     #     return attrs
 
     def update(self, user, validated_data):
         email = validated_data.get('email', user.email)
-        user.email = email
-        user.save()
+        password = validated_data.get('password', user.password)
+        if not User.objects.filter(email=email):
+            user.email = email
+            user.save()
+        else:
+            raise serializers.ValidationError('중복되는 이메일 값입니다.')
         return user

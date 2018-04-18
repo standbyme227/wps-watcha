@@ -1,11 +1,12 @@
 from rest_framework import serializers
-
 from movie.models import MovieToMember
 from .models import Member
 
 __all__ = (
     'MemberDetailSerializer',
     'MemberSimpleDetailSerializer',
+    'MemberDefaultListSerializer',
+    'MemberNameListSerializer',
 )
 
 
@@ -53,4 +54,20 @@ class MemberSimpleDetailSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'img_profile',
+        )
+
+
+class MemberDefaultListSerializer(serializers.ModelSerializer):
+    # type = serializers.ChoiceField(choices=[1])
+    class Meta:
+        model = Member
+        fields = '__all__'
+
+
+class MemberNameListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Member
+        fields = (
+            'name',
         )

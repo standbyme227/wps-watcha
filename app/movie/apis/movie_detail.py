@@ -3,6 +3,10 @@ from rest_framework import generics, permissions
 from movie.models import Movie
 from movie.serializers import MovieDetailSerializer
 
+__all__ = (
+    'MovieDetailView',
+)
+
 
 class MovieDetailView(generics.RetrieveAPIView):
     permission_classes = (

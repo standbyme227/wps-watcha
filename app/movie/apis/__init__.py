@@ -1,3 +1,6 @@
+from .box_office import *
+from .eval_page import *
+from .main_page import *
 from .movie_detail import *
 from .movie_list import *
 from .movie_to_member_list import *

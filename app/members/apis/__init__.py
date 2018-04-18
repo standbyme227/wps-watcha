@@ -1,8 +1,8 @@
-from .list import UserListView
-from .detail import UserDetailView
-from .signup import SignupView
-from .login import AuthTokenForFacebookAccessTokenView, AuthTokenForEmailView
-from .logout import LogoutView
-from .img_profile import UserImageUpdateView
-from .email_update import UserEmailUpdateView
+from .detail import *
+from .email_update import *
+from .img_profile import *
+from .list import *
+from .login import *
+from .logout import *
+from .signup import *
 from .want_watched_movie_list import *

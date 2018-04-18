@@ -16,4 +16,8 @@ INSTALLED_APPS += [
     'storages',
 ]
 
+
 DEFAULT_FILE_STORAGE = 'config.storage.DefaultFileStorage'
+
+
+

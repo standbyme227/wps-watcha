@@ -29,11 +29,9 @@ class EmailAuthTokenSerializer(serializers.Serializer):
             # (Assuming the default ModelBackend authentication backend.)
             if not user:
                 # msg = 'This user is a member that does not exist or has left.'
-                msg = 'Invalid information. Please verify your email address and password.'
-                raise serializers.ValidationError(msg, code='authorization')
+                raise serializers.ValidationError('비밀번호와 이메일을 확인해주세요')
         else:
-            msg = _('Must include "email" and "password".')
-            raise serializers.ValidationError(msg, code='authorization')
+            raise serializers.ValidationError('이메일과 비밀번호 값을 넣어줘야합니다.')
 
         attrs['user'] = user
         return attrs

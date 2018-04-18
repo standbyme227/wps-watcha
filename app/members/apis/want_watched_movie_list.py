@@ -1,12 +1,10 @@
 from django.contrib.auth import get_user_model
 from rest_framework import permissions, generics
 from rest_framework.generics import get_object_or_404
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
 from movie.models import UserToMovie
-from movie.serializers import WantWatchedMovieListSerializer
-from utils.pagination import SmallResultSetPagination, StandardResultSetPagination
+from utils.pagination import StandardResultSetPagination
+from movie.serializers.movie_serializer.my_page import WantWatchedMovieListSerializer
+
 
 User = get_user_model()
 

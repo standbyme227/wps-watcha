@@ -1,9 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import generics, permissions, status
-from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
-
 from ..permissions import IsAdminOrIsSelf
 from ..serializers import UserSerializer
 
@@ -17,6 +14,7 @@ __all__ = (
 class UserImageUpdateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    lookup_field = 'pk'
 
     permission_classes = (
         IsAdminOrIsSelf,
@@ -33,4 +31,18 @@ class UserImageUpdateView(generics.RetrieveUpdateDestroyAPIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-# 아직 수정중
+
+# class UserImageUpdateView(APIView):
+#     permission_classes = (IsAdminOrIsSelf,)
+#     authentication_classes = (authentication.TokenAuthentication,)
+#
+#     def patch(self, request, *args, **kwargs):
+#         if 'upload' in request.data:
+#             token = Token.objects.get(user=request.user)
+#             user = User.objects.get(auth_token=token)
+#             user.img_profile.delete()
+#             upload = request.data['upload']
+#             user.img_profile.save(upload.name, upload)
+#             return Response(status=status.HTTP_201_CREATED, headers={'Location': user.img_profile.url})
+#         else:
+#             return Response(status=status.HTTP_400_BAD_REQUEST)

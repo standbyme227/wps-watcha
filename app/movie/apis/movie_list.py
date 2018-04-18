@@ -1,26 +1,24 @@
-# from django.contrib.auth import get_user_model
-# from rest_framework import generics
-#
-# from utils.pagination import SmallResultSetPagination
-# from ..serializers import UserSerializer
-#
-# User = get_user_model()
-#
-# __all__ = (
-#     'MovieListView',
-# )
-#
-#
-# class MovieListView(generics.ListAPIView):
-#     queryset = User.objects.filter(is_active=True, is_staff=False, is_superuser=False)
-#     serializer_class = UserSerializer
-#     pagination_class = SmallResultSetPagination
-from rest_framework import generics
 
-from ..serializers import MovieListSerializer
+from rest_framework import (
+    generics,
+    authentication,
+)
+
+
+from utils.pagination import (
+    MovieListDefaultPagination,
+)
+from ..serializers import (
+    MovieMinimumListSerializer, MovieListSerializer)
+
 from ..models import Movie
 
+__all__ = (
+    'MovieListView',
+)
 
 class MovieListView(generics.ListAPIView):
     queryset = Movie.objects.all()
-    serializer_class = MovieListSerializer
+    serializer_class = MovieMinimumListSerializer
+    authentication_classes = (authentication.TokenAuthentication,)
+    pagination_class = MovieListDefaultPagination

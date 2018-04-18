@@ -1,47 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 
-# from movie.models import UserToMovie
-
 User = get_user_model()
 
 __all__ = (
-    # 'UserToMovieSerializer',
     'UserSerializer',
-    'UserDetailSerializer',
     'UserEmailSerializer',
     'UserSimpleDetailSerializer',
 )
-
-
-# class UserToMovieSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = UserToMovie
-#         fields = (
-#             'movie',
-#             'user_want_movie',
-#             'user_watched_movie',
-#             'rating',
-#             'comment'
-#         )
-#
-#
-# class UserSerializer(serializers.ModelSerializer):
-#     interesting_movie_list = UserToMovieSerializer(many=True, read_only=True)
-#
-#     class Meta:
-#         model = User
-#         fields = (
-#             'pk',
-#             'email',
-#             'username',
-#             'nickname',
-#             'img_profile',
-#             'first_name',
-#             'last_name',
-#             'interesting_movie_list'
-#         )
-#         read_only_fields = ('pk', 'username',)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -53,27 +19,10 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
             'nickname',
             'img_profile',
-            'img_profile_thumbnail',
             'first_name',
             'last_name',
         )
-        read_only_fields = ('pk', 'username',)
-
-
-class UserDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = (
-            'pk',
-            'email',
-            'username',
-            'nickname',
-            'img_profile',
-            'img_profile_thumbnail',
-            'first_name',
-            'last_name',
-        )
-        read_only_fields = ('pk', 'username', 'email',)
+        read_only_fields = ('pk', 'username', 'email')
 
 
 class UserEmailSerializer(serializers.ModelSerializer):
@@ -84,7 +33,7 @@ class UserEmailSerializer(serializers.ModelSerializer):
             'email',
             'username',
         )
-        read_only_fields = ('pk', 'username',)
+        # read_only_fields = ('pk', 'username',)
 
 
 class UserSimpleDetailSerializer(serializers.ModelSerializer):
@@ -95,5 +44,4 @@ class UserSimpleDetailSerializer(serializers.ModelSerializer):
             'email',
             'nickname',
             'img_profile',
-            'img_profile_thumbnail',
         )

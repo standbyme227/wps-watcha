@@ -43,8 +43,8 @@ class MovieManager(models.Manager):
 
         driver.get(response.url)
 
-        if driver.switch_to.alert:
-            driver.switch_to.alert.accept()
+        # if driver.switch_to.alert:
+        #     driver.switch_to.alert.accept()
 
         html = driver.page_source
         soup = BeautifulSoup(html, 'lxml')
@@ -55,16 +55,10 @@ class MovieManager(models.Manager):
         raw_title_detail_text = info_area.find('strong', class_='h_movie2').text
         title_detail_text = re.sub(r'\s', '', raw_title_detail_text)
 
-        created_date_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
+        created_date_pattern = re.compile(r'.*?(\d+)$', re.DOTALL)
         movie_created_date = re.search(created_date_pattern, raw_title_detail_text).group(1)
 
         info_spec_area_1 = info_area.find('p', class_='info_spec')
-
-        genre_list = []
-        genre_text = info_spec_area_1.select("span:nth-of-type(1) a")
-        for genre_data in genre_text:
-            genre = genre_data.text
-            genre_list.append(genre)
 
         nation = info_spec_area_1.select_one("span:nth-of-type(2) a:nth-of-type(1)").text
 
@@ -75,19 +69,33 @@ class MovieManager(models.Manager):
 
             d_day_year = info_spec_area_1.select_one("span:nth-of-type(4) a:nth-of-type(1)").text
             d_day_date = info_spec_area_1.select_one("span:nth-of-type(4) a:nth-of-type(2)").text
-            if len(span) > 4:
-                film_rate = info_spec_area_1.select_one("span:nth-of-type(5) a").text
-            else:
-                film_rate = ''
 
         else:
             running_time_text = None
             d_day_year = info_spec_area_1.select_one("span:nth-of-type(3) a:nth-of-type(1)").text
             d_day_date = info_spec_area_1.select_one("span:nth-of-type(3) a:nth-of-type(2)").text
-            if len(span) > 3:
-                film_rate = info_spec_area_1.select_one("span:nth-of-type(4) a").text
-            else:
-                film_rate = ''
+
+        film_rate = ''
+        film_rate_area1 = driver.find_elements_by_xpath("//*[contains(text(), '관람가')]")
+        if film_rate_area1:
+            film_rate = film_rate_area1[1].text
+        film_rate_area2 = driver.find_elements_by_xpath("//*[contains(text(), '관람불가')]")
+        if film_rate_area2:
+            film_rate = film_rate_area2[1].text
+
+        # elif film_rate_area2:
+        #     film_rate = film_rate_area[1].text
+        # else:
+        #     film_rate = ''
+
+        for short, full in Movie.CHOICES_FILE_RATE_TYPE:
+            if film_rate == '':
+                film_rate = Movie.ETC
+            elif film_rate.strip() == full:
+                film_rate = short
+                break
+        else:
+            film_rate = Movie.ETC
 
         d_day = d_day_year + d_day_date
         if running_time_text:
@@ -97,9 +105,11 @@ class MovieManager(models.Manager):
             running_time = None
 
         if info_spec_area_1.select_one('span.count'):
-            audience_text = info_spec_area_1.find_all("span")[-1].get_text()
-            audience_pattern = re.compile(r'.*?(\d+).*?', re.DOTALL)
-            audience = re.search(audience_pattern, audience_text).group(1)
+            audience_area = info_spec_area_1.find_all("span")[-1].get_text()
+            audience_pattern = re.compile(r'(.*?\,*\d+)명.*?', re.DOTALL)
+            audience_text = re.search(audience_pattern, audience_area).group(1)
+            audience = audience_text.replace(',', '')
+
         else:
             audience = 0
 
@@ -151,7 +161,7 @@ class MovieManager(models.Manager):
             driver.back()
 
         else:
-            rank_share = ''
+            rank_share = None
 
         # actor_director_id
         # name
@@ -179,26 +189,22 @@ class MovieManager(models.Manager):
                 'running_time': running_time,
                 'film_rate': film_rate,
                 'ticketing_rate': rank_share,
-                'audience': audience,
+                'audience': int(audience),
                 'intro': story,
             }
         )
 
-        from .genre import Genre
+        genre_list = []
+        genre_text = info_spec_area_1.select("span:nth-of-type(1) a")
+        for genre_data in genre_text:
+            genre = genre_data.text
+            genre_list.append(genre)
 
-        for short, full in Genre.CHOICES_GENRE_TYPE:
-            if genre == None:
-                genre = Genre.ETC
-            elif genre.strip() == full:
-                genre = short
-                break
-        else:
-            genre = Genre.ETC
+        from .genre import Genre
 
         for genre in genre_list:
             genre, genre_created = Genre.objects.get_or_create(genre=genre)
             movie.movie_genre_list.update_or_create(genre=genre, movie=movie)
-
 
         temp_file = download(poster_url)
 
@@ -215,8 +221,6 @@ class MovieManager(models.Manager):
 
         if not movie.poster_image:
             movie.poster_image.save(file_name, File(temp_file))
-
-
 
         driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[2]/a').click()
         if driver.find_elements_by_xpath('//*/button[@id="actorMore"]'):
@@ -335,13 +339,13 @@ class MovieManager(models.Manager):
                 }
             )
 
-                # ManyToMany를 사용할때 저장시키기 위해서는 한쪽의 related_name에 접근해서 만들면 된다.
-                # 처음에 그걸 모르고 MTM자체에다가 저장시키려고 했지만
-                # 오류에 오류를 거쳐서 이렇게 되는걸 알게되었다.
-                # 아마도 어떠한 중개모델의 입장의경우 스스로 존재하는 부분이 아니기에
-                # 접근가능한 모델이 있어야했고(여기선 두개 Movie and Member
-                # 나는 Movie를 기점으로 만들고 있었기에
-                # Movie instance에 넣을 수 있도록 고안하게되었다.
+            # ManyToMany를 사용할때 저장시키기 위해서는 한쪽의 related_name에 접근해서 만들면 된다.
+            # 처음에 그걸 모르고 MTM자체에다가 저장시키려고 했지만
+            # 오류에 오류를 거쳐서 이렇게 되는걸 알게되었다.
+            # 아마도 어떠한 중개모델의 입장의경우 스스로 존재하는 부분이 아니기에
+            # 접근가능한 모델이 있어야했고(여기선 두개 Movie and Member
+            # 나는 Movie를 기점으로 만들고 있었기에
+            # Movie instance에 넣을 수 있도록 고안하게되었다.
 
         driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[3]/a').click()
         html = driver.page_source
