@@ -10,6 +10,7 @@ from ..apis import (
     UserImageUpdateView,
     UserEmailUpdateView,
     WantWatchedMovieListView,
+    MyPageTopView,
 )
 
 app_name = 'members'
@@ -25,4 +26,5 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('<int:pk>/want-movie/', WantWatchedMovieListView.as_view(want_movie=True), name='want-movie'),
     path('<int:pk>/watched-movie/', WantWatchedMovieListView.as_view(watched_movie=True), name='watched-movie'),
+    path('<int:pk>/mypage-top/', MyPageTopView.as_view(), name='mypage-top'),
 ]
