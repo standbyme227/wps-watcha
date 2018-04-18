@@ -17,6 +17,7 @@ class MovieListSerializer(serializers.ModelSerializer):
 
 class MovieMinimumListSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
+    tag = serializers.CharField(source='get_tag_display', read_only=True)
 
     class Meta:
         model = Movie
