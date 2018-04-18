@@ -1,16 +1,15 @@
 from rest_framework import serializers
+from movie.serializers.user_to_movie_serializer import UserToMovieWantWatchedListSerializer
+from movie.models import Movie, UserToMovie
+from movie.serializers import GenreSerializer
 
-from .movie_detail_page import MovieListSerializer
-from ...serializers.user_to_movie_serializer import UserToMovieWantWatchedListSerializer
-from ...serializers.genre_serializer import GenreSerializer
-from ...models import Movie, UserToMovie
 
 __all__ = (
     'WantWatchedMovieListSerializer',
 )
 
 
-class WantWatchedMovieListSerializer(MovieListSerializer):
+class WantWatchedMovieListSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     # movie_id = serializers.IntegerField(source='id')
     login_user_checked = serializers.SerializerMethodField()
@@ -26,7 +25,7 @@ class WantWatchedMovieListSerializer(MovieListSerializer):
             'title_en',
             'rating_avg',
             'nation',
-            'poster_image',
+            'poster_image_m',
             'genre',
             'running_time',
             'login_user_checked',

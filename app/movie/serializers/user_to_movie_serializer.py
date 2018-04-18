@@ -1,13 +1,14 @@
 from rest_framework import serializers
-
 from members.serializers.user_serializer import UserSimpleDetailSerializer
-from ..models import UserToMovie
+from members.serializers.user_serializer import UserMinimumSerializer
+from movie.models import UserToMovie
 
 __all__ = (
     'UserToMovieBasicSerializer',
     'UserToMovieWithUserSerializer',
     'UserToMovieUpdateSerializer',
     'UserToMovieWantWatchedListSerializer',
+    'UserToMovieCommentListSerializer',
 )
 
 
@@ -38,7 +39,7 @@ class UserToMovieUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserToMovie
         fields = '__all__'
-        read_only_fields = ('id', 'user', 'movie', )
+        read_only_fields = ('id', 'user', 'movie',)
 
 
 class UserToMovieWantWatchedListSerializer(serializers.ModelSerializer):
@@ -52,4 +53,16 @@ class UserToMovieWantWatchedListSerializer(serializers.ModelSerializer):
             'comment',
             'user',
             'movie',
+        )
+
+
+class UserToMovieCommentListSerializer(serializers.ModelSerializer):
+    user = UserMinimumSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = UserToMovie
+        fields = (
+            'id',
+            'comment',
+            'user',
         )

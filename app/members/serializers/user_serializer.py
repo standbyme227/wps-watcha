@@ -7,6 +7,7 @@ __all__ = (
     'UserSerializer',
     'UserEmailSerializer',
     'UserSimpleDetailSerializer',
+    'UserMinimumSerializer',
 )
 
 
@@ -23,6 +24,17 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
         )
         read_only_fields = ('pk', 'username', 'email')
+
+
+class UserMinimumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'pk',
+            'email',
+            'nickname',
+            'img_profile',
+        )
 
 
 class UserEmailSerializer(serializers.ModelSerializer):

@@ -24,7 +24,8 @@ class MovieMinimumListSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'title_ko',
-            'poster_image',
+            'movie_created_date',
+            'poster_image_m',
             'rating_avg',
             'genre',
             'tag',
@@ -41,14 +42,3 @@ class MovieNameBoxOfficeRankingSerializer(serializers.ModelSerializer):
             'rating_avg',
         )
 
-
-class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Movie
-        fields = (
-            'id',
-            'title_ko',
-            'ticketing_rate',
-            'rating_avg',
-            'poster_image',
-        )
