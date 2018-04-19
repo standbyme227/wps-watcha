@@ -129,6 +129,7 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
             'ticketing_rate',
             'rating_avg',
             'poster_image_m',
+            'poster_image_box_x3',
             'members',
             'd_day',
             'audience',

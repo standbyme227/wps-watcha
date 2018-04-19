@@ -26,6 +26,7 @@ class WantWatchedMovieListSerializer(serializers.ModelSerializer):
             'rating_avg',
             'nation',
             'poster_image_m',
+            'poster_image_my_x3',
             'genre',
             'running_time',
             'login_user_checked',

@@ -26,6 +26,7 @@ class MovieMinimumListForMainSerializer(serializers.ModelSerializer):
             'title_ko',
             'movie_created_date',
             'poster_image_m',
+            'poster_image_eval_x3',
             'rating_avg',
             'genre',
             'tag',
