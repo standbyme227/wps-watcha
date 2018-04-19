@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from members.serializers.user_serializer import UserSimpleDetailSerializer
-from members.serializers.user_serializer import UserMinimumSerializer
-from movie.models import UserToMovie
+from movie.models import UserToMovie, Movie
 
 # from movie.serializers.movie_serializer.my_page import MovieMinimumListForMySerializer
 
@@ -60,7 +59,7 @@ class UserToMovieWantWatchedListSerializer(serializers.ModelSerializer):
 
 
 class UserToMovieCommentSerializer(serializers.ModelSerializer):
-    comment = serializers.SerializerMethodField()
+    # comment = serializers.SerializerMethodField()
 
     class Meta:
         model = UserToMovie
@@ -73,6 +72,8 @@ class UserToMovieCommentSerializer(serializers.ModelSerializer):
             'user',
             'movie',
         )
-    def get_comment(self, obj):
-        comment = obj.comment
-        return comment
+    # def get_comment(self, obj):
+    #     comment = obj.comment
+    #     return comment
+
+

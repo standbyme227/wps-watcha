@@ -33,10 +33,7 @@ class MovieBoxofficeRankingNameListView(APIView):
 
     def get(self, request):
         if not request.user.is_anonymous:
-            movie = self.queryset.exclude(interested_user_list__id=request.user.pk).order_by('-ticketing_rate')
-        else:
             movie = self.queryset.order_by('-ticketing_rate')
-
         movie_list = []
         for item in movie:
             movie_list.append(item)
@@ -56,8 +53,6 @@ class MovieBoxofficeRankingFiveListView(APIView):
 
     def get(self, request):
         if not request.user.is_anonymous:
-            queryset = self.queryset.exclude(interested_user_list__id=request.user.pk).order_by('-ticketing_rate')
-        else:
             queryset = self.queryset.order_by('-ticketing_rate')
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -101,8 +96,6 @@ class MovieBoxofficeRankingListView(APIView):
 
     def get(self, request):
         if not request.user.is_anonymous:
-            queryset = self.queryset.exclude(interested_user_list__id=request.user.pk).order_by('-ticketing_rate')
-        else:
             queryset = self.queryset.order_by('-ticketing_rate')
         page = self.paginate_queryset(queryset)
         if page is not None:
