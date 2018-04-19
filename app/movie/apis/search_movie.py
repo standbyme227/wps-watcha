@@ -1,8 +1,8 @@
 from django.db.models import Q
 from rest_framework import generics, permissions, filters
 
-from movie.models import Movie
-from movie.serializers import MovieListSerializer
+from ..models import Movie
+from ..serializers import MovieSearchResultSerializer
 from utils.pagination import StandardResultSetPagination
 
 
@@ -10,7 +10,7 @@ class SearchMovieListView(generics.ListAPIView):
     permission_classes = (
         permissions.IsAuthenticated,
     )
-    serializer_class = MovieListSerializer
+    serializer_class = MovieSearchResultSerializer
     pagination_class = StandardResultSetPagination
 
     # SearchFilter 를 사용하면 search 기능을 쉽게 구현 할 수 있음.
