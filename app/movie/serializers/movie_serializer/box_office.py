@@ -1,11 +1,9 @@
 from rest_framework import serializers
-from rest_framework.fields import ReadOnlyField
 
-from members.serializers import UserMinimumSerializer
-from movie.serializers.user_to_movie_serializer import UserToMovieCommentListSerializer, UserToMovieBasicSerializer
+from movie.serializers.user_to_movie_serializer import UserToMovieCommentSerializer
 from movie.serializers.movie_to_member_serializer import MovieToMemberListSerializer
 from ...serializers.genre_serializer import GenreSerializer
-from ...models import Movie
+from ...models import Movie, UserToMovie
 
 __all__ = (
     'MovieMinimumListForBoxSerializer',
@@ -42,10 +40,10 @@ class MovieNameBoxOfficeRankingSerializer(serializers.ModelSerializer):
 class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     film_rate = serializers.CharField(source='get_film_rate_display', read_only=True)
-    user = UserMinimumSerializer(read_only=True, many=True)
-    comment = serializers.ReadOnlyField(source='movie.interested_user_list.comment')
-
-
+    user = UserToMovieCommentSerializer(source='interested_user_list', many=True, read_only=True)
+    # user = UserMinimumSerializer(read_only=True, many=True)
+    # user = serializers.ReadOnlyField(source='movie.interested_user_list')
+    # comment = UserToMovieCommentSerializer(read_only=True)
     class Meta:
         model = Movie
         fields = (
@@ -62,8 +60,8 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
             'running_time',
             'genre',
             'user',
-            'comment',
         )
+
 
 
 class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):

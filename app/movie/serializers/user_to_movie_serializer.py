@@ -10,7 +10,7 @@ __all__ = (
     'UserToMovieWithUserSerializer',
     'UserToMovieUpdateSerializer',
     'UserToMovieWantWatchedListSerializer',
-    'UserToMovieCommentListSerializer',
+    'UserToMovieCommentSerializer',
 )
 
 
@@ -59,13 +59,20 @@ class UserToMovieWantWatchedListSerializer(serializers.ModelSerializer):
         )
 
 
-class UserToMovieCommentListSerializer(serializers.ModelSerializer):
-    user = UserMinimumSerializer(read_only=True, many=True)
+class UserToMovieCommentSerializer(serializers.ModelSerializer):
+    comment = serializers.SerializerMethodField()
 
     class Meta:
         model = UserToMovie
         fields = (
             'id',
+            'user_want_movie',
+            'user_watched_movie',
+            'rating',
             'comment',
             'user',
+            'movie',
         )
+    def get_comment(self, obj):
+        comment = obj.comment
+        return comment

@@ -28,7 +28,8 @@ class EvalWatchaRatingTopMovieListView(generics.ListAPIView):
     )
     pagination_class = MovieListEvalPagination
     serializer_class = MovieMinimumListForMainSerializer
-
+    # get_query_set으로 수정.
+    # 주말동안
     def list(self, request, *args, **kwargs):
         if not request.user.is_anonymous:
             movie = Movie.objects. \
