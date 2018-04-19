@@ -1,16 +1,15 @@
 from rest_framework import serializers
-
-from .movie_detail_page import MovieListSerializer
-from ...serializers.user_to_movie_serializer import UserToMovieWantWatchedListSerializer
-from ...serializers.genre_serializer import GenreSerializer
-from ...models import Movie, UserToMovie
+from movie.serializers.user_to_movie_serializer import UserToMovieWantWatchedListSerializer
+from movie.models import Movie, UserToMovie
+from movie.serializers import GenreSerializer
 
 __all__ = (
     'WantWatchedMovieListSerializer',
+    'MovieMinimumListForMySerializer',
 )
 
 
-class WantWatchedMovieListSerializer(MovieListSerializer):
+class WantWatchedMovieListSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     # movie_id = serializers.IntegerField(source='id')
     login_user_checked = serializers.SerializerMethodField()
@@ -26,7 +25,8 @@ class WantWatchedMovieListSerializer(MovieListSerializer):
             'title_en',
             'rating_avg',
             'nation',
-            'poster_image',
+            'poster_image_m',
+            'poster_image_my_x3',
             'genre',
             'running_time',
             'login_user_checked',
@@ -42,3 +42,21 @@ class WantWatchedMovieListSerializer(MovieListSerializer):
             return {'no-data': 'does not exist.'}
         else:
             return {'error': 'Problems with data consistency'}
+
+
+class MovieMinimumListForMySerializer(serializers.ModelSerializer):
+    genre = GenreSerializer(many=True)
+    tag = serializers.CharField(source='get_tag_display', read_only=True)
+
+    class Meta:
+        model = Movie
+        fields = (
+            'id',
+            'title_ko',
+            'movie_created_date',
+            'poster_image_m',
+            'rating_avg',
+            'genre',
+            'tag',
+            'nation',
+        )

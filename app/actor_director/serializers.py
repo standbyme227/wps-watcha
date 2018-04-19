@@ -54,6 +54,7 @@ class MemberSimpleDetailSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'img_profile',
+            'img_profile_x3',
         )
 
 

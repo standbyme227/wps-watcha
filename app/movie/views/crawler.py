@@ -341,7 +341,7 @@ def update_or_create_from_crawler(request):
                 for i in just_three:
                     stillcut_url = i.get('src')
                     stillcut_pattern = re.compile(r'(.*?)\?type=.*?', re.DOTALL)
-                    if len(stillcut_url) > 85 :
+                    if len(stillcut_url) > 85:
                         stillcut = re.search(stillcut_pattern, stillcut_url).group(1)
                     else:
                         stillcut = stillcut_url
@@ -349,7 +349,14 @@ def update_or_create_from_crawler(request):
 
                     ext = get_buffer_ext(temp_file)
                     im = Image.open(temp_file)
-                    still = im.resize((1280, 720))
+                    # if im.width >= im.height:
+                    x = im.width / 128 * 72
+                    img = im.crop((0, 0, im.width, x))
+
+                    # img = im.crop((0, 0, 200, 100))
+
+                    still = img.resize((1280, 720))
+                    # 넓이, 높이
                     temp_file = BytesIO()
                     still.save(temp_file, ext)
                     file_name = '{movie_id}_stillcut_{num}.{ext}'.format(

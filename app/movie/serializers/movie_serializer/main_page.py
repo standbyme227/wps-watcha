@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from ...serializers import GenreSerializer
+from ...serializers.genre_serializer import GenreSerializer
 from ...models import Movie
 
 __all__ = (
     'MovieListSerializer',
-    'MovieMinimumListSerializer',
+    'MovieMinimumListForMainSerializer',
     'MovieNameBoxOfficeRankingSerializer',
 )
 
@@ -15,15 +15,18 @@ class MovieListSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class MovieMinimumListSerializer(serializers.ModelSerializer):
+class MovieMinimumListForMainSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
+    tag = serializers.CharField(source='get_tag_display', read_only=True)
 
     class Meta:
         model = Movie
         fields = (
             'id',
             'title_ko',
-            'poster_image',
+            'movie_created_date',
+            'poster_image_m',
+            'poster_image_eval_x3',
             'rating_avg',
             'genre',
             'tag',
@@ -40,14 +43,3 @@ class MovieNameBoxOfficeRankingSerializer(serializers.ModelSerializer):
             'rating_avg',
         )
 
-
-class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Movie
-        fields = (
-            'id',
-            'title_ko',
-            'ticketing_rate',
-            'rating_avg',
-            'poster_image',
-        )

@@ -49,7 +49,7 @@ class MovieDetailSerializer(serializers.ModelSerializer):
             'rating_avg',
             'movie_eval_info',
             'movie_rating_data',
-            'poster_image',
+            'poster_image_m',
             'still_cuts',
             'genre',
             'tag',
