@@ -108,6 +108,7 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField(read_only=True)
     img_profile = serializers.SerializerMethodField(read_only=True)
     user_pk = serializers.SerializerMethodField(read_only=True)
+    want_count = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Movie
         fields = (
@@ -122,10 +123,11 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
             'film_rate',
             'running_time',
             'genre',
-            'username',
-            'comment',
-            'img_profile',
             'user_pk',
+            'username',
+            'img_profile',
+            'comment',
+            'want_count',
         )
     def get_user_pk(self, obj):
         user_to_movie = obj.interested_user_list.all().first()
@@ -150,3 +152,9 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
         else:
             img_profile = None
         return img_profile
+
+    def get_want_count(self, obj):
+        user_to_movie = obj.interested_user_list
+        want_movie = user_to_movie.filter(user_want_movie=True)
+        want_count = want_movie.count()
+        return want_count

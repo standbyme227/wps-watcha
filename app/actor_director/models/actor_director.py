@@ -13,8 +13,8 @@ class Member(models.Model):
     real_name = models.CharField('본명', max_length=50, null=True, blank=True)
     img_profile = models.ImageField(upload_to='members', blank=True)
     img_profile_x3 = models.ImageField(upload_to='members/ios', blank=True)
-    # img_profile_x2 = models.ImageField(upload_to='members/ios', blank=True)
-    # img_profile_x1 = models.ImageField(upload_to='members/ios', blank=True)
+    img_profile_x2 = models.ImageField(upload_to='members/ios', blank=True)
+    img_profile_x1 = models.ImageField(upload_to='members/ios', blank=True)
     modified_date = models.DateTimeField('수정일시', auto_now=True)
     created_date = models.DateTimeField('생성일시', auto_now_add=True)
 

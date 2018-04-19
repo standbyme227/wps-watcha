@@ -33,9 +33,9 @@ class EvalWatchaRatingTopMovieListView(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         if not request.user.is_anonymous:
             movie = Movie.objects. \
-                exclude(interested_user_list__id=request.user.pk).filter(rating_avg__gte=4.3).order_by('?')
+                exclude(interested_user_list__id=request.user.pk).filter(rating_avg__gte=4.0).order_by('?')
         else:
-            movie = Movie.objects.filter(rating_avg__gte=4.3).order_by('?')
+            movie = Movie.objects.filter(rating_avg__gte=4.0).order_by('?')
         movie_list = []
         for item in movie:
             movie_list.append(item)
