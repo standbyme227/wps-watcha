@@ -40,10 +40,10 @@ class MovieNameBoxOfficeRankingSerializer(serializers.ModelSerializer):
 class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     film_rate = serializers.CharField(source='get_film_rate_display', read_only=True)
-    comment = serializers.SerializerMethodField(read_only=True)
-    username = serializers.SerializerMethodField(read_only=True)
-    img_profile = serializers.SerializerMethodField(read_only=True)
-    user_pk = serializers.SerializerMethodField(read_only=True)
+    comment = serializers.SerializerMethodField(read_only=True, default=None)
+    username = serializers.SerializerMethodField(read_only=True, default=None)
+    img_profile = serializers.SerializerMethodField(read_only=True, default=None)
+    user_pk = serializers.SerializerMethodField(read_only=True, default=None)
     # user = serializers.SerializerMethodField(read_only=True)
     # user = UserToMovieCommentSerializer(read_only=True)
     # user = UserToMovieCommentSerializer(source='interested_user_list', many=True, read_only=True)
@@ -104,11 +104,11 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     members = MovieToMemberListSerializer(source='movie_member_list', many=True, read_only=True)
     film_rate = serializers.CharField(source='get_type_display', read_only=True)
-    comment = serializers.SerializerMethodField(read_only=True)
-    username = serializers.SerializerMethodField(read_only=True)
-    img_profile = serializers.SerializerMethodField(read_only=True)
-    user_pk = serializers.SerializerMethodField(read_only=True)
-    want_count = serializers.SerializerMethodField(read_only=True)
+    comment = serializers.SerializerMethodField(read_only=True, default=None)
+    username = serializers.SerializerMethodField(read_only=True, default=None)
+    img_profile = serializers.SerializerMethodField(read_only=True, default=None)
+    user_pk = serializers.SerializerMethodField(read_only=True, default=None)
+    want_count = serializers.SerializerMethodField(read_only=True, default=None)
     class Meta:
         model = Movie
         fields = (
