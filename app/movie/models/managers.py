@@ -214,14 +214,13 @@ class MovieManager(models.Manager):
         # large.save(temp_file, ext)
         large.save(temp_file, format="JPEG", quality=60, optimize=True, progressive=True)
 
-        file_name = '{movie_id}.{ext}'.format(
+        file_name = '{movie_id}_large.{ext}'.format(
             movie_id=naver_movie_id,
             ext=ext,
         )
 
         if not movie.poster_image:
             movie.poster_image.save(file_name, File(temp_file))
-
 
         driver.find_element_by_xpath('//*[@id="movieEndTabMenu"]/li[2]/a').click()
         if driver.find_elements_by_xpath('//*/button[@id="actorMore"]'):
@@ -367,7 +366,14 @@ class MovieManager(models.Manager):
 
                 ext = get_buffer_ext(temp_file)
                 im = Image.open(temp_file)
-                still = im.resize((1280, 720))
+                # if im.width >= im.height:
+                x = im.width/128*72
+                img = im.crop((0, 0, im.width, x))
+
+                # img = im.crop((0, 0, 200, 100))
+
+                still = img.resize((1280, 720))
+                # 넓이, 높이
                 temp_file = BytesIO()
                 still.save(temp_file, ext)
                 file_name = '{movie_id}_stillcut_{num}.{ext}'.format(
