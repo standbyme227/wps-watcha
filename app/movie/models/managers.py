@@ -95,7 +95,7 @@ class MovieManager(models.Manager):
                 film_rate = short
                 break
         else:
-            film_rate = Movie.ETC
+            film_rate = Movie.LIMIT
 
         d_day = d_day_year + d_day_date
         if running_time_text:

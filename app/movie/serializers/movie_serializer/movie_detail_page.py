@@ -99,7 +99,7 @@ class MovieSimpleDetailSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'title_ko',
-            'poster_image',
+            'poster_image_s',
             'login_user_checked',
         )
 
