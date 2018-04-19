@@ -73,7 +73,7 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
 
     def get_user_pk(self, obj):
         user_to_movie = obj.interested_user_list.all().first()
-        if not user_to_movie == '':
+        if not user_to_movie == None:
             user_pk = user_to_movie.user.pk
         else:
             user_pk = None
@@ -81,7 +81,7 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
 
     def get_comment(self, obj):
         user_to_movie = obj.interested_user_list.all().first()
-        if not user_to_movie == '':
+        if not user_to_movie == None:
             comment = user_to_movie.comment
         else:
             comment = None
@@ -89,7 +89,7 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
 
     def get_username(self, obj):
         user_to_movie = obj.interested_user_list.all().first()
-        if not user_to_movie == '':
+        if not user_to_movie == None:
             username = user_to_movie.user.nickname
         else:
             username = None
@@ -97,7 +97,7 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
 
     def get_img_profile(self, obj):
         user_to_movie = obj.interested_user_list.all().first()
-        if not user_to_movie == '':
+        if not user_to_movie == None:
             img_profile_is = user_to_movie.user.img_profile
         else:
             img_profile_is = None
@@ -143,7 +143,7 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
         )
     def get_user_pk(self, obj):
         user_to_movie = obj.interested_user_list.all().first()
-        if not user_to_movie == '':
+        if not user_to_movie == None:
             user_pk = user_to_movie.user.pk
         else:
             user_pk = None
@@ -151,7 +151,7 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
 
     def get_comment(self, obj):
         user_to_movie = obj.interested_user_list.all().first()
-        if not user_to_movie == '':
+        if not user_to_movie == None:
             comment = user_to_movie.comment
         else:
             comment = None
@@ -159,7 +159,7 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
 
     def get_username(self, obj):
         user_to_movie = obj.interested_user_list.all().first()
-        if not user_to_movie == '':
+        if not user_to_movie == None:
             username = user_to_movie.user.nickname
         else:
             username = None
@@ -167,7 +167,7 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
 
     def get_img_profile(self, obj):
         user_to_movie = obj.interested_user_list.all().first()
-        if not user_to_movie == '':
+        if not user_to_movie == None:
             img_profile_is = user_to_movie.user.img_profile
         else:
             img_profile_is = None
@@ -179,7 +179,7 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
 
     def get_want_count(self, obj):
         user_to_movie = obj.interested_user_list
-        if not user_to_movie == '':
+        if not user_to_movie == None:
             want_movie = user_to_movie.filter(user_want_movie=True)
             want_count = want_movie.count()
         else:
