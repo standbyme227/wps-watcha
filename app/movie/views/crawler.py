@@ -95,13 +95,13 @@ def update_or_create_from_crawler(request):
                 film_rate = film_rate_area2[1].text
 
             for short, full in Movie.CHOICES_FILE_RATE_TYPE:
-                if film_rate == None:
+                if film_rate == '':
                     film_rate = Movie.ETC
                 elif film_rate.strip() == full:
                     film_rate = short
                     break
             else:
-                film_rate = Movie.ETC
+                film_rate = Movie.LIMIT
 
             d_day = d_day_year + d_day_date
             if running_time_text:
