@@ -8,6 +8,7 @@ from ...apis import (
     UserCheckedMovieCreateView,
     MovieCheckingDataListView,
     WatchaRatingTopMovieListView,
+    SearchMovieListView,
 )
 
 app_name = 'movie'
@@ -26,5 +27,6 @@ urlpatterns = [
     path('user-checked-movie/<int:pk>/', UserCheckedMovieUpdateView.as_view(), name='user-checked-movie-update'),
     path('user-checked-movie/create/', UserCheckedMovieCreateView.as_view(), name='user-checked-movie-create'),
     path('<int:pk>/movie-checking-data/', MovieCheckingDataListView.as_view(), name='movie-checking-data'),
+    path('search/', SearchMovieListView.as_view(), name='movie-search'),
 ]
 
