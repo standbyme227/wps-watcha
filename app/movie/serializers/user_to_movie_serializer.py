@@ -3,6 +3,8 @@ from members.serializers.user_serializer import UserSimpleDetailSerializer
 from members.serializers.user_serializer import UserMinimumSerializer
 from movie.models import UserToMovie
 
+# from movie.serializers.movie_serializer.my_page import MovieMinimumListForMySerializer
+
 __all__ = (
     'UserToMovieBasicSerializer',
     'UserToMovieWithUserSerializer',
@@ -21,6 +23,7 @@ class UserToMovieBasicSerializer(serializers.ModelSerializer):
 class UserToMovieWithUserSerializer(serializers.ModelSerializer):
     user = UserSimpleDetailSerializer(read_only=True)
 
+    # movie = MovieMinimumListForMySerializer(read_only=True)
     class Meta:
         model = UserToMovie
         fields = (

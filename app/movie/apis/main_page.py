@@ -11,7 +11,7 @@ from utils.pagination import (
     MovieListDefaultPagination,
 )
 from ..serializers import (
-    MovieMinimumListSerializer, )
+    MovieMinimumListForMainSerializer, )
 
 from ..models import Movie
 
@@ -26,7 +26,7 @@ class WatchaRatingTopMovieListView(generics.ListAPIView):
         permissions.IsAuthenticated,
     )
     pagination_class = MovieListDefaultPagination
-    serializer_class = MovieMinimumListSerializer
+    serializer_class = MovieMinimumListForMainSerializer
 
     def list(self, request, *args, **kwargs):
         if not request.user.is_anonymous:
@@ -38,7 +38,7 @@ class WatchaRatingTopMovieListView(generics.ListAPIView):
         for item in movie:
             movie_list.append(item)
 
-        serializer = MovieMinimumListSerializer(movie_list, many=True)
+        serializer = MovieMinimumListForMainSerializer(movie_list, many=True)
         page = self.paginate_queryset(serializer.data)
         return self.get_paginated_response(page)
 
@@ -49,7 +49,7 @@ class TagMovieListView(generics.ListAPIView):
         permissions.IsAuthenticated,
     )
     pagination_class = MovieListDefaultPagination
-    serializer_class = MovieMinimumListSerializer
+    serializer_class = MovieMinimumListForMainSerializer
     TAG = ''
 
     def list(self, request, *args, **kwargs):
@@ -62,7 +62,7 @@ class TagMovieListView(generics.ListAPIView):
         for item in movie:
             movie_list.append(item)
 
-        serializer = MovieMinimumListSerializer(movie_list, many=True)
+        serializer = MovieMinimumListForMainSerializer(movie_list, many=True)
         page = self.paginate_queryset(serializer.data)
         return self.get_paginated_response(page)
 
@@ -72,7 +72,7 @@ class GenreMovieListView(generics.ListAPIView):
         permissions.IsAuthenticated,
     )
     pagination_class = MovieListDefaultPagination
-    serializer_class = MovieMinimumListSerializer
+    serializer_class = MovieMinimumListForMainSerializer
     GENRE = ''
 
     def list(self, request, *args, **kwargs):
@@ -85,6 +85,6 @@ class GenreMovieListView(generics.ListAPIView):
         for item in movie:
             movie_list.append(item)
 
-        serializer = MovieMinimumListSerializer(movie_list, many=True)
+        serializer = MovieMinimumListForMainSerializer(movie_list, many=True)
         page = self.paginate_queryset(serializer.data)
         return self.get_paginated_response(page)

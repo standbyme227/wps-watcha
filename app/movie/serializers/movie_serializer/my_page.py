@@ -3,9 +3,9 @@ from movie.serializers.user_to_movie_serializer import UserToMovieWantWatchedLis
 from movie.models import Movie, UserToMovie
 from movie.serializers import GenreSerializer
 
-
 __all__ = (
     'WantWatchedMovieListSerializer',
+    'MovieMinimumListForMySerializer',
 )
 
 
@@ -41,3 +41,21 @@ class WantWatchedMovieListSerializer(serializers.ModelSerializer):
             return {'no-data': 'does not exist.'}
         else:
             return {'error': 'Problems with data consistency'}
+
+
+class MovieMinimumListForMySerializer(serializers.ModelSerializer):
+    genre = GenreSerializer(many=True)
+    tag = serializers.CharField(source='get_tag_display', read_only=True)
+
+    class Meta:
+        model = Movie
+        fields = (
+            'id',
+            'title_ko',
+            'movie_created_date',
+            'poster_image_m',
+            'rating_avg',
+            'genre',
+            'tag',
+            'nation',
+        )

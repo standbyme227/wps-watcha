@@ -3,8 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..serializers import UserToMovieWithUserSerializer
-from ..models import Movie
+from movie.models import Movie
+from movie.serializers.user_to_movie_serializer import UserToMovieWithUserSerializer
 
 
 class WhatNationDoILikeView(APIView):
