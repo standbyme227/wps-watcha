@@ -6,6 +6,7 @@ from movie.serializers import GenreSerializer
 __all__ = (
     'WantWatchedMovieListSerializer',
     'MovieMinimumListForMySerializer',
+    'CommentedMovieListSerializer',
 )
 
 
@@ -62,4 +63,35 @@ class MovieMinimumListForMySerializer(serializers.ModelSerializer):
         )
 
 
-class CommentedMovieListSerializer()
+class CommentedMovieListSerializer(serializers.ModelSerializer):
+    genre = GenreSerializer(many=True)
+    commented_user = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Movie
+        fields = (
+            'id',
+            'title_ko',
+            'title_en',
+            'nation',
+            'poster_image_m',
+            'poster_image_my_x3',
+            'genre',
+            'running_time',
+            'commented_user',
+        )
+
+
+    def get_commented_user(self, obj):
+        if UserToMovie.objects.filter(user=self.context['login_user'], movie=obj):
+            items = UserToMovie.objects.filter(user=self.context['login_user'], movie=obj)
+            # UserToMovie에서 유저는 login한 User의 영화들의 점수를 가져옴.
+            if len(items) == 1:
+                # 한 유저가 평가한 그 영화는 하나, 대신 list 형태로 나올테니 len을 확인한다.
+                for item in items:
+                    serializer = UserToMovieWantWatchedListSerializer(item)
+                    return serializer.data
+            elif len(items) == 0:
+                return {'no-data': 'does not exist.'}
+            else:
+                return {'error': 'Problems with data consistency'}

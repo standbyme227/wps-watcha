@@ -9,4 +9,4 @@ from .search_user import *
 from .signup import *
 from .want_watched_movie_list import *
 from .mypage import *
-
+from .commented_movie_list import *

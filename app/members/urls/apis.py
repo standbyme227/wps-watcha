@@ -13,7 +13,7 @@ from ..apis import (
     HowToRateMovieView,
     MyPageTopView,
     SearchUserListView,
-
+    CommentedMovieListView,
 )
 
 app_name = 'members'
@@ -30,6 +30,7 @@ urlpatterns = [
 
     path('<int:pk>/want-movie/', WantWatchedMovieListView.as_view(want_movie=True), name='want-movie'),
     path('<int:pk>/watched-movie/', WantWatchedMovieListView.as_view(watched_movie=True), name='watched-movie'),
+    path('commented-movie/', CommentedMovieListView.as_view(), name='commented-movie'),
 
     path('rating/', HowToRateMovieView.as_view(), name='user-rating'),
     # path('')
