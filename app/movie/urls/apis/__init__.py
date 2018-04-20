@@ -5,11 +5,13 @@ from ...apis import (
     MovieDetailView,
     UserCheckedMovieListView,
     UserCheckedMovieUpdateView,
+
     UserCheckedMovieCreateView,
     MovieCheckingDataListView,
     WatchaRatingTopMovieListView,
     SearchMovieListView,
 )
+
 
 app_name = 'movie'
 

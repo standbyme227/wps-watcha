@@ -16,4 +16,5 @@ class StillCutSerializer(serializers.ModelSerializer):
             'id',
             'movie',
             'still_img',
+            'still_img_x3',
         )

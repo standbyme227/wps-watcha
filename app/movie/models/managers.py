@@ -207,12 +207,12 @@ class MovieManager(models.Manager):
             movie.movie_genre_list.update_or_create(genre=genre, movie=movie)
 
         temp_file = download(poster_url)
-
         ext = get_buffer_ext(temp_file)
         im = Image.open(temp_file)
         large = im.resize((460, 650))
         temp_file = BytesIO()
-        large.save(temp_file, ext)
+        # large.save(temp_file, ext)
+        large.save(temp_file, format="JPEG", quality=60, optimize=True, progressive=True)
 
         file_name = '{movie_id}_large.{ext}'.format(
             movie_id=naver_movie_id,
@@ -320,6 +320,7 @@ class MovieManager(models.Manager):
                     'real_name': real_name,
                 }
             )
+
             if not img_profile_url == '':
                 temp_file = download(img_profile_url)
                 file_name = '{actor_director_id}.{ext}'.format(
@@ -365,7 +366,14 @@ class MovieManager(models.Manager):
 
                 ext = get_buffer_ext(temp_file)
                 im = Image.open(temp_file)
-                still = im.resize((1280, 720))
+                # if im.width >= im.height:
+                x = im.width/128*72
+                img = im.crop((0, 0, im.width, x))
+
+                # img = im.crop((0, 0, 200, 100))
+
+                still = img.resize((1280, 720))
+                # 넓이, 높이
                 temp_file = BytesIO()
                 still.save(temp_file, ext)
                 file_name = '{movie_id}_stillcut_{num}.{ext}'.format(

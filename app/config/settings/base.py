@@ -185,6 +185,7 @@ CORS_ORIGIN_WHITELIST = (
 )
 
 
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
