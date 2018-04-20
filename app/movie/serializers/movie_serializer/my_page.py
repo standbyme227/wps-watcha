@@ -60,3 +60,6 @@ class MovieMinimumListForMySerializer(serializers.ModelSerializer):
             'tag',
             'nation',
         )
+
+
+class CommentedMovieListSerializer()
