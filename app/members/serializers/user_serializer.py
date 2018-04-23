@@ -11,7 +11,7 @@ __all__ = (
     'UserSimpleDetailSerializer',
     'UserMinimumSerializer',
     'UserMyPageTopSerializer',
-
+    'UserSignUpSerializer',
 )
 
 
@@ -100,3 +100,20 @@ class UserMyPageTopSerializer(serializers.ModelSerializer):
             return serializer.data
         except:
             return None
+
+
+class UserSignUpSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+
+    class Meta:
+        model = User
+        fields = (
+            'pk',
+            'email',
+            'username',
+            'nickname',
+            'img_profile',
+            'first_name',
+            'last_name',
+        )
+        read_only_fields = ('pk',)

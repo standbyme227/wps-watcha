@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from ..serializers import UserSerializer
+from ..serializers import UserSignUpSerializer
 
 User = get_user_model()
 
@@ -14,7 +14,7 @@ __all__ = (
 
 class SignupView(APIView):
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        serializer = UserSignUpSerializer(data=request.data)
         if serializer.is_valid():
             user_email = serializer.initial_data['email']
             user_nickname = serializer.initial_data['nickname']
@@ -43,7 +43,7 @@ class SignupView(APIView):
             token, is_create = Token.objects.get_or_create(user=user)
             data = {
                 'token': token.key,
-                'user': UserSerializer(user).data,
+                'user': UserSignUpSerializer(user).data,
             }
             return Response(data, status=status.HTTP_201_CREATED)
             # return Response(serializer.data, status=status.HTTP_201_CREATED)

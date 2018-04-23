@@ -1,10 +1,12 @@
 import ast
 
 import requests
+from django.conf import settings
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from config.settings import FACEBOOK_APP_ID, FACEBOOK_SECRET_CODE, FACEBOOK_HOST
+# from config.settings import FACEBOOK_APP_ID, FACEBOOK_SECRET_CODE, FACEBOOK_HOST
+
 from .exceptions import FacebookResponseError, FacebookNotFoundError
 
 
@@ -21,9 +23,12 @@ class FacebookLoginTest(APITestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.app_id = FACEBOOK_APP_ID
-        cls.secret_code = FACEBOOK_SECRET_CODE
-        cls.host = FACEBOOK_HOST
+        cls.app_id = settings.FACEBOOK_APP_ID
+        cls.secret_code = settings.FACEBOOK_SECRET_CODE
+        cls.host = settings.FACEBOOK_HOST
+        # cls.app_id = FACEBOOK_APP_ID
+        # cls.secret_code = FACEBOOK_SECRET_CODE
+        # cls.host = FACEBOOK_HOST
 
     def get_app_access_token_from_facebook(self):
         url = self.host + "/oauth/access_token"
