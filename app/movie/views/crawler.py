@@ -212,6 +212,7 @@ def update_or_create_from_crawler(request):
                 ext=ext,
             )
 
+
             if not movie.poster_image:
                 movie.poster_image.save(file_name, File(temp_file))
 
