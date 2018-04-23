@@ -28,19 +28,13 @@ class WatchaRatingTopMovieListView(generics.ListAPIView):
     pagination_class = MovieListDefaultPagination
     serializer_class = MovieMinimumListForMainSerializer
 
-    def list(self, request, *args, **kwargs):
-        if not request.user.is_anonymous:
+    def get_queryset(self):
+        if not self.request.user.is_anonymous:
             movie = Movie.objects.\
-                exclude(interested_user_list__id=request.user.pk).filter(rating_avg__gte=4.0).order_by('?')
+                exclude(interested_user_list__user_id=self.request.user.pk).filter(rating_avg__gte=4.0).order_by('?')
         else:
             movie = Movie.objects.filter(rating_avg__gte=4.0).order_by('?')
-        movie_list = []
-        for item in movie:
-            movie_list.append(item)
-
-        serializer = MovieMinimumListForMainSerializer(movie_list, many=True)
-        page = self.paginate_queryset(serializer.data)
-        return self.get_paginated_response(page)
+        return movie
 
 
 
@@ -52,19 +46,13 @@ class TagMovieListView(generics.ListAPIView):
     serializer_class = MovieMinimumListForMainSerializer
     TAG = ''
 
-    def list(self, request, *args, **kwargs):
-        if not request.user.is_anonymous:
+    def get_queryset(self):
+        if not self.request.user.is_anonymous:
             movie = Movie.objects.\
-                exclude(interested_user_list__id=request.user.pk).filter(tag__tag=self.TAG).order_by('?')
+                exclude(interested_user_list__user_id=self.request.user.pk).filter(tag__tag=self.TAG).order_by('?')
         else:
-            movie = Movie.objects.filter(tag__tag=self.TAG).order_by('?')
-        movie_list = []
-        for item in movie:
-            movie_list.append(item)
-
-        serializer = MovieMinimumListForMainSerializer(movie_list, many=True)
-        page = self.paginate_queryset(serializer.data)
-        return self.get_paginated_response(page)
+            movie = Movie.objects.filter(tag__tag=self.Tag).order_by('?')
+        return movie
 
 
 class GenreMovieListView(generics.ListAPIView):
@@ -75,16 +63,10 @@ class GenreMovieListView(generics.ListAPIView):
     serializer_class = MovieMinimumListForMainSerializer
     GENRE = ''
 
-    def list(self, request, *args, **kwargs):
-        if not request.user.is_anonymous:
+    def get_queryset(self):
+        if not self.request.user.is_anonymous:
             movie = Movie.objects.\
-                exclude(interested_user_list__id=request.user.pk).filter(genre__genre=self.GENRE).order_by('?')
+                exclude(interested_user_list__user_id=self.request.user.pk).filter(genre__genre=self.GENRE).order_by('?')
         else:
-            movie = Movie.objects.filter(genre__genre=self.GENRE).order_by('?')
-        movie_list = []
-        for item in movie:
-            movie_list.append(item)
-
-        serializer = MovieMinimumListForMainSerializer(movie_list, many=True)
-        page = self.paginate_queryset(serializer.data)
-        return self.get_paginated_response(page)
+            movie = Movie.objects.filter(tag__tag=self.Tag).order_by('?')
+        return movie

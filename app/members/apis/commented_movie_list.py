@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import permissions, generics
+from rest_framework.generics import get_object_or_404
+
 from movie.models import UserToMovie
 from movie.serializers.movie_serializer.my_page import CommentedMovieListSerializer
 from utils.pagination import StandardResultSetPagination
@@ -23,9 +25,9 @@ class CommentedMovieListView(generics.ListAPIView):
     # comment = ''
 
     def get_queryset(self):
-        user = self.request.user
-        # 유저는 request한 유저 authenticate된 유저로 로그인 상태인 유저이다.
-        if self.request.user.interesting_movie_list:
+        pk = self.kwargs['pk']
+        user = get_object_or_404(User, pk=pk)
+        if user.interesting_movie_list:
             # 유저의 usertomovie의 오브젝트가 있다면 리스트로 받아온다.
             user_to_movie = UserToMovie.objects.filter(user=user)
             movie_list = []
@@ -36,4 +38,6 @@ class CommentedMovieListView(generics.ListAPIView):
         return movie_list
 
     def get_serializer_context(self):
-        return {'login_user': self.request.user}
+        pk = self.kwargs['pk']
+        user = get_object_or_404(User, pk=pk)
+        return {'user': user}

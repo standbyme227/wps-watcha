@@ -30,9 +30,9 @@ urlpatterns = [
 
     path('<int:pk>/want-movie/', WantWatchedMovieListView.as_view(want_movie=True), name='want-movie'),
     path('<int:pk>/watched-movie/', WantWatchedMovieListView.as_view(watched_movie=True), name='watched-movie'),
-    path('commented-movie/', CommentedMovieListView.as_view(), name='commented-movie'),
+    path('<int:pk>/commented-movie/', CommentedMovieListView.as_view(), name='commented-movie'),
 
-    path('rating/', HowToRateMovieView.as_view(), name='user-rating'),
+    path('<int:pk>/rating/', HowToRateMovieView.as_view(), name='user-rating'),
     # path('')
 
     path('<int:pk>/mypage-top/', MyPageTopView.as_view(), name='mypage-top'),

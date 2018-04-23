@@ -77,3 +77,19 @@ class UserToMovieCommentSerializer(serializers.ModelSerializer):
     #     return comment
 
 
+class UserToMovieWithMovieSerializer(serializers.ModelSerializer):
+    from movie.serializers.movie_serializer.my_page import MovieNationListSerializer
+    movie = MovieNationListSerializer(read_only=True)
+
+    # movie = MovieMinimumListForMySerializer(read_only=True)
+    class Meta:
+        model = UserToMovie
+        fields = (
+            'id',
+            'user_want_movie',
+            'user_watched_movie',
+            'rating',
+            'user',
+            'movie',
+            'kr_rating',
+        )
