@@ -53,6 +53,7 @@ class MemberSimpleDetailSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
+            'real_name',
             'img_profile',
             'img_profile_x3',
         )
