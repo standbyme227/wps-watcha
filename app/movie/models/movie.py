@@ -17,12 +17,15 @@ __all__ = (
 
 
 class Movie(models.Model):
+    LIMIT = 'limit'
+    ETC = 'ETC'
     CHOICES_FILE_RATE_TYPE = (
         ('all', '전체 관람가'),
         ('12', '12세 관람가'),
         ('15', '15세 관람가'),
         ('18', '18세 관람가'),
-        ('limit', '제한상영가'),
+        ('limit', '청소년 관람불가'),
+        (ETC, '기타'),
     )
 
     KOREA = 'KR'
@@ -35,7 +38,6 @@ class Movie(models.Model):
     GERMAN = 'GM'
     ITALY = 'IT'
     THAILAND = 'TH'
-    ETC = 'ETC'
     CHOICES_NATION_CODE = (
         (KOREA, '한국'),
         (JAPAN, '일본'),
@@ -107,6 +109,7 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title_ko
+
 
     def give_rating_user(self, user, rating):
         rating, rating_created = self.interested_user_list.get_or_create(

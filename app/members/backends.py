@@ -57,6 +57,43 @@ class APIFacebookBackend:
         except User.DoesNotExist:
             return None
 
+
+class FacebookBackend:
+    CLIENT_ID = settings.FACEBOOK_APP_ID
+    CLIENT_SECRET = settings.FACEBOOK_SECRET_CODE
+    URL_ACCESS_TOKEN = 'https://graph.facebook.com/v2.12/oauth/access_token'
+    URL_ME = 'https://graph.facebook.com/v2.12/me'
+
+    def authenticate(self, request, code):
+        def get_access_token(auth_code):
+            redirect_uri = 'http://localhost:8000/facebook-login/'
+            params_access_token = {
+                'client_id': self.CLIENT_ID,
+                'redirect_uri': redirect_uri,
+                'client_secret': self.CLIENT_SECRET,
+                'code': auth_code,
+            }
+            response = request.get(self.URL_ACCESS_TOKEN, params_access_token)
+            response_dict = response.json()
+            return response_dict['access_token']
+
+        def get_user_info(user_access_token):
+            params = {
+                'access_token' : user_access_token,
+                'fields': ','.join([
+                    'id',
+                    'name',
+                    'picture.width(600)',
+                    'first_name',
+                    'last_name',
+                ])
+            }
+            response = requests.get(self.URL_ME, params)
+            response_dict = response.json()
+            return response_dict
+
+
+
 # class EmailBackend:
 #     def authenticate(self, request, password):
 #         confirm_password = user.password

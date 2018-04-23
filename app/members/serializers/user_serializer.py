@@ -3,13 +3,13 @@ from django.contrib.auth import get_user_model
 
 from movie.models import UserToMovie, StillCut
 
+
 User = get_user_model()
 
 __all__ = (
     'UserSerializer',
     'UserEmailSerializer',
     'UserSimpleDetailSerializer',
-    'UserMinimumSerializer',
     'UserMyPageTopSerializer',
     'UserSignUpSerializer',
 )
@@ -28,17 +28,6 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
         )
         read_only_fields = ('pk', 'username', 'email')
-
-
-class UserMinimumSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = (
-            'pk',
-            'email',
-            'nickname',
-            'img_profile',
-        )
 
 
 class UserEmailSerializer(serializers.ModelSerializer):
