@@ -212,7 +212,7 @@ class MovieManager(models.Manager):
         large = im.resize((460, 650))
         temp_file = BytesIO()
         # large.save(temp_file, ext)
-        large.save(temp_file, format="JPEG", quality=80, optimize=True, progressive=True)
+        large.save(temp_file, format="JPEG", quality=95, optimize=True, progressive=True)
 
         file_name = '{movie_id}_large.{ext}'.format(
             movie_id=naver_movie_id,
