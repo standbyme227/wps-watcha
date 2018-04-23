@@ -9,10 +9,11 @@ from rest_framework.test import APITestCase
 from movie.models import Movie, UserToMovie
 
 User = get_user_model()
-print('user_checked_movie_list.py --> start')
+print('user_checked_movie_create.py --> start')
 
 
-class UserCheckedMovieList(APITestCase):
+class UserCheckedMovieCreate(APITestCase):
+    URL = reverse('apis:movie:user-checked-movie-create')
 
     @classmethod
     def setUpTestData(cls):
@@ -62,24 +63,54 @@ class UserCheckedMovieList(APITestCase):
                 movie=Movie.objects.get(pk=eval_data[5]),
             )
 
-    def test_get_user_checked_movie_list(self):
+    def test_get_user_checked_movie_create(self):
         test_user_pk = 1
         token = Token.objects.get(user_id=test_user_pk)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
 
-        url = reverse('apis:movie:user-checked-movie') + '?pk=1&pk=2&pk=3'
-        response = self.client.get(url, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = {
+            "user_want_movie": False,
+            "user_watched_movie": True,
+            "rating": "3.0",
+            "comment": "good movie~",
+            "movie": 3
+        }
+        response = self.client.post(self.URL, data=data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['user'], test_user_pk)
+        self.assertEqual(response.data['movie'], data['movie'])
 
-        user_to_movie_cnt = UserToMovie.objects.filter(user=1, movie__in=[1, 2, 3]).count()
-        self.assertEqual(response.data['count'], user_to_movie_cnt)
+    def test_get_user_checked_movie_create_with_existing_data(self):
+        test_user_pk = 2
+        token = Token.objects.get(user_id=test_user_pk)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
 
-    def test_get_user_checked_movie_list_with_invalid_token(self):
+        data = {
+            "user_want_movie": False,
+            "user_watched_movie": True,
+            "rating": "3.0",
+            "comment": "good movie~",
+            "movie": 3
+        }
+        response = self.client.post(self.URL, data=data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data['non_field_errors'][0],
+            'The fields user, movie must make a unique set.'
+        )
+
+    def test_get_user_checked_movie_create_with_invaild_token(self):
         temp_token = 'c60101d80b61cfd0a7f90b203475dbd08ed504fd'
         invalid_token = ''.join(random.sample(temp_token, len(temp_token)))
         token_queryset = Token.objects.filter(key=invalid_token)
+        data = {
+            "user_want_movie": False,
+            "user_watched_movie": True,
+            "rating": "3.0",
+            "comment": "good movie~",
+            "movie": 3
+        }
         if not token_queryset:
             self.client.credentials(HTTP_AUTHORIZATION='Token ' + invalid_token)
-            url = reverse('apis:movie:user-checked-movie') + '?pk=1&pk=2&pk=3'
-            response = self.client.get(url, format='json')
+            response = self.client.get(self.URL, data=data, format='json')
             self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
