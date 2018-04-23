@@ -387,10 +387,12 @@ class MovieManager(models.Manager):
         from ..models import UserToMovie
         items = UserToMovie.objects.filter(movie=id)
         rating_list = []
+        rating_avg = 0
         for item in items:
             if item.rating:
                 rating_list.append(item.rating)
-        rating_avg = round(statistics.mean(rating_list), 1)
+        if len(rating_list) > 0:
+            rating_avg = round(statistics.mean(rating_list), 1)
 
         from ..models import Movie
         movie_cnt = Movie.objects.filter(pk=id).update(
