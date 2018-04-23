@@ -13,10 +13,10 @@ from rest_framework.test import APITestCase
 from config import settings
 
 User = get_user_model()
+print('detail.py --> start')
 
 
 class GetUserDetailsTest(APITestCase):
-
     @classmethod
     def setUpTestData(cls):
         user_list = (

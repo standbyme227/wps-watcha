@@ -4,4 +4,4 @@ from .facebook_login import *
 from .list import *
 from .logout import *
 from .signup import *
-from .want_movie_list import *
+from .want_watched_movie_list import *

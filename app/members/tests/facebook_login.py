@@ -9,6 +9,8 @@ from rest_framework.test import APITestCase
 
 from .exceptions import FacebookResponseError, FacebookNotFoundError
 
+print('facebook_login.py --> start')
+
 
 class FacebookLoginTest(APITestCase):
     URL = reverse('apis:members:facebook-login')
