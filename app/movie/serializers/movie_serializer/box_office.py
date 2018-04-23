@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from movie.serializers.user_to_movie_serializer import UserToMovieCommentSerializer
+from movie.serializers.user_to_movie_serializer import UserToMovieWantWatchedListSerializer
 from movie.serializers.movie_to_member_serializer import MovieToMemberListSerializer
 from ...serializers.genre_serializer import GenreSerializer
 from ...models import Movie, UserToMovie
@@ -44,6 +44,8 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField(read_only=True, default=None)
     img_profile = serializers.SerializerMethodField(read_only=True, default=None)
     user_pk = serializers.SerializerMethodField(read_only=True, default=None)
+    login_user_checked = serializers.SerializerMethodField()
+
     # user = serializers.SerializerMethodField(read_only=True)
     # user = UserToMovieCommentSerializer(read_only=True)
     # user = UserToMovieCommentSerializer(source='interested_user_list', many=True, read_only=True)
@@ -69,6 +71,7 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
             'comment',
             'img_profile',
             'user_pk',
+            'login_user_checked',
         )
 
     def get_user_pk(self, obj):
@@ -107,6 +110,17 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
             img_profile = None
         return img_profile
 
+    def get_login_user_checked(self, obj):
+        items = UserToMovie.objects.filter(user=self.context['login_user'], movie=obj)
+        if len(items) == 1:
+            for item in items:
+                serializer = UserToMovieWantWatchedListSerializer(item)
+                return serializer.data
+        elif len(items) == 0:
+            return {'no-data': 'does not exist.'}
+        else:
+            return {'error': 'Problems with data consistency'}
+
     # def get_user(self, obj):
     #     user = obj.interested_user_list.all().last()
     #     return user
@@ -121,6 +135,7 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
     img_profile = serializers.SerializerMethodField(read_only=True, default=None)
     user_pk = serializers.SerializerMethodField(read_only=True, default=None)
     want_count = serializers.SerializerMethodField(read_only=True, default=None)
+    login_user_checked = serializers.SerializerMethodField()
     class Meta:
         model = Movie
         fields = (
@@ -141,6 +156,7 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
             'img_profile',
             'comment',
             'want_count',
+            'login_user_checked',
         )
     def get_user_pk(self, obj):
         user_to_movie = obj.interested_user_list.all().first()
@@ -186,3 +202,14 @@ class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
         else:
             want_count = 0
         return want_count
+
+    def get_login_user_checked(self, obj):
+        items = UserToMovie.objects.filter(user=self.context['login_user'], movie=obj)
+        if len(items) == 1:
+            for item in items:
+                serializer = UserToMovieWantWatchedListSerializer(item)
+                return serializer.data
+        elif len(items) == 0:
+            return {'no-data': 'does not exist.'}
+        else:
+            return {'error': 'Problems with data consistency'}

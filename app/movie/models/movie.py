@@ -110,6 +110,7 @@ class Movie(models.Model):
     def __str__(self):
         return self.title_ko
 
+
     def give_rating_user(self, user, rating):
         rating, rating_created = self.interested_user_list.get_or_create(
             user=user,
