@@ -22,6 +22,7 @@ class MemberDetailSerializer(serializers.ModelSerializer):
             'name',
             'real_name',
             'img_profile',
+            'img_profile_x3',
             'by_director_movie_list',
             'by_main_actor_movie_list',
         )

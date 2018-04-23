@@ -115,7 +115,7 @@ class MovieBoxOfficeRankingFiveSerializer(serializers.ModelSerializer):
 class MovieBoxOfficeRankingSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     members = MovieToMemberListSerializer(source='movie_member_list', many=True, read_only=True)
-    film_rate = serializers.CharField(source='get_type_display', read_only=True)
+    film_rate = serializers.CharField(source='get_film_rate_display', read_only=True)
     comment = serializers.SerializerMethodField(read_only=True, default=None)
     username = serializers.SerializerMethodField(read_only=True, default=None)
     img_profile = serializers.SerializerMethodField(read_only=True, default=None)
