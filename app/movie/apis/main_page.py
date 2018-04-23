@@ -36,7 +36,8 @@ class WatchaRatingTopMovieListView(generics.ListAPIView):
             movie = Movie.objects.filter(rating_avg__gte=4.0).order_by('?')
         return movie
 
-
+    def get_serializer_context(self):
+        return {'login_user': self.request.user}
 
 class TagMovieListView(generics.ListAPIView):
     permission_classes = (
@@ -54,6 +55,8 @@ class TagMovieListView(generics.ListAPIView):
             movie = Movie.objects.filter(tag__tag=self.Tag).order_by('?')
         return movie
 
+    def get_serializer_context(self):
+        return {'login_user': self.request.user}
 
 class GenreMovieListView(generics.ListAPIView):
     permission_classes = (
@@ -70,3 +73,6 @@ class GenreMovieListView(generics.ListAPIView):
         else:
             movie = Movie.objects.filter(tag__tag=self.Tag).order_by('?')
         return movie
+
+    def get_serializer_context(self):
+        return {'login_user': self.request.user}

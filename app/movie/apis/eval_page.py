@@ -43,7 +43,8 @@ class EvalWatchaRatingTopMovieListView(generics.ListAPIView):
         #     movie_list.append(item)
         # return movie_list
         # 리스트를 반환해야 되는줄 알았다.
-
+    def get_serializer_context(self):
+        return {'login_user': self.request.user}
 
 class EvalTagMovieListView(generics.ListAPIView):
     permission_classes = (
@@ -61,6 +62,10 @@ class EvalTagMovieListView(generics.ListAPIView):
             movie = Movie.objects.filter(tag__tag=self.TAG).order_by('?')
         # movie = Movie.objects.filter(tag__tag=self.TAG)
         return movie
+
+    def get_serializer_context(self):
+        return {'login_user': self.request.user}
+
 
 
 class EvalGenreMovieListView(generics.ListAPIView):
@@ -80,7 +85,8 @@ class EvalGenreMovieListView(generics.ListAPIView):
             movie = Movie.objects.filter(genre__genre=self.GENRE).order_by('?')
         return movie
 
-
+    def get_serializer_context(self):
+        return {'login_user': self.request.user}
 
 
 
