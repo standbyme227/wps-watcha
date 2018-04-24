@@ -1,6 +1,6 @@
 from .base import *
 
-DEBUG = True
+DEBUG = False
 
 secrets = json.loads(open(SECRETS_PRODUCTION, 'rt').read())
 set_config(secrets, module_name=__name__, start=True)

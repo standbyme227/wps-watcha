@@ -11,6 +11,12 @@ from utils.file import download, get_buffer_ext
 User = get_user_model()
 
 
+__all__ = (
+    'APIFacebookBackend',
+    'FacebookBackend'
+
+)
+
 class APIFacebookBackend:
     CLIENT_ID = settings.FACEBOOK_APP_ID
     CLIENT_SECRET = settings.FACEBOOK_SECRET_CODE
@@ -60,6 +66,7 @@ class APIFacebookBackend:
 
 class FacebookBackend:
     CLIENT_ID = settings.FACEBOOK_APP_ID
+    # FACEBOOK의 APP ID
     CLIENT_SECRET = settings.FACEBOOK_SECRET_CODE
     URL_ACCESS_TOKEN = 'https://graph.facebook.com/v2.12/oauth/access_token'
     URL_ME = 'https://graph.facebook.com/v2.12/me'
@@ -91,6 +98,38 @@ class FacebookBackend:
             response = requests.get(self.URL_ME, params)
             response_dict = response.json()
             return response_dict
+
+        try:
+            access_token = get_access_token(code)
+            user_info = get_user_info(access_token)
+
+            facebook_id = user_info['id']
+            name = user_info['name']
+            first_name = user_info['first_name']
+            last_name = user_info['first_name']
+            url_picture = user_info['picture']['data']['url']
+
+            try:
+                user = User.objects.get(username=facebook_id)
+            except User.DoesNotExist:
+                user = User.objects.create_user(
+                    username=facebook_id,
+                    firstname=first_name,
+                    last_name=last_name
+                )
+            if not user.img_profile:
+                temp_file = download(url_picture)
+                ext = get_buffer_ext(temp_file)
+                user.img_profile.save(f'{user.pk}.{ext}', File(temp_file))
+            return user
+        except Exception:
+            return None
+
+    def get_user(self, user_id):
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None
 
 
 

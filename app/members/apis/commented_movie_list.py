@@ -29,7 +29,7 @@ class CommentedMovieListView(generics.ListAPIView):
         user = get_object_or_404(User, pk=pk)
         if user.interesting_movie_list:
             # 유저의 usertomovie의 오브젝트가 있다면 리스트로 받아온다.
-            user_to_movie = UserToMovie.objects.filter(user=user)
+            user_to_movie = UserToMovie.objects.filter(user=user, user_watched_movie=True).exclude(comment='')
             movie_list = []
             for item in user_to_movie:
                 movie_list.append(item.movie)
