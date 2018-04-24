@@ -9,6 +9,7 @@ from rest_framework.test import APITestCase
 from utils.pagination import SmallResultSetPagination
 
 User = get_user_model()
+print('list.py --> start')
 
 
 class GetUserListTest(APITestCase):

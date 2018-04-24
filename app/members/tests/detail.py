@@ -13,10 +13,10 @@ from rest_framework.test import APITestCase
 from config import settings
 
 User = get_user_model()
+print('detail.py --> start')
 
 
 class GetUserDetailsTest(APITestCase):
-
     @classmethod
     def setUpTestData(cls):
         user_list = (
@@ -52,42 +52,42 @@ class GetUserDetailsTest(APITestCase):
         test_user_pk = self.get_test_user_pk()
         token = Token.objects.get(user_id=test_user_pk)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
-        url = reverse('apis:members:user-detail', kwargs={'pk': test_user_pk})
+        # url = reverse('apis:members:user-detail', kwargs={'pk': test_user_pk})
+        url = reverse('apis:members:user-detail')
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['email'], User.objects.get(pk=test_user_pk).email)
         self.assertEqual(response.data['nickname'], User.objects.get(pk=test_user_pk).nickname)
 
-    def test_get_user_details_with_different_pk(self):
-        pk_list = self.get_user_pk_list()
-        random.shuffle(pk_list)
-        test_user_pk = pk_list.pop()
-        different_pk = pk_list.pop()
-        token = Token.objects.get(user_id=test_user_pk)
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
-        url = reverse('apis:members:user-detail', kwargs={'pk': different_pk})
-        response = self.client.get(url, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        # self.assertEqual(len(response.data), 1)
+    # def test_get_user_details_with_different_pk(self):
+    #     pk_list = self.get_user_pk_list()
+    #     random.shuffle(pk_list)
+    #     test_user_pk = pk_list.pop()
+    #     different_pk = pk_list.pop()
+    #     token = Token.objects.get(user_id=test_user_pk)
+    #     self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+    #     url = reverse('apis:members:user-detail', kwargs={'pk': different_pk})
+    #     response = self.client.get(url, format='json')
+    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    #     # self.assertEqual(len(response.data), 1)
 
-    def test_get_user_details_with_does_not_pk(self):
-        test_user_pk = self.get_test_user_pk()
-        token = Token.objects.get(user_id=test_user_pk)
-        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
-
-        user_cnt = self.get_user_count()
-        does_not_pk = user_cnt + random.randrange(1, 100)
-        url = reverse('apis:members:user-detail', kwargs={'pk': does_not_pk})
-
-        response = self.client.get(url, format='json')
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+    # def test_get_user_details_with_does_not_pk(self):
+    #     test_user_pk = self.get_test_user_pk()
+    #     token = Token.objects.get(user_id=test_user_pk)
+    #     self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
+    #
+    #     user_cnt = self.get_user_count()
+    #     does_not_pk = user_cnt + random.randrange(1, 100)
+    #     url = reverse('apis:members:user-detail', kwargs={'pk': does_not_pk})
+    #
+    #     response = self.client.get(url, format='json')
+    #     self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_user_details_with_invalid_token(self):
-        test_user_pk = self.get_test_user_pk()
         temp_token = 'c60101d80b61cfd0a7f90b203475dbd08ed504fd'
         invalid_token = ''.join(random.sample(temp_token, len(temp_token)))
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + invalid_token)
-        url = reverse('apis:members:user-detail', kwargs={'pk': test_user_pk})
+        url = reverse('apis:members:user-detail')
         response = self.client.get(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -98,8 +98,8 @@ class GetUserDetailsTest(APITestCase):
         # token 은 Token의 object중에서 test_user의 pk에 맞는 Token을 가져와서 token에 지정한다.
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
         # client의 헤더에 'Token token.key(는 token의 값)을 넣어서 인증한다.
-        url = reverse('apis:members:user-detail', kwargs={'pk': test_user_pk})
-        # url은 members의 user-detail이 구현된 곳으로 접근하고, pk는 test_user의 pk로 한다.
+        url = reverse('apis:members:user-detail')
+        # url은 members의 user-detail이 구현된 곳으로 접근한다.
         data = {
             'nickname': 'changed_nickname',
             'first_name': 'changed_first_name',
@@ -119,7 +119,7 @@ class GetUserDetailsTest(APITestCase):
         test_user_pk = self.get_test_user_pk()
         token = Token.objects.get(user_id=test_user_pk)
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
-        url = reverse('apis:members:email-update', kwargs={'pk': test_user_pk})
+        url = reverse('apis:members:email-update')
 
         data = {
             'email': 'changed_email@test.com'
