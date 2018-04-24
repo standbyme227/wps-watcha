@@ -13,7 +13,6 @@ __all__ = (
 )
 
 
-
 class WantWatchedMovieListView(generics.ListAPIView):
     permission_classes = (
         permissions.IsAuthenticated,
