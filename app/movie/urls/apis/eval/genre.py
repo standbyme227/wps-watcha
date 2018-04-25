@@ -11,7 +11,7 @@ urlpatterns = [
     path('crime/', EvalGenreMovieListView.as_view(GENRE='범죄'), name='crime-movie-list'),
     path('drama/', EvalGenreMovieListView.as_view(GENRE='드라마'), name='drama-movie-list'),
     path('comedy/', EvalGenreMovieListView.as_view(GENRE='코미디'), name='comedy-movie-list'),
-    path('romance/', EvalGenreMovieListView.as_view(GENRE='로맨스/멜로'), name='romance-movie-list'),
+    path('romance/', EvalGenreMovieListView.as_view(GENRE='멜로/로맨스'), name='romance-movie-list'),
     path('thriller/', EvalGenreMovieListView.as_view(GENRE='스릴러'), name='thriller-movie-list'),
     path('roco/', EvalGenreMovieListView.as_view(GENRE='로맨틱코미디'), name='roco-movie-list'),
     path('war/', EvalGenreMovieListView.as_view(GENRE='전쟁'), name='war-movie-list'),
