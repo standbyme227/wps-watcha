@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="header-wrap">
+        <header class="main-header">
+            {% if request.user.is_authenticated %}
+            <div>{{ request.user }}로 로그인 중입니다.</div>
+            <div><a href="{% url 'members:logout' %}">로그아웃</a></div>
+            {% else %}
+            <div><a href="{% url 'members:login' %}">로그인 하세용</a></div>
+            {% endif %}
+            <div><a href="{% url 'members:signup' %}">가입하기</a></div>
+        </header>
+    </div>
+
+    {% if request.user.is_superuser %}
+    <div class="btn-container">
+        <form action="{% url 'movie:movie-search-from-naver' %}" method="get" class="'inline">
+            <button type="submit" class="btn">영화 검색하기</button>
+        </form>
+    </div>
+    <div class="btn-container">
+        <form action="{% url 'movie:movie-crawler' %}" method="get" class="'inline">
+            <button type="submit" class="btn">최신영화 크롤링</button>
+        </form>
+    </div>
+    {% endif %}
+    <div class="btn-container">
+        <form action="{% url 'movie:movie-list' %}" method="get" class="'inline">
+            <button type="submit" class="btn">리스트</button>
+        </form>
+    </div>
+{% endblock %}

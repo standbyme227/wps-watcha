@@ -1,0 +1,15 @@
+div.login-container {
+  margin-bottom: 30px;
+  padding-left: 40px;
+  h2 {
+    color: #5882FA;
+    font-weight: bold;
+  }
+  form {
+    button.login-btn {
+      margin-top: 5px;
+      position: relative;
+      left: 120px;
+    }
+  }
+}

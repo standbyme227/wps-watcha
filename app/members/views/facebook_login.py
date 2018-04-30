@@ -11,4 +11,4 @@ def facebook_login_backup(request):
     code = request.GET.get('code')
     user = authenticate(request, code=code)
     login(request, user)
-    return redirect('index')
+    return redirect('crawler')

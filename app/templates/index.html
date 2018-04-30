@@ -1,9 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div id="contents">
+    <div class="content">
+        <div class="content-wrapper">
+            <img class="logo" src="/static/index/logo.png" alt="왓챠로고">
+            <br>
+            <br>
+            <img class="slogan" src="/static/index/intro_slogan.png" alt="">
+            <br>
+            <br>
+            <span class="service-msg">왓챠는 오늘 영화 뭐 볼까?를 해결하는 서비스 입니다.</span>
+            <span class="login">이미 왓챠 회원이신가요? <a href="{% url 'members:login' %}">로그인</a></span>
+            <br>
+            <br>
+            <div>
+                <button id="btn-facebook" class="facebook-btn">페이스북으로 1초만에 가입</button>
+            </div>
 
-<div>
-    <h1>Index</h1>
+            <div>
+                <form action="{% url 'members:signup' %}">
+                    <button type="submit" id="btn-email" class="email-btn">이메일로 10초만에 가입</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+<script src="static/js/jquery-3.3.1.min.js"></script>
+<script src="static/js/fb.js"></script>
+<script>
+        $('#btn-facebook').click(function () {
+          facebookLogin();
+        });
+        function facebookLogin() {
+          FB.getLoginStatus(function (response) {
+            if (response.status != 'connected'){
+             FB.login(function (response) {
+              console.log(response);
+             });
+            } else {
+              console.log(response);
+            }
+          });
+        }
+</script>
 
 {% endblock %}

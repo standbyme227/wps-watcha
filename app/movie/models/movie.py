@@ -110,8 +110,13 @@ class Movie(models.Model):
     def __str__(self):
         return self.title_ko
 
-
     def give_rating_user(self, user, rating):
+        """
+
+        :param user:
+        :param rating:
+        :return:
+        """
         rating, rating_created = self.interested_user_list.get_or_create(
             user=user,
             rating=rating,
@@ -200,10 +205,10 @@ class Movie(models.Model):
 
         else:
             self.poster_image_m.delete(save=False) \
-            and self.poster_image_s.delete(save=False) \
-            and self.poster_image_my_x3.delete(save=False) \
-            and self.poster_image_box_x3.delete(save=False) \
-            and self.poster_image_eval_x3.delete(save=False)
+                and self.poster_image_s.delete(save=False) \
+                and self.poster_image_my_x3.delete(save=False) \
+                and self.poster_image_box_x3.delete(save=False) \
+                and self.poster_image_eval_x3.delete(save=False)
 
             # else:
         #     self.poster_image_my_x3.delete(save=False) \

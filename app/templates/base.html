@@ -7,53 +7,17 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Team Project</title>
-    <link rel="stylesheet" href="{% static 'css/bases.css' %}">
-    <link rel="stylesheet" href="{% static 'css/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/headers.css' %}">
     <link rel="stylesheet" href="{% static 'css/movie-list.css' %}">
     <link rel="stylesheet" href="{% static 'css/signup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
 </head>
 <body>
-
     <div class="content-block">
         {% block content %}
         {% endblock %}
     </div>
-    {% if request.user.is_superuser %}
-    <div class="btn-container">
-        <form action="{% url 'movie:movie-search-from-naver' %}" method="get" class="'inline">
-            <button type="submit" class="btn">영화 검색하기</button>
-        </form>
-    </div>
-    <div class="btn-container">
-        <form action="{% url 'movie:movie-crawler' %}" method="get" class="'inline">
-            <button type="submit" class="btn">최신영화 크롤링</button>
-        </form>
-    </div>
-    {% endif %}
-    <div class="btn-container">
-        <form action="{% url 'movie:movie-list' %}" method="get" class="'inline">
-            <button type="submit" class="btn">리스트</button>
-        </form>
-    </div>
-
-    <button id="btn-facebook" class="btn">페이스북 로그인</button>
-    <script src="static/js/jquery-3.3.1.min.js"></script>
-    <script src="static/js/fb.js"></script>
-    <script>
-            $('#btn-facebook').click(function () {
-              facebookLogin();
-            });
-            function facebookLogin() {
-              FB.getLoginStatus(function (response) {
-                if (response.status != 'connected'){
-                 FB.login(function (response) {
-                  console.log(response);
-                 });
-                } else {
-                  console.log(response);
-                }
-              });
-            }
-    </script>
 </body>
 </html>

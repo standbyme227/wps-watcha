@@ -1,0 +1,9 @@
+div.header-wrap {
+  margin-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #E6E6E6;
+}
+
+div.header-wrap div {
+  margin-left: 20px;
+}
