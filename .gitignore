@@ -4,6 +4,9 @@
 /.secrets/
 /.static
 /.ForTest
+/.idea
+/.data
+/.pytest_cache
 
 # Created by https://www.gitignore.io/api/git,linux,macos,django,python,pycharm+all
 

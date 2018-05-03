@@ -8,27 +8,55 @@ from io import BytesIO
 
 
 class UserManager(BaseUserManager):
+    # 유저매니저로 User의 쿼리셋 objects로 통해서 들어갈 수 있다.
     def create_user(self, email, nickname, password):
+        """
+        :param email:
+        :param nickname:
+        :param password:
+        :return: email, nickname, password를 갖는 생성된 user가 반환된다.
+        """
+        # UserManager 클래스안에 create_user 메소드를 선언했다.
         if not email:
+            # email이 없으면
+            # raise로 ValueError를 일으킨다.
             raise ValueError('Users must have an email address')
+        # ValueError 가 뭘하는지 아직 정확히는 모르겠다.
 
         user = self.model(
+            # self.model이라면 UserManager의 model을 지칭하는 것 같고 그건 BaseUserManager이다.
+            # 처음에는 User를 지칭하는 줄 알았다.
+            # 근데 user를 생성하는데 왜 BaseUserManager를 이용해서 채워 넣는것일까???
             email=self.normalize_email(email),
+            # BaseUserManager를 이용해서 email을 normalize(정규화?) 시킨다.
             nickname=nickname
+            # nickname엔 nickname을 넣는다.
         )
         user.set_password(password)
+        # set_password라는 AbstractBaseUser의 메소드로 password를 규정한다.
         user.save(using=self._db)
+        # 그렇게 구성되어진 user를 저장하는데 using이라는 옵션을 왜 줬는지는 확실치 않다.
         return user
 
     def create_superuser(self, email, nickname, password):
+        """
+
+        :param email: email형식으로 입력한다.
+        :param nickname: nickname으로 지정할 str을 입력한다.
+        :param password: 비밀번호를 설정한다.
+        :return: email, nickname, password를 갖는 생성된 superuser가 반환된다.
+        """
         user = self.create_user(
+            # 메소드인 create_user를 이용해서 각 parameter에 맞는 형식으로 값을 넣는다.
             email=email,
             nickname=nickname,
             password=password
         )
         user.is_staff = True
+        # 스태프와 슈퍼유저에 True값을 준다.
         user.is_superuser = True
         user.save(using=self._db)
+        # 구성된 user를 저장한다.
         return user
 
 
@@ -65,39 +93,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return f'{self.email}({self.nickname})'
-
-    # def save(self, *args, **kwargs):
-    #     self._save_thumbnail_process()
-    #     super().save(*args, **kwargs)
-    #
-    # def _save_thumbnail_process(self):
-    #
-    #     if self.img_profile:
-    #         # 이미지파일의 이름과 확장자를 가져옴
-    #         full_name = self.img_profile.name.rsplit('/')[-1]
-    #         full_name_split = full_name.rsplit('.', maxsplit=1)
-    #
-    #         temp_file = BytesIO()
-    #         temp_file.write(self.img_profile.read())
-    #         temp_file.seek(0)
-    #         mime_info = magic.from_buffer(temp_file.read(), mime=True)
-    #         temp_file.seek(0)
-    #
-    #         name = full_name_split[0]
-    #         ext = mime_info.split('/')[-1]
-    #
-    #         # Pillow를 사용해 이미지 파일 로드
-    #         im = Image.open(self.img_profile)
-    #         # 썸네일 형태로 데이터 변경
-    #         im.thumbnail((200, 200))
-    #
-    #         # 썸네일 이미지 데이터를 가지고 있을 임시 메모리 파일 생성
-    #         temp_file = BytesIO()
-    #         # 임시 메모리 파일에 Pillow인스턴스의 내용을 기록
-    #         im.save(temp_file, ext)
-    #         # 임시 메모리파일을 Django의 File로 한번 감싸 썸네일 필드에 저장
-    #     #     self.img_profile_thumbnail.save(f'{name}_thumbnail.{ext}', File(temp_file), save=False)
-    #     # else:
-    #     #     self.img_profile_thumbnail.delete(save=False)
-    #     # else:
-    #     #     self.img_profile_thumbnail.delete(save=False)

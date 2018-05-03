@@ -7,6 +7,7 @@ from .models import User
 
 
 class UserCreationForm(forms.ModelForm):
+    # User를 만들기위한 Form이다.
     password1 = forms.CharField(label='password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='password confirmation', widget=forms.PasswordInput)
 
